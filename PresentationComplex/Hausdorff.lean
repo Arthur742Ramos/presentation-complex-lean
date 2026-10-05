@@ -1,8 +1,12 @@
-import PresentationComplex.Bouquet
-import PresentationComplex.GraphCells
-import CellAttachment.Retraction
-import CellAttachment.Embeddings
-import Mathlib.Topology.Separation.Hausdorff
+module
+
+public import PresentationComplex.Bouquet
+public import PresentationComplex.GraphCells
+public import CellAttachment.Retraction
+public import CellAttachment.Embeddings
+public import Mathlib.Topology.Separation.Hausdorff
+
+@[expose] public section
 
 /-! Actual Hausdorffness of the weak bouquet and genuine disk adjunction.
 Mathlib's CW class omits a Hausdorff assumption; these are independent quotient
@@ -46,11 +50,11 @@ private theorem separated_openEmbedding {X Y : Type*} [TopologicalSpace X]
 section Bouquet
 variable (S : Type u)
 
-private def rawBouquetHeight : graphRealizationPre (Vertex S) → ℝ
+def rawBouquetHeight : graphRealizationPre (Vertex S) → ℝ
   | Sum.inl _ => 0
   | Sum.inr z => min z.2.val (1-z.2.val)
 
-private theorem rawBouquetHeight_respects {x y : graphRealizationPre (Vertex S)}
+theorem rawBouquetHeight_respects {x y : graphRealizationPre (Vertex S)}
     (h : Relation.EqvGen (graphRealizationGenerator (V := Vertex S)) x y) :
     rawBouquetHeight S x = rawBouquetHeight S y := by
   induction h with
@@ -153,7 +157,7 @@ end Bouquet
 section Attachment
 variable {X : Type u} [TopologicalSpace X] {R : Type v}
 
-private def rawDiskRadius : CellAttachment.Raw X R → ℝ
+def rawDiskRadius : CellAttachment.Raw X R → ℝ
   | Sum.inl _ => 1
   | Sum.inr p => ‖p.2.val‖
 

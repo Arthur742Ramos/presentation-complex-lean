@@ -1,7 +1,7 @@
 name = "presentation-complex-lean"
 version = "0.1.0"
 defaultTargets = ["PresentationComplex", "Challenge", "Solution"]
-moreLeanArgs = ["-j1", "-M6144"]
+moreLeanArgs = ["-j1", "-M4096"]
 [[require]]
 name = "mathlib"
 git = "https://github.com/leanprover-community/mathlib4.git"
@@ -21,3 +21,6 @@ name = "ClassicalSVK"
 name = "Challenge"
 [[lean_lib]]
 name = "Solution"
+
+[[lean_lib]]
+name = "PresentationPackage"

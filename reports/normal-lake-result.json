@@ -1,16 +1,16 @@
 {
   "status": "pass",
-  "source_commit": "0d3c2d1fd36aa0aa94e56b5d309de25308267c1f",
-  "proof_snapshot_sha256": "ffa325ea7d0392fcd0a4e3baae6a7022256f59aaeb71c1707985e03ee59e5b2a",
-  "solution_sha256": "c767e45dbf54df02239aec8e17adf709c43c8ba9c97508d8b7527dcbda83ef86",
-  "challenge_sha256": "1620d6f2a345f461657ad3be3dc512dcc2b6c5b2530a38325b649043afb68e96",
-  "command": "python3 scripts/build_lake_serial.py",
-  "serial_target_count": 86,
-  "aggregate_jobs": 3231,
+  "source_commit": "29ab34cb685371dbe71dfd669c3a090e9a5e7e7d",
   "exit_code": 0,
-  "log_sha256": "69ba7c38a618993c85489bb28d1089deba061e7734561eb1c0f1501c6c06f40f",
-  "log_publication": "Transient log retained locally; reproducible with checked-in runner.",
-  "dependency_isolation_record": "reports/private-cache-isolation.json",
+  "command": "timeout -k 10s 7200s python3 scripts/build_lake_serial.py",
+  "serial_target_count": 89,
+  "aggregate_job_count": 3234,
   "lean_toolchain": "leanprover/lean4:v4.35.0-rc2",
-  "review_boundary": "Normal Lake compilation is not an exact type/body Comparator, hosted verdict, or registry acceptance."
+  "lakefile_sha256": "106eb926f41e871edddcee00b44584c557eef162ae4de8e57a4839595745b80c",
+  "lake_manifest_sha256": "03253a6f6c196aaed8f3b45bd0ad436660fcde25b8f25778ec220ccdacb92301",
+  "modular_source_fingerprint_sha256": "c40a5d7c07dd9c20f1025ad63cf1fe0746811a34678a632620d7e749d14914b5",
+  "generated_package_sha256": "66c38baabf69976eb7350d877718d4f3bb83735f3467a6a4b98e5def2176e4f5",
+  "log_sha256": "29756854133d583af58e0fb02581b8bd697438cc8f5fff8839e48c83c0649296",
+  "private_dependency_source_clean": true,
+  "scope": "Normal serial and aggregate Lake builds in private dependency cache; not official hosted verification"
 }

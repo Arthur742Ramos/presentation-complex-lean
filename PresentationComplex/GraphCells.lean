@@ -1,5 +1,9 @@
-import FiniteGraphFreeGroup.TopologicalCover
-import Mathlib.Topology.Homeomorph.Lemmas
+module
+
+public import FiniteGraphFreeGroup.TopologicalCover
+public import Mathlib.Topology.Homeomorph.Lemmas
+
+@[expose] public section
 
 /-! Genuine open interval cells of arbitrary graph realizations. -/
 noncomputable section

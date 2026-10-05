@@ -1,11 +1,7 @@
 # Fundamental groups of arbitrary presentation complexes
 
-**Local proof checks passed; handoff verification is incomplete.** The repaired
-84-module source tree, both standalones, normal Lake builds, standard-only axiom
-audit, and four direct kernel checks pass on the exact pin. Independent automated
-source review passed. The local exact type/body Comparator and official hosted
-verification/rendering have not run for this repair; no submission or acceptance
-is claimed. See the [exact-source verification matrix](reports/CURRENT_VERIFICATION.md).
+**Bounded module repair: exact local proof/build checks passed; Comparator is sandbox-blocked.**
+See [the current verification matrix](reports/CURRENT_VERIFICATION.md). Previous merged-source passes are historical and do not certify these new module boundaries.
 
 ## Start here
 
@@ -13,7 +9,8 @@ The small review interface is:
 
 - [Challenge.lean](Challenge.lean): two theorem targets and their shared
   construction, with exactly two intended theorem holes
-- [Solution.lean](Solution.lean): the generated proof, with no intended admissions
+- [PresentationPackage/](PresentationPackage/): mandatory shared construction and two bounded proof modules
+- [Solution.lean](Solution.lean): the public-import proof entrypoint, with no intended admissions
 - [comparator.json](comparator.json): both theorem targets; no definition holes
 - [formalization.yaml](formalization.yaml): scope, attribution, and status
 - [LICENSE](LICENSE) and [Lean4/LICENSE.md](Lean4/LICENSE.md): Apache-2.0 and MIT notices

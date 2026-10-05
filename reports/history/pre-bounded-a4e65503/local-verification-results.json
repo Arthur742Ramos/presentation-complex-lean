@@ -1,0 +1,311 @@
+{
+  "solution_sha256": "c767e45dbf54df02239aec8e17adf709c43c8ba9c97508d8b7527dcbda83ef86",
+  "challenge_sha256": "1620d6f2a345f461657ad3be3dc512dcc2b6c5b2530a38325b649043afb68e96",
+  "export_targets_sha256": "6a0caa18a367f1e22675087053a856136c0453f5b914311807456237be110ffa",
+  "solution_export_targets_sha256": "3729efce0d428ae8232d25a462bbd19562b19cc8344f3f882baf273f7950267d",
+  "lean_toolchain": "leanprover/lean4:v4.35.0-rc2",
+  "mathlib_commit": "065356127b1dc0016f66b7283ce0ce2c4055aa55",
+  "stages": {
+    "static": {
+      "status": "pass",
+      "modular_sources": 84,
+      "private_visibility_collisions": []
+    },
+    "source_replay": {
+      "status": "pass",
+      "module_count": 84,
+      "modular_source_fingerprint_sha256": "ffa325ea7d0392fcd0a4e3baae6a7022256f59aaeb71c1707985e03ee59e5b2a",
+      "modular_source_sha256": {
+        "PresentationComplex/Bouquet.lean": "ee7ea848a002eea1485e034c62627fc3a1770f79455e005de1915d7c55cfebae",
+        "PresentationComplex/BouquetCells.lean": "1dcca46341c8fd0497f71009d6a095ce5b2a30475f401e5b8d21ceb11f81dbb7",
+        "PresentationComplex/CW.lean": "619cc6a9b2ce7ccce6770aed721dbc056a56b9c0de738de2d080d933fd7b4deb",
+        "PresentationComplex/CellCharts.lean": "a248cf5e6e576481caaac534e6816be591df1b45fe5bcf7d02273c04cd7dde88",
+        "PresentationComplex/Characteristic.lean": "6e9ec91b3621d1e4dfa2ab3b1c38b95bfff43fe1636a9f82260b07d59733eba7",
+        "PresentationComplex/Connected.lean": "19af17d8d7607a6fc452e0dbca6fe8bb1d0c4f70f26cb21b2c9c0b3b3b25df1e",
+        "PresentationComplex/EveryGroupConstruction.lean": "4f1933be5ffb2a795e601396a3fe2b3a107672f4b09ba983bd84b89508cd49b2",
+        "PresentationComplex/EveryGroupPresentation.lean": "0f86c4ba69a4841356fbbe45ada6011f12e9ae79d81b42000c8e8ce675fa896e",
+        "PresentationComplex/FundamentalGroup.lean": "5ab89f9a2d769314021953217157d588f7ddfbd3e67dcdcda27f96b0fd2e4b6c",
+        "PresentationComplex/GraphCells.lean": "d6add4aee3b71e34726c145843bcef06d0b6daa4416a33093f316069b4cc8512",
+        "PresentationComplex/Hausdorff.lean": "92dce2d77fff72f6e14cb7b9c3195958b38bcc3528dc438fb2621531d6626ec9",
+        "PresentationComplex/IntervalCharts.lean": "69f143c5c74e4a6a8a35159c9bc7a4316c376bd53958d1971a65303d51ba0a85",
+        "PresentationComplex/LoopCircle.lean": "93f7ce311cb61983456d0bc4061533f26684934fd376fada7d983d9dbc5f1354",
+        "PresentationComplex/Main.lean": "914259f282146c626ee40cfa9863f9e7464a56e0cc3d0e2ef10570671b889f1f",
+        "PresentationComplex/Relators.lean": "beb51f33e32080939cb9ead1de42bff9943897006a803da18950ec4faaf5061a",
+        "PresentationComplex/WordLoops.lean": "132e810d23c6e8f7a34286e7808f55ada5cfca578d8314b31d383a0561f0e395",
+        "FiniteGraphFreeGroup/Cover.lean": "bb90b351e3d779896976d65ff67c45753ee17a8aa003a7bf09e3f2fcb90f7dfc",
+        "FiniteGraphFreeGroup/Proof.lean": "eaf13828442a4fca9571a854c618852727f4da7081afeed47ed35108dd176962",
+        "FiniteGraphFreeGroup/Realization.lean": "4c8c901cb80ef467dd81016058ab6698e20c9d4a3ba5db54c93bd9cab5b88798",
+        "FiniteGraphFreeGroup/TopologicalComparison.lean": "ec8b2211e1dc06242417002a48eab7b8b7d920a51bc496db17d84efef3e77a0b",
+        "FiniteGraphFreeGroup/TopologicalCover.lean": "7575832b847a351e52b1f25235a87dd94346ba5df4a47f3a891c84af53c466fc",
+        "FiniteGraphFreeGroup/TreeContraction.lean": "c96f491309da3cdae3365a63d6f3f4ae87f73cb03c706e80687d8d1ccd969850",
+        "CellAttachment/Adjunction.lean": "4950147d459ed1e1959f3301d394690b1714c1f2b781b995a0a852770e9020a9",
+        "CellAttachment/Annulus.lean": "a0eeab9363dd2661a8d758316ea9883f443de6f0c04113d3e7eb9875d595357a",
+        "CellAttachment/CircleGenerator.lean": "e84c5e2634a9a217cef92824762bc2fdead1ad038dfdf4c2d5331ed3c5fdfedd",
+        "CellAttachment/CoverModels.lean": "ea75a50998f901ab3c7b5fcddd27bcf76dd0ada3ee240633aa40c27461836d6f",
+        "CellAttachment/CoverPushout.lean": "7d3884f0215401a025ecdda59f4e42c79c24b7a72ee78516ee0e9f0f79332560",
+        "CellAttachment/Deformation.lean": "354ca80cc903e787de41ddcc7c51c302642abf3cbcdeaf80bf85ad3b407c277e",
+        "CellAttachment/Embeddings.lean": "c36131eb02d0d0ae2a13cbf6357c3cd8a3943af50f5d3947e266f82a8c2661e8",
+        "CellAttachment/EquivalenceExactness.lean": "a9661296eff731725b64f909eb721954308f13f5a9fc21658415f7111a763dfa",
+        "CellAttachment/Examples.lean": "55ad5fd47a8a47661f2973b60f0024b1abdf7a2a0e01adfe0fdd137c7fc11ac8",
+        "CellAttachment/GeometricPushout.lean": "aa2264a1f66676b8f06d43e84e418f8fa728064ad6209cb1d0857abe9ba2127c",
+        "CellAttachment/GroupQuotient.lean": "4dabfe6c6a8f55cb0cdee2816fdfe2e97f285adcece7473cec5861a36d35b2f4",
+        "CellAttachment/GroupoidQuotient.lean": "69f3373ce4e759963c12e1388400c12ee25e59b5c3df2a818f6a1085e491a3ee",
+        "CellAttachment/HomotopyPi1.lean": "0d17b7f2b3ee806b4ad6f1f505861ea1dee4860873d823f311fb34e268e14322",
+        "CellAttachment/Main.lean": "bbd23dd4366cd7ff01d5b2e53c74dba80c07ac1fb78f915236c96bce3e96f688",
+        "CellAttachment/NeighborhoodPi1.lean": "00c461768e339a9aa55dee08b2ec733f26aed27c62247ae058b82bd3e22f2c98",
+        "CellAttachment/NormalForm.lean": "9547bc05da7dd089ce413ae61a1f0d901c1654ad62364410a61c7088b713329f",
+        "CellAttachment/NullRelators.lean": "4944b264beb133294404d16e420e482bb0bba3ac5616c67037cc4f553355f821",
+        "CellAttachment/OpenCover.lean": "2599cc1a573d1e0b55905f470a169f13b85d9c7c1cff263f705d065d0b2797aa",
+        "CellAttachment/Radial.lean": "0f1895fbd3a3591d9c3f0aca27a28a5a65dffe4434baf9cd5c5c3475445595c8",
+        "CellAttachment/RawNeighborhood.lean": "ccc6ac903cb9f5f8654fc1ad03722fbb8ff9336b15f74e5e9fd5d4de54d37720",
+        "CellAttachment/RelatorTransport.lean": "3afd76a227183256a44bfa682244e7af2eee967e403758062c22f9006803c1bf",
+        "CellAttachment/Retraction.lean": "8e1025a269700f034f985e7c7bc77aced2b502fc6314133c92a6cddf40780d4d",
+        "CellAttachment/Statement.lean": "ddd2c63d0cd84113ed01e2bb968235660705d1296fe8e343e9660943988a9839",
+        "ClassicalSVK/Bridge/Categories.lean": "91955dbf027b64ad5476efff7083dd294eac9184ea4377553619f371ba918625",
+        "ClassicalSVK/Bridge/Iso.lean": "c70795aba04e7bb4f5d878bedfaed69e01a6b6129f24d3b288602a89388eeb6b",
+        "ClassicalSVK/Bridge/Naturality.lean": "ffacb3e5f3997980277687d0df3a128e76e16ffeeedc3b668a40ed867a813622",
+        "ClassicalSVK/Bridge/Naturality2.lean": "ee0fd2d627bd842c269e482cde99c53eb4a71f3e79731efee7590ed79dd999ab",
+        "ClassicalSVK/Pushout.lean": "1fe2ee191814fd9053f8b011bd81a52b8a08da0872c1dc97e11a978364bfb39a",
+        "Lean4/SplitPath/split_dipath.lean": "11630adb363910e1be8a1019dc8cd425f83719097074507e8a886fd2aa83b1cc",
+        "Lean4/SplitPath/split_path.lean": "5fa4dd412731741524d6b7fb618b2af40fc1ad83d65845dfa7a690de6d08f6ab",
+        "Lean4/SplitPath/split_properties.lean": "35e45d941d1cca210a3f5323b50f7ed9051c8799e7cf376a40e3ea973e06d4ba",
+        "Lean4/constructions.lean": "6b180fa47df74cdcfad85b974070e172f55bdf0024e4173a406b0134c1820ce7",
+        "Lean4/cover_lemma.lean": "f2ba7026f35de6afa537a3d994bc0a92c9cb6fe9f3820f7507e544a0841806c4",
+        "Lean4/dTop.lean": "a46ef4d00ed0d0ca52d50f2a364ae1d80cbe652d07d0321b5671dc387742ecb1",
+        "Lean4/dihomotopy_cover.lean": "a19af32b2d963949181377beb78f3b1de519728a54bb1c146f6fb80229c53561",
+        "Lean4/dihomotopy_flip.lean": "fe55d63b75f68fb859ee532c32389360f3e9be9515730ac8fed361064d23c3d3",
+        "Lean4/dihomotopy_to_path_dihomotopy.lean": "6d603200ba482df50d111273126589b9914a87f6bfb881ef40157025a072146d",
+        "Lean4/dipath.lean": "1685feb92973fc9ee02d3852055fbd722e9c144db5f8cb646c432637c2752572",
+        "Lean4/dipath_subtype.lean": "8b03ea6ea42097e030640804cfc82be676a4bbb2ffd4ee3d87fa16ebc2ef8c79",
+        "Lean4/directed_homotopy.lean": "f4bad6a0f8e12bbc102bed90be530caf05116410e4403f96438f55b4f8cafc64",
+        "Lean4/directed_map.lean": "49d678568366e295f2ac4b82fdb9f6a420c04107bebe22f3b933c66037eb75cf",
+        "Lean4/directed_path_homotopy.lean": "3f490742118e2af100443486474e2a78aab5ea597793fe0d1a84abc0223e4013",
+        "Lean4/directed_space.lean": "4673c5af561b9f7885df848bc2f7574bb0370d995ac61b17ac11daaa1b09478a",
+        "Lean4/directed_unit_interval.lean": "8b528ed495376ec69c75bb7d6a61357f4ddb55c080c33ddfb9b9e8573dc3d822",
+        "Lean4/fraction.lean": "060de7497f411e122753d06dd9c3c3c14436108b4fa2081aa99a47e7179a85cf",
+        "Lean4/fraction_equalities.lean": "8c7afe75c5614190d8ac1dfbddf7b99f26a7781c5bc549489b1b1ae9927e4e46",
+        "Lean4/fundamental_category.lean": "77c4d24695a2cc8b0980b5786bbd21f8de5fd4a8d30e46068733fd54157ee7bb",
+        "Lean4/interpolate.lean": "27b85588011ce98ce587b79351219d5cfcece95af614a05c84929f1bb638fd4e",
+        "Lean4/monotone_path.lean": "ddaaa0f2b7779a32bf8e0fe58ba59535e391e2629ae9cd3bd953c7cdb2ef1890",
+        "Lean4/morphism_aux.lean": "d0a454ef1fc7337b365dde3db8a43266a24eccc2cfa6be1ee14cb6957e8f633f",
+        "Lean4/path_cover.lean": "b6c92ea78575d71b7d98956c245c99d679386a0d808f57ced4a966d922a18a3b",
+        "Lean4/path_descent_helpers.lean": "40b253fa5c9e39e6021bc7d29c1a6cfe8d5f4870cbbcc5ccfc48702d7aaaddec",
+        "Lean4/pushout_alternative.lean": "d3a64debf3085d2a810f0790d483684ea800e9929850970633bd2feb46c13053",
+        "Lean4/split_dihomotopy.lean": "f9b7449495a8341ab392497774e7ec3de247795010031dfa9d0445143be5020f",
+        "Lean4/stretch_path.lean": "1111443c26be36f6a945bc0c1cdd579c5f42d100f1522e8709a8fdb466d195b0",
+        "Lean4/trans_refl.lean": "82bce6a92a231a637b93ff23618f30c7127c09941d712e908aaa9b2c4521e39c",
+        "Lean4/unit_interval_aux.lean": "7b283d6274646029a16ffda978227eb9025aef3a10e7dc13f1f36e9ae1487e59",
+        "PresentationComplex.lean": "8ac500af9bbda0f126e7a18bc59e0d9d722b4f30ce95d9a6323ea7b8b46198f8",
+        "FiniteGraphFreeGroup.lean": "b65631dd642db5c8f85191c2e41c9b65b7ecbf047b996319738493953d884058",
+        "CellAttachment.lean": "29ac1cc1d5c2259789de6d53aa58f876e34673f6381f4fe1fe1063391312a659",
+        "ClassicalSVK.lean": "37f689f30e1b6029f3fc4fd236519c6b878b863886c5b296ea7a290354a26750",
+        "Lean4.lean": "41ee0e5d5dcb36cd6c0525a0e6bc68e68f9e69a002d743fe844db699162f711d"
+      },
+      "exit_code": 0
+    },
+    "compile": {
+      "status": "pass",
+      "modules": {
+        "Solution": {
+          "status": "pass",
+          "exit_code": 0,
+          "source_sha256": "c767e45dbf54df02239aec8e17adf709c43c8ba9c97508d8b7527dcbda83ef86",
+          "olean_sha256": "551ce575b0ce519aa2874685c8585155fa7efe3b14e7884e04c182ca8e6d8c0c"
+        },
+        "Challenge": {
+          "status": "pass",
+          "exit_code": 0,
+          "source_sha256": "1620d6f2a345f461657ad3be3dc512dcc2b6c5b2530a38325b649043afb68e96",
+          "olean_sha256": "108d2d4bb4e2ea517a99a6c73fa9c8d52a5960a319b3d3cae9cdcf6f68025296"
+        }
+      },
+      "challenge_intentional_theorem_holes": 2
+    },
+    "axioms": {
+      "status": "pass",
+      "exit_code": 0,
+      "targets_checked": 21,
+      "axiom_closures": {
+        "PresentationComplex.presentation_complex": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.every_group_fundamental_group": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.presentationPi1Equiv": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.presentationPi1Equiv_inclusion": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.presentationPi1Equiv_generator": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.presentationMap_exact": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.bouquetEquiv": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.bouquetEquiv_edgeLoop": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.attachingLoopClass_eq": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.presentationCW": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.presentationCW_generatorCells": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.presentationCW_relatorCells": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.presentationCW_noHigherCells": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.presentation_t2Space": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.everyGroupPi1Equiv": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.everyGroupPi1Equiv_generator": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.everyGroupCW_hasTwoCell": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.groupPresentationEquiv": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.groupPresentationEquiv_generator": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "CellAttachment.cell_attachment_exact": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "FiniteGraphFreeGroup.graphCombinatorialToTopologicalEquiv": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      "missing_targets": [],
+      "forbidden_axioms": {}
+    },
+    "exports": {
+      "status": "pass",
+      "modules": {
+        "Challenge": {
+          "status": "pass",
+          "exit_code": 0,
+          "target_count": 59,
+          "sha256": "e1434ebc363f4fd7977ce8e445d72a094454cd3465bffc5fefcfcebcb426407c"
+        },
+        "Solution": {
+          "status": "pass",
+          "exit_code": 0,
+          "target_count": 78,
+          "sha256": "c0cfcb34efcfc510b43869671d06072925d2bef3afb3cd191dcaaae7b6756a1d"
+        }
+      }
+    },
+    "kernels": {
+      "status": "pass",
+      "checks": {
+        "leanchecker": {
+          "status": "pass",
+          "exit_code": 0,
+          "binary_sha256": "9e36e955a251b1313c8eb5b7fa101282d51df109d34d8bb7c1cfdf51985aba29"
+        },
+        "leanchecker-paranoid": {
+          "status": "pass",
+          "exit_code": 0,
+          "binary_sha256": "ccd20c9ba4ad795e0969b9cd2dc386e58e4d885f7dcde6ce9d32101634ccb744"
+        },
+        "nanoda_bin": {
+          "status": "pass",
+          "exit_code": 0,
+          "binary_sha256": "8241c5e6baa29490aa118d382f97961b208ae730fdb96545c2abed74c9ece5a8"
+        },
+        "con-ron": {
+          "status": "pass",
+          "exit_code": 0,
+          "binary_sha256": "4e5616d94374cae37324dad2594f6230c2bb2297240249fc78ff508f3bc5acef"
+        }
+      },
+      "export_sha256": "c0cfcb34efcfc510b43869671d06072925d2bef3afb3cd191dcaaae7b6756a1d"
+    },
+    "comparator": {
+      "status": "not_run"
+    }
+  },
+  "official_hosted_full_verification": {
+    "status": "not_run"
+  },
+  "trusted_challenge_render": {
+    "status": "not_run"
+  },
+  "registry_submission": {
+    "status": "not_submitted"
+  },
+  "verification_boundary": "Direct local stages do not establish sandboxed build provenance or official hosted acceptance. No sandbox bypass is provided.",
+  "modular_source_fingerprint_sha256": "ffa325ea7d0392fcd0a4e3baae6a7022256f59aaeb71c1707985e03ee59e5b2a",
+  "standalone_search_path": [
+    ".toolchain/standalone/lean",
+    "mathlib/.lake/build/lib/lean",
+    "plausible/.lake/build/lib/lean",
+    "LeanSearchClient/.lake/build/lib/lean",
+    "importGraph/.lake/build/lib/lean",
+    "proofwidgets/.lake/build/lib/lean",
+    "aesop/.lake/build/lib/lean",
+    "Qq/.lake/build/lib/lean",
+    "batteries/.lake/build/lib/lean"
+  ],
+  "standalone_environment": "Isolated outputs plus pinned external package caches; inherited LEAN_PATH and sibling project oleans excluded",
+  "updated_at_utc": "2026-10-05T09:03:10.839397+00:00",
+  "lean_version": "Lean (version 4.35.0-rc2, x86_64-unknown-linux-gnu, commit 11acb17ec6b07a8f9e9173e6845197929540936b, Release)",
+  "lean_binary_sha256": "bf8d54e4714cc4b03d3f6bb34c83b7202b87e49c8bfcbff6895c085bb90ceb38"
+}

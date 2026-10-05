@@ -16,7 +16,7 @@ import re
 ROOT = Path(__file__).resolve().parent.parent
 SOLUTION_ROOT = 'PresentationComplex.Main'
 CHALLENGE_ROOT = 'PresentationComplex.EveryGroupConstruction'
-LOCAL_PREFIXES = ('PresentationComplex', 'FiniteGraphFreeGroup', 'CellAttachment', 'ClassicalSVK', 'Lean4')
+LOCAL_PREFIXES = ('PresentationComplex', 'FiniteGraphFreeGroup', 'CellAttachment', 'ClassicalSVK', 'Lean4', 'PresentationPackage')
 IMPORT_RE = re.compile(r'^\s*(?:public\s+)?import\s+(.+?)\s*$', re.M)
 HEADER = '''/-
 Arbitrary presentation complexes and the genuine Hausdorff CW realization of every group.
@@ -233,8 +233,34 @@ def generate() -> dict[str, str]:
     challenge_external = list(solution_external)
     construction_names = {name for name, _ in challenge_order}
     solution_order = challenge_order + [(name, path) for name, path in solution_order if name not in construction_names]
-    solution, solution_manifest = render(solution_order, solution_external)
-    challenge, challenge_manifest = render(challenge_order, challenge_external)
+    # Share the construction physically, so imported definitions have identical
+    # names and bodies on both sides. Never include completed headline proofs.
+    construction, challenge_manifest = render(challenge_order, challenge_external)
+    proof_order = [(name, path) for name, path in solution_order if name not in construction_names]
+    generated_modules = {'PresentationPackage/Construction.lean': construction}
+    _, solution_manifest = render(solution_order, solution_external)
+    previous = 'PresentationPackage.Construction'
+    chunk = prefix([previous])
+    chunk_modules = []
+    chunks = []
+    # Split only at original module boundaries, keeping EOF scope closure intact.
+    # 8,000 leaves headroom below the conservatively enforced user-provided cap.
+    for name, path in proof_order:
+        wrapped, _ = wrap(name, path.read_text(encoding='utf-8'))
+        if len((chunk + wrapped).splitlines()) > 8000 and chunk_modules:
+            module = f'PresentationPackage.Proof{len(chunks) + 1}'
+            generated_modules[module.replace('.', '/') + '.lean'] = chunk
+            chunks.append({'module': module, 'source_modules': chunk_modules})
+            previous = module
+            chunk = prefix([previous]); chunk_modules = []
+        chunk += wrapped; chunk_modules.append(name)
+    if chunk_modules:
+        module = f'PresentationPackage.Proof{len(chunks) + 1}'
+        generated_modules[module.replace('.', '/') + '.lean'] = chunk
+        chunks.append({'module': module, 'source_modules': chunk_modules})
+        previous = module
+    solution = prefix([previous])
+    challenge = prefix(['PresentationPackage.Construction'])
     statement = statement_source()
     challenge += '\n' + statement + '''
 namespace PresentationComplex
@@ -247,12 +273,18 @@ theorem presentation_complex : completeStatement.{u,v} := by
         raise ValueError('Challenge must have exactly two intentional theorem holes')
     if re.search(r'\b(?:sorry|admit|axiom)\b', code_only(solution)):
         raise ValueError('Solution must be entirely free of admissions and custom axioms')
-    for name, content in [('Solution', solution), ('Challenge', challenge)]:
-        if any(n.split('.')[0] in LOCAL_PREFIXES or n == 'Solution' for n in imports(content)):
-            raise ValueError(f'{name} is not standalone')
-    if 'every_group_fundamental_group' not in code_only(solution):
+    if any(n.startswith('PresentationPackage.Proof') or n == 'Solution'
+           for n in imports(challenge) + imports(construction)):
+        raise ValueError('Challenge construction imports Solution proof machinery')
+    if 'every_group_fundamental_group' not in code_only(''.join(generated_modules.values())):
         raise ValueError('Solution lost the every-group consequence')
+    for name, content in {**generated_modules, 'Challenge.lean': challenge, 'Solution.lean': solution}.items():
+        if len(content.splitlines()) > 10000:
+            raise ValueError(f'{name} exceeds the conservative 10,000-line cap')
     metadata = {
+        'generated_modules': {name: {'sha256': sha256(content), 'lines': len(content.splitlines())} for name, content in generated_modules.items()},
+        'proof_chunks': chunks,
+        'line_cap': {'maximum': 10000, 'basis': 'user-provided intake constraint; official current policy not independently verified'},
         'status': 'generated; compilation and kernel verification not asserted',
         'generator': 'scripts/generate_standalone.py',
         'solution_root': SOLUTION_ROOT, 'challenge_construction_root': CHALLENGE_ROOT,
@@ -263,12 +295,12 @@ theorem presentation_complex : completeStatement.{u,v} := by
         'solution_external_imports': solution_external, 'challenge_external_imports': challenge_external,
         'challenge_minimal_construction_imports': minimal_challenge_external,
         'shared_construction_prefix': [name for name, _ in challenge_order],
-        'shared_environment_note': 'Both standalones import the same external Mathlib environment and elaborate the identical local construction prefix first, preserving exact shared declaration bodies.',
+        'shared_environment_note': 'Both entrypoints publicly import the same construction module, which imports the frozen external Mathlib environment and no proof chunks. Proof chunks preserve the original module/declaration order.',
         'challenge_intentional_holes': ['PresentationComplex.presentation_complex',
                                         'PresentationComplex.every_group_fundamental_group'],
         'source_transform': 'Remove import/module/expose-section commands; isolate module scopes in sections and close EOF scopes; remove private visibility modifiers for stable helper names across Challenge/Solution. All declaration bodies and source notices are retained.',
     }
-    return {'Solution.lean': solution, 'Challenge.lean': challenge,
+    return {**generated_modules, 'Solution.lean': solution, 'Challenge.lean': challenge,
             'reports/standalone-manifest.json': json.dumps(metadata, indent=2) + '\n',
             'reports/standalone-manifest.txt': ''.join(f'{n} {p.relative_to(ROOT)}\n' for n, p in solution_order)}
 
@@ -278,6 +310,10 @@ def main() -> None:
     parser.add_argument('--check', action='store_true', help='Fail if checked-in outputs differ; do not write')
     args = parser.parse_args()
     generated = generate()
+    expected = {ROOT/name for name in generated if name.startswith('PresentationPackage/')}
+    extras = set((ROOT/'PresentationPackage').glob('*.lean')) - expected
+    if extras:
+        raise SystemExit('Unexpected generated modules; review and remove explicitly: ' + ', '.join(str(p.relative_to(ROOT)) for p in sorted(extras)))
     for relative, content in generated.items():
         path = ROOT / relative
         if args.check:

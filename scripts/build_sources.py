@@ -4,7 +4,7 @@ from pathlib import Path
 import subprocess,sys
 root=Path(__file__).resolve().parent.parent
 modules=[]
-for folder in ['Lean4','ClassicalSVK','FiniteGraphFreeGroup','CellAttachment','PresentationComplex']:
+for folder in ['Lean4','ClassicalSVK','FiniteGraphFreeGroup','CellAttachment','PresentationComplex','PresentationPackage']:
     for source in sorted((root/folder).rglob('*.lean')):
         modules.append('.'.join(source.relative_to(root).with_suffix('').parts))
 for name in ['Lean4','ClassicalSVK','FiniteGraphFreeGroup','CellAttachment','PresentationComplex','Challenge','Solution']:

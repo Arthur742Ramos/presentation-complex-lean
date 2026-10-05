@@ -1,5 +1,9 @@
-import PresentationComplex.EveryGroupConstruction
-import CellAttachment.GroupQuotient
+module
+
+public import PresentationComplex.EveryGroupConstruction
+public import CellAttachment.GroupQuotient
+
+@[expose] public section
 
 /-! Every group has an explicit multiplication-and-identity presentation.
 This is an algebraic ingredient only; the topological realization uses the

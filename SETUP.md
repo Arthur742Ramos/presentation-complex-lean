@@ -1,11 +1,7 @@
 # Reproduction and verification gates
 
-**Local proof checks passed; handoff verification is incomplete.** Fresh results
-cover the strengthened cell-index statement, both standalone targets, all 84
-modular sources, normal builds, the axiom audit, and four direct kernels.
-The [exact-source matrix](reports/CURRENT_VERIFICATION.md) separates these passes
-from the unperformed type/body Comparator and official hosted/rendering gates.
-The historical 83-module checkpoint is not used to certify changed source.
+**Bounded module repair: exact local proof/build checks passed; Comparator is sandbox-blocked.**
+See [the current verification matrix](reports/CURRENT_VERIFICATION.md). Previous merged-source passes are historical and do not certify these new module boundaries.
 
 ## Exact toolchain
 
@@ -33,7 +29,7 @@ Run these from the repository root with the pinned toolchain available:
    `python3 scripts/build_lake_serial.py` runs serial normal Lake builds followed
    by the aggregate build.
 5. Run `python3 scripts/build_sources.py` to replay every shipped modular source,
-   both standalones, and the generated audit harness.
+   both package entrypoints, and the generated audit harness.
 6. Print the complete target and transitive axiom audit:
    `lake env lean -j1 -M6144 reports/AuditSolution.lean`.
 

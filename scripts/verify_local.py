@@ -88,6 +88,7 @@ def main() -> None:
         if not path.is_file() or path.read_text(encoding='utf-8') != content:
             raise SystemExit(f'STALE verification metadata: {name}; run derive_verification_metadata.py')
     hashes = {name.replace('.lean', '_sha256').lower(): digest(ROOT/name) for name in ['Solution.lean', 'Challenge.lean']}
+    hashes['generated_package_sha256'] = hashlib.sha256(json.dumps({str(p.relative_to(ROOT)): digest(p) for p in sorted((ROOT/'PresentationPackage').glob('*.lean'))}, sort_keys=True).encode()).hexdigest()
     hashes['export_targets_sha256'] = digest(ROOT/'reports/export-targets.json')
     hashes['solution_export_targets_sha256'] = digest(ROOT/'reports/solution-export-targets.json')
     report_path = ROOT/args.report
@@ -196,11 +197,12 @@ def main() -> None:
                     else: entry.update(status='pass', exit_code=0)
             elif stage == 'compile':
                 entry['modules'] = {}
-                for name in ['Solution', 'Challenge']:
-                    ret = compile_source(ROOT/(name+'.lean'), destination/(name+'.olean'), env, 'standalone-'+name.lower()+'.log')
-                    artifact = destination/(name+'.olean')
+                compilation_order, _ = closure(['Solution', 'Challenge'])
+                for name, source in compilation_order:
+                    ret = compile_source(source, destination/(name.replace('.', '/')+'.olean'), env, 'standalone-'+name.lower()+'.log')
+                    artifact = destination/(name.replace('.', '/')+'.olean')
                     entry['modules'][name] = {'status': 'pass' if ret == 0 else 'fail', 'exit_code': ret,
-                                             'source_sha256': digest(ROOT/(name+'.lean')),
+                                             'source_sha256': digest(source),
                                              'olean_sha256': digest(artifact) if ret == 0 and artifact.is_file() else None}
                 entry.update(status='pass' if all(m['exit_code'] == 0 for m in entry['modules'].values()) else 'fail')
                 entry['challenge_intentional_theorem_holes'] = 2

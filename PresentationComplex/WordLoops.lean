@@ -1,5 +1,9 @@
-import PresentationComplex.Bouquet
-import Mathlib.GroupTheory.FreeGroup.Reduce
+module
+
+public import PresentationComplex.Bouquet
+public import Mathlib.GroupTheory.FreeGroup.Reduce
+
+@[expose] public section
 
 /-! Actual finite word loops in the arbitrary weak bouquet. Mathlib multiplies
 loop classes in reverse chronological order, and this recursion respects it. -/

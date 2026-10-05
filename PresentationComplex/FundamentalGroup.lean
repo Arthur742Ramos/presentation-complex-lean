@@ -1,5 +1,9 @@
-import PresentationComplex.Relators
-import CellAttachment.Main
+module
+
+public import PresentationComplex.Relators
+public import CellAttachment.Main
+
+@[expose] public section
 
 /-! The exact ordinary path-based fundamental group of the genuine quotient,
 with literal bouquet-inclusion and generator compatibility. -/

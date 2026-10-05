@@ -1,66 +1,157 @@
 {
+  "generated_modules": {
+    "PresentationPackage/Construction.lean": {
+      "sha256": "5cb3f7a01e2e273639ad073688ee58439c8a2762385c188b63f170dd8d870b60",
+      "lines": 5877
+    },
+    "PresentationPackage/Proof1.lean": {
+      "sha256": "b23564f5231a5dc8754271e5d92799132b691ed7210a8427ca94e93c680df04f",
+      "lines": 7996
+    },
+    "PresentationPackage/Proof2.lean": {
+      "sha256": "9d98b83606e7b405f525e7e8c8057abbeec3154493c16b6ddd987ac06444c366",
+      "lines": 4236
+    }
+  },
+  "proof_chunks": [
+    {
+      "module": "PresentationPackage.Proof1",
+      "source_modules": [
+        "PresentationComplex.GraphCells",
+        "PresentationComplex.Characteristic",
+        "PresentationComplex.IntervalCharts",
+        "PresentationComplex.BouquetCells",
+        "PresentationComplex.CellCharts",
+        "CellAttachment.NormalForm",
+        "CellAttachment.OpenCover",
+        "CellAttachment.Embeddings",
+        "PresentationComplex.CW",
+        "CellAttachment.GroupoidQuotient",
+        "CellAttachment.Annulus",
+        "Lean4.fraction",
+        "Lean4.cover_lemma",
+        "Lean4.directed_space",
+        "Lean4.directed_map",
+        "Lean4.monotone_path",
+        "Lean4.constructions",
+        "Lean4.directed_unit_interval",
+        "Lean4.unit_interval_aux",
+        "Lean4.dipath",
+        "Lean4.dTop",
+        "Lean4.interpolate",
+        "Lean4.SplitPath.split_path",
+        "Lean4.SplitPath.split_dipath",
+        "Lean4.stretch_path",
+        "Lean4.directed_homotopy",
+        "Lean4.trans_refl",
+        "Lean4.directed_path_homotopy",
+        "Lean4.fundamental_category",
+        "Lean4.dipath_subtype",
+        "Lean4.fraction_equalities",
+        "Lean4.SplitPath.split_properties",
+        "Lean4.path_cover",
+        "Lean4.split_dihomotopy",
+        "Lean4.dihomotopy_cover"
+      ]
+    },
+    {
+      "module": "PresentationPackage.Proof2",
+      "source_modules": [
+        "Lean4.pushout_alternative",
+        "Lean4.dihomotopy_flip",
+        "Lean4.dihomotopy_to_path_dihomotopy",
+        "Lean4.morphism_aux",
+        "Lean4.path_descent_helpers",
+        "ClassicalSVK.Bridge.Categories",
+        "ClassicalSVK.Bridge.Naturality",
+        "ClassicalSVK.Bridge.Naturality2",
+        "ClassicalSVK.Bridge.Iso",
+        "ClassicalSVK.Pushout",
+        "CellAttachment.CoverPushout",
+        "CellAttachment.Radial",
+        "CellAttachment.RawNeighborhood",
+        "CellAttachment.Retraction",
+        "CellAttachment.CoverModels",
+        "CellAttachment.Deformation",
+        "CellAttachment.HomotopyPi1",
+        "CellAttachment.NeighborhoodPi1",
+        "CellAttachment.GeometricPushout",
+        "CellAttachment.RelatorTransport",
+        "CellAttachment.EquivalenceExactness",
+        "CellAttachment.Main",
+        "PresentationComplex.FundamentalGroup",
+        "PresentationComplex.EveryGroupPresentation",
+        "PresentationComplex.Hausdorff",
+        "PresentationComplex.Main"
+      ]
+    }
+  ],
+  "line_cap": {
+    "maximum": 10000,
+    "basis": "user-provided intake constraint; official current policy not independently verified"
+  },
   "status": "generated; compilation and kernel verification not asserted",
   "generator": "scripts/generate_standalone.py",
   "solution_root": "PresentationComplex.Main",
   "challenge_construction_root": "PresentationComplex.EveryGroupConstruction",
   "statement_source": "PresentationComplex/Main.lean:completeStatement",
   "statement_sha256": "61e023318353ab21fab0ad4c6eba85c652f656a72c4ae7565ac6272ef895645d",
-  "solution_sha256": "c767e45dbf54df02239aec8e17adf709c43c8ba9c97508d8b7527dcbda83ef86",
-  "challenge_sha256": "1620d6f2a345f461657ad3be3dc512dcc2b6c5b2530a38325b649043afb68e96",
+  "solution_sha256": "da98d4236ce51347bfcf0ef21592c4de1010ab3639a1eb993ffcbe26d70b25a0",
+  "challenge_sha256": "29f92f55295b947be8562d805a0793441f18c7c6aadab87a08d247e5473a6068",
   "solution_local_modules": [
     {
       "module": "FiniteGraphFreeGroup.Proof",
       "path": "FiniteGraphFreeGroup/Proof.lean",
-      "source_sha256": "eaf13828442a4fca9571a854c618852727f4da7081afeed47ed35108dd176962",
+      "source_sha256": "8b2f31c52c583e259c26621631e90c32cb99f103abecb724ccd02f294d3d51fe",
       "eof_scopes_closed": 1,
       "private_modifiers_removed": 0
     },
     {
       "module": "FiniteGraphFreeGroup.Cover",
       "path": "FiniteGraphFreeGroup/Cover.lean",
-      "source_sha256": "bb90b351e3d779896976d65ff67c45753ee17a8aa003a7bf09e3f2fcb90f7dfc",
+      "source_sha256": "92dd499d839ae926e3ef58f9a39c96bde29d7d18b816e8f7822bfea528289215",
       "eof_scopes_closed": 1,
       "private_modifiers_removed": 0
     },
     {
       "module": "FiniteGraphFreeGroup.Realization",
       "path": "FiniteGraphFreeGroup/Realization.lean",
-      "source_sha256": "4c8c901cb80ef467dd81016058ab6698e20c9d4a3ba5db54c93bd9cab5b88798",
+      "source_sha256": "6a55ec8937640623b848b72ebf50c135afc87cd5f6d6160f49167ccef1f4e268",
       "eof_scopes_closed": 1,
       "private_modifiers_removed": 0
     },
     {
       "module": "FiniteGraphFreeGroup.TopologicalCover",
       "path": "FiniteGraphFreeGroup/TopologicalCover.lean",
-      "source_sha256": "7575832b847a351e52b1f25235a87dd94346ba5df4a47f3a891c84af53c466fc",
+      "source_sha256": "d704b95fa2222de399e27f4e4eee5a57907b25c18b96d8b3471126f693becce5",
       "eof_scopes_closed": 1,
       "private_modifiers_removed": 0
     },
     {
       "module": "FiniteGraphFreeGroup.TreeContraction",
       "path": "FiniteGraphFreeGroup/TreeContraction.lean",
-      "source_sha256": "c96f491309da3cdae3365a63d6f3f4ae87f73cb03c706e80687d8d1ccd969850",
+      "source_sha256": "c13c6a045e47dc785f790127c76e3610b1f49ed11f514fb4a2c9c47168d44bbc",
       "eof_scopes_closed": 1,
-      "private_modifiers_removed": 1
+      "private_modifiers_removed": 0
     },
     {
       "module": "FiniteGraphFreeGroup.TopologicalComparison",
       "path": "FiniteGraphFreeGroup/TopologicalComparison.lean",
-      "source_sha256": "ec8b2211e1dc06242417002a48eab7b8b7d920a51bc496db17d84efef3e77a0b",
+      "source_sha256": "08bce6dc5869ede10309b8daceeb8b384f383a600c601e4359fd3939ee5e8c84",
       "eof_scopes_closed": 1,
       "private_modifiers_removed": 0
     },
     {
       "module": "PresentationComplex.Bouquet",
       "path": "PresentationComplex/Bouquet.lean",
-      "source_sha256": "ee7ea848a002eea1485e034c62627fc3a1770f79455e005de1915d7c55cfebae",
+      "source_sha256": "fb554ea90966f39e0860443b2ac1ed272e8a7606916d927bb99f5b7650b08c2c",
       "eof_scopes_closed": 1,
       "private_modifiers_removed": 0
     },
     {
       "module": "PresentationComplex.WordLoops",
       "path": "PresentationComplex/WordLoops.lean",
-      "source_sha256": "132e810d23c6e8f7a34286e7808f55ada5cfca578d8314b31d383a0561f0e395",
+      "source_sha256": "638538fe08cf97c1eb856b477c1036d98d7ca0e217e8ffbe4cbc61b70e004ae4",
       "eof_scopes_closed": 1,
       "private_modifiers_removed": 0
     },
@@ -74,9 +165,9 @@
     {
       "module": "PresentationComplex.LoopCircle",
       "path": "PresentationComplex/LoopCircle.lean",
-      "source_sha256": "93f7ce311cb61983456d0bc4061533f26684934fd376fada7d983d9dbc5f1354",
+      "source_sha256": "8799c6196bf999c4fdf73635364e80b47a68ca373275109a992e30be83d39ea3",
       "eof_scopes_closed": 1,
-      "private_modifiers_removed": 2
+      "private_modifiers_removed": 1
     },
     {
       "module": "CellAttachment.Adjunction",
@@ -88,7 +179,7 @@
     {
       "module": "PresentationComplex.Connected",
       "path": "PresentationComplex/Connected.lean",
-      "source_sha256": "19af17d8d7607a6fc452e0dbca6fe8bb1d0c4f70f26cb21b2c9c0b3b3b25df1e",
+      "source_sha256": "53d5cd452944bc098633a948fb2a86e67c3bc2487ea229bddc7b183efb4aa6db",
       "eof_scopes_closed": 1,
       "private_modifiers_removed": 1
     },
@@ -109,51 +200,51 @@
     {
       "module": "PresentationComplex.Relators",
       "path": "PresentationComplex/Relators.lean",
-      "source_sha256": "beb51f33e32080939cb9ead1de42bff9943897006a803da18950ec4faaf5061a",
+      "source_sha256": "694b72637583332534104c6219581799708deb955eeda182d8073b5ca842ee89",
       "eof_scopes_closed": 1,
       "private_modifiers_removed": 1
     },
     {
       "module": "PresentationComplex.EveryGroupConstruction",
       "path": "PresentationComplex/EveryGroupConstruction.lean",
-      "source_sha256": "4f1933be5ffb2a795e601396a3fe2b3a107672f4b09ba983bd84b89508cd49b2",
+      "source_sha256": "b9d6494b6a0949d670a5668da8427dc753ab074e11f04990fa3ab7c24ce2a5dd",
       "eof_scopes_closed": 1,
       "private_modifiers_removed": 0
     },
     {
       "module": "PresentationComplex.GraphCells",
       "path": "PresentationComplex/GraphCells.lean",
-      "source_sha256": "d6add4aee3b71e34726c145843bcef06d0b6daa4416a33093f316069b4cc8512",
+      "source_sha256": "789edce5022d7ef8665292bfdd791880d928dd2d8c751e64adde036c2b503725",
       "eof_scopes_closed": 1,
       "private_modifiers_removed": 3
     },
     {
       "module": "PresentationComplex.Characteristic",
       "path": "PresentationComplex/Characteristic.lean",
-      "source_sha256": "6e9ec91b3621d1e4dfa2ab3b1c38b95bfff43fe1636a9f82260b07d59733eba7",
+      "source_sha256": "f3386406142a47c5930202aa32732f647a01968ba98320909f08902594e30167",
       "eof_scopes_closed": 1,
       "private_modifiers_removed": 0
     },
     {
       "module": "PresentationComplex.IntervalCharts",
       "path": "PresentationComplex/IntervalCharts.lean",
-      "source_sha256": "69f143c5c74e4a6a8a35159c9bc7a4316c376bd53958d1971a65303d51ba0a85",
+      "source_sha256": "17f2a0841a7a3dec55aca835cc3ebcbf12174266a486916b27188c8b0a72c456",
       "eof_scopes_closed": 1,
       "private_modifiers_removed": 1
     },
     {
       "module": "PresentationComplex.BouquetCells",
       "path": "PresentationComplex/BouquetCells.lean",
-      "source_sha256": "1dcca46341c8fd0497f71009d6a095ce5b2a30475f401e5b8d21ceb11f81dbb7",
+      "source_sha256": "3909f7c9c902869fe327ad745678e9c42609f9a5ccc9899a76df23c87fbb15ba",
       "eof_scopes_closed": 1,
       "private_modifiers_removed": 0
     },
     {
       "module": "PresentationComplex.CellCharts",
       "path": "PresentationComplex/CellCharts.lean",
-      "source_sha256": "a248cf5e6e576481caaac534e6816be591df1b45fe5bcf7d02273c04cd7dde88",
+      "source_sha256": "562c2ffe2b067102e8d94d131cf7f4ef846584f91f1297aa301dee0823d3804c",
       "eof_scopes_closed": 1,
-      "private_modifiers_removed": 5
+      "private_modifiers_removed": 3
     },
     {
       "module": "CellAttachment.NormalForm",
@@ -179,9 +270,9 @@
     {
       "module": "PresentationComplex.CW",
       "path": "PresentationComplex/CW.lean",
-      "source_sha256": "619cc6a9b2ce7ccce6770aed721dbc056a56b9c0de738de2d080d933fd7b4deb",
+      "source_sha256": "e8615a9b1d29ff489e22ba8cfcfe9ed0ee82a4f5a047be6160f2dbda4c40c39d",
       "eof_scopes_closed": 1,
-      "private_modifiers_removed": 14
+      "private_modifiers_removed": 10
     },
     {
       "module": "CellAttachment.GroupoidQuotient",
@@ -522,28 +613,28 @@
     {
       "module": "PresentationComplex.FundamentalGroup",
       "path": "PresentationComplex/FundamentalGroup.lean",
-      "source_sha256": "5ab89f9a2d769314021953217157d588f7ddfbd3e67dcdcda27f96b0fd2e4b6c",
+      "source_sha256": "6ac67b5b557a47950d2e9ae4f292096f22fad7e91efc0f7bfe120739f5798fb2",
       "eof_scopes_closed": 1,
       "private_modifiers_removed": 0
     },
     {
       "module": "PresentationComplex.EveryGroupPresentation",
       "path": "PresentationComplex/EveryGroupPresentation.lean",
-      "source_sha256": "0f86c4ba69a4841356fbbe45ada6011f12e9ae79d81b42000c8e8ce675fa896e",
+      "source_sha256": "8c084a09e6c5011d8c90ce2997d1371a180c5361426760d0fd87527526057308",
       "eof_scopes_closed": 1,
       "private_modifiers_removed": 0
     },
     {
       "module": "PresentationComplex.Hausdorff",
       "path": "PresentationComplex/Hausdorff.lean",
-      "source_sha256": "92dce2d77fff72f6e14cb7b9c3195958b38bcc3528dc438fb2621531d6626ec9",
+      "source_sha256": "a2be8bc1e1b8f73b718feef3a5b31d6c704dc8b5d59ae2fc81588717a37dad9e",
       "eof_scopes_closed": 1,
-      "private_modifiers_removed": 14
+      "private_modifiers_removed": 11
     },
     {
       "module": "PresentationComplex.Main",
       "path": "PresentationComplex/Main.lean",
-      "source_sha256": "914259f282146c626ee40cfa9863f9e7464a56e0cc3d0e2ef10570671b889f1f",
+      "source_sha256": "bb4b5588c3886657a76cb23e494a38e143fb0af3735ce4edd4e893befb76b386",
       "eof_scopes_closed": 1,
       "private_modifiers_removed": 0
     }
@@ -552,56 +643,56 @@
     {
       "module": "FiniteGraphFreeGroup.Proof",
       "path": "FiniteGraphFreeGroup/Proof.lean",
-      "source_sha256": "eaf13828442a4fca9571a854c618852727f4da7081afeed47ed35108dd176962",
+      "source_sha256": "8b2f31c52c583e259c26621631e90c32cb99f103abecb724ccd02f294d3d51fe",
       "eof_scopes_closed": 1,
       "private_modifiers_removed": 0
     },
     {
       "module": "FiniteGraphFreeGroup.Cover",
       "path": "FiniteGraphFreeGroup/Cover.lean",
-      "source_sha256": "bb90b351e3d779896976d65ff67c45753ee17a8aa003a7bf09e3f2fcb90f7dfc",
+      "source_sha256": "92dd499d839ae926e3ef58f9a39c96bde29d7d18b816e8f7822bfea528289215",
       "eof_scopes_closed": 1,
       "private_modifiers_removed": 0
     },
     {
       "module": "FiniteGraphFreeGroup.Realization",
       "path": "FiniteGraphFreeGroup/Realization.lean",
-      "source_sha256": "4c8c901cb80ef467dd81016058ab6698e20c9d4a3ba5db54c93bd9cab5b88798",
+      "source_sha256": "6a55ec8937640623b848b72ebf50c135afc87cd5f6d6160f49167ccef1f4e268",
       "eof_scopes_closed": 1,
       "private_modifiers_removed": 0
     },
     {
       "module": "FiniteGraphFreeGroup.TopologicalCover",
       "path": "FiniteGraphFreeGroup/TopologicalCover.lean",
-      "source_sha256": "7575832b847a351e52b1f25235a87dd94346ba5df4a47f3a891c84af53c466fc",
+      "source_sha256": "d704b95fa2222de399e27f4e4eee5a57907b25c18b96d8b3471126f693becce5",
       "eof_scopes_closed": 1,
       "private_modifiers_removed": 0
     },
     {
       "module": "FiniteGraphFreeGroup.TreeContraction",
       "path": "FiniteGraphFreeGroup/TreeContraction.lean",
-      "source_sha256": "c96f491309da3cdae3365a63d6f3f4ae87f73cb03c706e80687d8d1ccd969850",
+      "source_sha256": "c13c6a045e47dc785f790127c76e3610b1f49ed11f514fb4a2c9c47168d44bbc",
       "eof_scopes_closed": 1,
-      "private_modifiers_removed": 1
+      "private_modifiers_removed": 0
     },
     {
       "module": "FiniteGraphFreeGroup.TopologicalComparison",
       "path": "FiniteGraphFreeGroup/TopologicalComparison.lean",
-      "source_sha256": "ec8b2211e1dc06242417002a48eab7b8b7d920a51bc496db17d84efef3e77a0b",
+      "source_sha256": "08bce6dc5869ede10309b8daceeb8b384f383a600c601e4359fd3939ee5e8c84",
       "eof_scopes_closed": 1,
       "private_modifiers_removed": 0
     },
     {
       "module": "PresentationComplex.Bouquet",
       "path": "PresentationComplex/Bouquet.lean",
-      "source_sha256": "ee7ea848a002eea1485e034c62627fc3a1770f79455e005de1915d7c55cfebae",
+      "source_sha256": "fb554ea90966f39e0860443b2ac1ed272e8a7606916d927bb99f5b7650b08c2c",
       "eof_scopes_closed": 1,
       "private_modifiers_removed": 0
     },
     {
       "module": "PresentationComplex.WordLoops",
       "path": "PresentationComplex/WordLoops.lean",
-      "source_sha256": "132e810d23c6e8f7a34286e7808f55ada5cfca578d8314b31d383a0561f0e395",
+      "source_sha256": "638538fe08cf97c1eb856b477c1036d98d7ca0e217e8ffbe4cbc61b70e004ae4",
       "eof_scopes_closed": 1,
       "private_modifiers_removed": 0
     },
@@ -615,9 +706,9 @@
     {
       "module": "PresentationComplex.LoopCircle",
       "path": "PresentationComplex/LoopCircle.lean",
-      "source_sha256": "93f7ce311cb61983456d0bc4061533f26684934fd376fada7d983d9dbc5f1354",
+      "source_sha256": "8799c6196bf999c4fdf73635364e80b47a68ca373275109a992e30be83d39ea3",
       "eof_scopes_closed": 1,
-      "private_modifiers_removed": 2
+      "private_modifiers_removed": 1
     },
     {
       "module": "CellAttachment.Adjunction",
@@ -629,7 +720,7 @@
     {
       "module": "PresentationComplex.Connected",
       "path": "PresentationComplex/Connected.lean",
-      "source_sha256": "19af17d8d7607a6fc452e0dbca6fe8bb1d0c4f70f26cb21b2c9c0b3b3b25df1e",
+      "source_sha256": "53d5cd452944bc098633a948fb2a86e67c3bc2487ea229bddc7b183efb4aa6db",
       "eof_scopes_closed": 1,
       "private_modifiers_removed": 1
     },
@@ -650,14 +741,14 @@
     {
       "module": "PresentationComplex.Relators",
       "path": "PresentationComplex/Relators.lean",
-      "source_sha256": "beb51f33e32080939cb9ead1de42bff9943897006a803da18950ec4faaf5061a",
+      "source_sha256": "694b72637583332534104c6219581799708deb955eeda182d8073b5ca842ee89",
       "eof_scopes_closed": 1,
       "private_modifiers_removed": 1
     },
     {
       "module": "PresentationComplex.EveryGroupConstruction",
       "path": "PresentationComplex/EveryGroupConstruction.lean",
-      "source_sha256": "4f1933be5ffb2a795e601396a3fe2b3a107672f4b09ba983bd84b89508cd49b2",
+      "source_sha256": "b9d6494b6a0949d670a5668da8427dc753ab074e11f04990fa3ab7c24ce2a5dd",
       "eof_scopes_closed": 1,
       "private_modifiers_removed": 0
     }
@@ -807,7 +898,7 @@
     "PresentationComplex.Relators",
     "PresentationComplex.EveryGroupConstruction"
   ],
-  "shared_environment_note": "Both standalones import the same external Mathlib environment and elaborate the identical local construction prefix first, preserving exact shared declaration bodies.",
+  "shared_environment_note": "Both entrypoints publicly import the same construction module, which imports the frozen external Mathlib environment and no proof chunks. Proof chunks preserve the original module/declaration order.",
   "challenge_intentional_holes": [
     "PresentationComplex.presentation_complex",
     "PresentationComplex.every_group_fundamental_group"

@@ -1,7 +1,11 @@
-import Mathlib.Analysis.Convex.GaugeRescale
-import Mathlib.Analysis.Complex.Basic
-import Mathlib.Topology.Homeomorph.Lemmas
-import Mathlib.Topology.CWComplex.Classical.Basic
+module
+
+public import Mathlib.Analysis.Convex.GaugeRescale
+public import Mathlib.Analysis.Complex.Basic
+public import Mathlib.Topology.Homeomorph.Lemmas
+public import Mathlib.Topology.CWComplex.Classical.Basic
+
+@[expose] public section
 
 /-!
 # The genuine square-to-disk bridge
@@ -19,7 +23,7 @@ namespace PresentationComplex
 def planeCoordinates : (Fin 2 → ℝ) ≃L[ℝ] ℂ :=
   (ContinuousLinearEquiv.finTwoArrow ℝ ℝ).trans Complex.equivRealProdCLM.symm
 
-private def square : Set ℂ :=
+def square : Set ℂ :=
   planeCoordinates '' (closedBall (0 : Fin 2 → ℝ) 1)
 
 private theorem square_compact : IsCompact square :=
@@ -39,7 +43,7 @@ private theorem square_frontier : frontier square =
   rw [← planeCoordinates.toHomeomorph.image_frontier]
   rw [frontier_closedBall _ (by norm_num : (1 : ℝ) ≠ 0)]
 
-private theorem rescale_exists : ∃ h : ℂ ≃ₜ ℂ,
+theorem rescale_exists : ∃ h : ℂ ≃ₜ ℂ,
     h '' interior square = ball 0 1 ∧
     h '' closure square = closedBall 0 1 ∧
     h '' frontier square = sphere 0 1 := by

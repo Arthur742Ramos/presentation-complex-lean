@@ -1,9 +1,13 @@
-import Mathlib.AlgebraicTopology.FundamentalGroupoid.FundamentalGroup
-import Mathlib.AlgebraicTopology.FundamentalGroupoid.InducedMaps
-import Mathlib.Topology.Connected.PathConnected
-import Mathlib.Topology.Constructions
-import Mathlib.Topology.Order
-import FiniteGraphFreeGroup.Proof
+module
+
+public import Mathlib.AlgebraicTopology.FundamentalGroupoid.FundamentalGroup
+public import Mathlib.AlgebraicTopology.FundamentalGroupoid.InducedMaps
+public import Mathlib.Topology.Connected.PathConnected
+public import Mathlib.Topology.Constructions
+public import Mathlib.Topology.Order
+public import FiniteGraphFreeGroup.Proof
+
+@[expose] public section
 
 open Set Function
 open CategoryTheory CategoryTheory.SingleObj Quiver

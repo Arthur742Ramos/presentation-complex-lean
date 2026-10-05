@@ -1,7 +1,11 @@
-import PresentationComplex.CW
-import PresentationComplex.FundamentalGroup
-import PresentationComplex.EveryGroupPresentation
-import PresentationComplex.Hausdorff
+module
+
+public import PresentationComplex.CW
+public import PresentationComplex.FundamentalGroup
+public import PresentationComplex.EveryGroupPresentation
+public import PresentationComplex.Hausdorff
+
+@[expose] public section
 
 /-! Arbitrary presentation complexes and genuine Hausdorff CW realization of every group. -/
 noncomputable section

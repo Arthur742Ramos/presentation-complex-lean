@@ -1,5 +1,9 @@
-import PresentationComplex.Characteristic
-import Mathlib.Topology.UnitInterval
+module
+
+public import PresentationComplex.Characteristic
+public import Mathlib.Topology.UnitInterval
+
+@[expose] public section
 
 /-! Mathlib's maximum-norm one-cell is explicitly parameterized by the unit interval. -/
 noncomputable section

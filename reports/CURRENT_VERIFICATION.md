@@ -1,40 +1,35 @@
-# Current exact-source verification
+# Current bounded-module verification
 
-Source commit: `0d3c2d1fd36aa0aa94e56b5d309de25308267c1f`.
-This is a locally verified repair candidate, not an official readiness or acceptance verdict.
-All local proof/build gates below passed; the type/body Comparator and official
-hosted/rendering gates remain unperformed. Subsequent commits only organize
-documentation and record evidence; the proof inputs remain byte-identical.
+Verified proof-source commit: `29ab34cb685371dbe71dfd669c3a090e9a5e7e7d`. Later evidence/documentation commits do not change Lean inputs.
+Base: merged main `a4e65503a5ac5e6255ba8eed23542d5b35a16e67`, exact tree of reviewed `8d28fa01d660ce8ade2d49c9bc4306b20b1df83d`.
 
-- Lean: `4.35.0-rc2`, compiler commit `11acb17ec6b07a8f9e9173e6845197929540936b`
-- Compiler SHA-256: `bf8d54e4714cc4b03d3f6bb34c83b7202b87e49c8bfcbff6895c085bb90ceb38`
-- Mathlib: `065356127b1dc0016f66b7283ce0ce2c4055aa55`
-- Solution SHA-256: `c767e45dbf54df02239aec8e17adf709c43c8ba9c97508d8b7527dcbda83ef86`
-- Challenge SHA-256: `1620d6f2a345f461657ad3be3dc512dcc2b6c5b2530a38325b649043afb68e96`
-
-| Gate | Current result |
+| Gate | Result |
 | --- | --- |
-| Deterministic generation and static source/config audit | PASS; 84 modular sources; 77-module Solution closure; 16-module Challenge construction closure |
-| Three changed modular sources | PASS on exact compiler |
-| Isolated Solution and Challenge compilation | PASS; Challenge has exactly two intended theorem holes |
-| Complete selected/supplemental standard-only axiom audit | PASS |
-| Exact Challenge and Solution exports | PASS |
-| Four direct kernel checks | PASS: leanchecker, leanchecker-paranoid, nanoda, con-ron |
-| Full 84-module isolated source replay | PASS; frozen modular fingerprint unchanged |
-| Normal serial and aggregate Lake build | PASS; 86 serial targets and aggregate 3231 jobs; isolated private dependency copy |
-| Independent source/statement review | PASS on source commit 0d3c2d1; final publication consistency review remains separate |
-| Local exact type/body Comparator | NOT RUN for repair; prior checkpoint blocked at sandbox launch |
+| Deterministic generation and static audit | PASS: all 90 active Lean files have module headers and at most 10,000 lines; exactly two Challenge holes; no proof dependency or selected-headline leak |
+| Source preservation | PASS: 84 original declaration bodies and all 77 original generated source sections preserved, modulo module/import/visibility commands and blank lines |
+| Isolated complete source replay | PASS: all 87 original/generated modules on the exact pin; frozen fingerprint unchanged |
+| Fresh package compilation | PASS: Construction, Proof1, Proof2, Solution, Challenge |
+| Standard-only axiom audit | PASS: all 21 selected/supplemental targets |
+| Exact exports | PASS: Challenge and Solution, byte-bound in stage record |
+| Direct kernels | PASS: leanchecker, leanchecker-paranoid, nanoda, con-ron |
+| Normal Lake | PASS: 89 serial targets and aggregate 3,234 jobs, private cache |
+| Independent source review | PASS before compilation; final publication consistency review pending |
+| Supported local type/body Comparator | BLOCKED: unchanged sandbox cannot create NETLINK_ROUTE socket; no semantic comparison verdict |
+| Old Challenge/new Solution Comparator | NOT RUN after same sandbox blocker; no bypass attempted |
+| Remote ordinary CI for this repair | PENDING publication |
 | Official hosted verification / trusted rendering | NOT RUN |
 | Registry submission / acceptance | NOT SUBMITTED / NOT ACCEPTED |
 
-The machine-readable local stage record is [local-verification-results.json](local-verification-results.json).
-Its current hashes bind the standalone stages; earlier pass records under
-[history](history/pre-packaging-4eb147d/) cannot certify this repair.
-No official protocol or security gate is bypassed. A direct kernel pass is not
-an official hosted verdict. See [the review manifest](../REVIEW.md) for the
-minimal review inputs and retained reproduction sources.
+## Exact package
 
-The [minimal review file manifest](review-package-manifest.json) binds the primary
-review inputs. [Normal-build evidence](normal-lake-result.json) and
-[dependency isolation checks](private-cache-isolation.json) record the final
-ordinary build gate without copying bulky transient logs into the review interface.
+- Construction: 5,877 lines; Proof1: 7,996; Proof2: 4,236; Solution: 229; Challenge: 265
+- Lean: `4.35.0-rc2`, compiler commit `11acb17ec6b07a8f9e9173e6845197929540936b`
+- Mathlib: `065356127b1dc0016f66b7283ce0ce2c4055aa55`
+- Original reproduction files: 84; generated dependency modules: 3; entrypoints: 2; audit harness: 1
+- Eleven previously private helpers are exposed only where required by public signatures or direct exposed terms; 31 remain private. Bodies and generated helper names are unchanged
+- The 10,000-line cap is conservatively enforced from the user-provided constraint; current official policy has not been re-read
+
+All three maintainers and original source/license notices are retained. Challenge physically shares only the construction module with Solution and never imports either proof chunk. The selected theorem types still require arbitrary independent-universe presentations, genuine indexed cells, Hausdorffness, connectedness, and ordinary fundamental-group equivalence. No target or hypothesis is weakened.
+
+See [local stage results](local-verification-results.json), [normal build evidence](normal-lake-result.json), [line/header/dependency audit](static-source-audit.json), [body preservation](intake-packaging-preservation.json), [visibility inventory](module-visibility-inventory.json), [exact sandbox diagnostic](comparator-blocker.txt), and [review manifest](review-package-manifest.json).
+Historical passes under `history/pre-bounded-a4e65503` describe previous bytes only. Local proofs and ordinary CI do not establish official readiness or registry acceptance.

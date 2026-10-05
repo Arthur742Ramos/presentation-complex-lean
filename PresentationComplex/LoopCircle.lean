@@ -1,4 +1,8 @@
-import CellAttachment.CircleGenerator
+module
+
+public import CellAttachment.CircleGenerator
+
+@[expose] public section
 
 /-! Descending an actual based loop to the actual complex circle. -/
 noncomputable section
@@ -8,7 +12,7 @@ universe u
 namespace PresentationComplex
 variable {X : Type u} [TopologicalSpace X] {x₀ : X}
 
-private def circleFromPeriod : AddCircle (1 : ℝ) ≃ₜ Circle :=
+def circleFromPeriod : AddCircle (1 : ℝ) ≃ₜ Circle :=
   AddCircle.homeomorphCircle one_ne_zero
 
 /-- The endpoint-identified interval descent, transported to the actual complex unit circle. -/

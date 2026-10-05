@@ -1,9 +1,7 @@
 # Verification reports
 
-**Local proof checks passed; handoff verification incomplete.** Consult
-[CURRENT_VERIFICATION.md](CURRENT_VERIFICATION.md) for current stage results.
-Only evidence bound to the exact revised source, standalones, and exports can
-establish a new pass. Old 83-module results do not certify the 84-module repair.
+**Bounded module repair: exact local proof/build checks passed; Comparator is sandbox-blocked.**
+See [the current verification matrix](CURRENT_VERIFICATION.md). Previous merged-source passes are historical and do not certify these new module boundaries.
 
 ## Active script-managed paths
 

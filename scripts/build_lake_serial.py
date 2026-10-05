@@ -16,7 +16,7 @@ def visit(name):
     for line in re.findall(r'^(?:public )?import (.+)',p.read_text(),re.M):
         for dependency in line.split():visit(dependency)
     order.append(name)
-for directory in ['Lean4','ClassicalSVK','FiniteGraphFreeGroup','CellAttachment','PresentationComplex']:
+for directory in ['Lean4','ClassicalSVK','FiniteGraphFreeGroup','CellAttachment','PresentationComplex','PresentationPackage']:
     for p in sorted((root/directory).rglob('*.lean')):
         visit('.'.join(p.relative_to(root).with_suffix('').parts))
 for name in ['Lean4','ClassicalSVK','FiniteGraphFreeGroup','CellAttachment','PresentationComplex','Challenge','Solution']:
