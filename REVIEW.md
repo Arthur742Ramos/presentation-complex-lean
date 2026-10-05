@@ -1,11 +1,12 @@
 # Minimal review manifest
 
-**Status: UNVERIFIED repair after public checkpoint `4eb147d`.** See the
+**Status: local proof checks passed; handoff verification incomplete.** See the
 [current verification matrix](reports/CURRENT_VERIFICATION.md). This guide
-organizes review; it does not certify revised proofs or authorize registry intake.
+organizes review; it does not replace unperformed Comparator/hosted gates or authorize registry intake.
 
 ## Primary review package
 
+The byte-bound file list is [review-package-manifest.json](reports/review-package-manifest.json).
 Read these files first:
 
 1. `Challenge.lean`: shared construction and two explicit theorem holes

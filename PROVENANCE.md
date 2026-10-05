@@ -5,14 +5,14 @@ Ruy Jose Guerra Barretto de Queiroz. Responsible maintainers: Arthur Freitas Ram
 David Barros Hulak, Ruy Jose Guerra Barretto de Queiroz.
 No invented roles or mathematical novelty are claimed.
 
-**Current repair: UNVERIFIED as a complete package.** The cell-index statement,
-shared every-group construction, and two-target standalone package require fresh
-exact-byte verification and independent review. Current stage results are in
-[reports/CURRENT_VERIFICATION.md](reports/CURRENT_VERIFICATION.md). Earlier build,
-axiom, and direct-kernel passes are preserved in
-[reports/history/pre-packaging-4eb147d](reports/history/pre-packaging-4eb147d/README.md)
-and apply only to their recorded inputs. No official hosted or registry verdict
-is claimed.
+**Local proof checks passed; handoff verification is incomplete.** The strengthened
+cell-index statement and two-target package have fresh exact-source compilation,
+replay, standard-only axiom, and direct-kernel passes, plus independent automated
+source review. See [reports/CURRENT_VERIFICATION.md](reports/CURRENT_VERIFICATION.md).
+The local type/body Comparator and official hosted/rendering gates have not run
+for this repair. No registry submission or acceptance is claimed. The earlier
+[checkpoint reports](reports/history/pre-packaging-4eb147d/README.md) retain their
+original bytes and apply only to their recorded inputs.
 
 The genuine arbitrary graph realization, covering, contraction, and comparison
 are adapted from Arthur742Ramos/finite-graph-fundamental-group exact commit

@@ -1,6 +1,6 @@
 # Verification reports
 
-**Current repair: UNVERIFIED as a complete package.** Consult
+**Local proof checks passed; handoff verification incomplete.** Consult
 [CURRENT_VERIFICATION.md](CURRENT_VERIFICATION.md) for current stage results.
 Only evidence bound to the exact revised source, standalones, and exports can
 establish a new pass. Old 83-module results do not certify the 84-module repair.

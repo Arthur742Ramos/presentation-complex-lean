@@ -1,10 +1,11 @@
 # Reproduction and verification gates
 
-**Current repair: UNVERIFIED as a complete package.** Fresh checks must cover the
-updated cell-index statement and both independent Challenge targets. The prior
-83-module results do not certify the repaired 84-module source tree. The
-[current verification matrix](reports/CURRENT_VERIFICATION.md) separates focused
-checks, complete checks, pending stages, and blockers.
+**Local proof checks passed; handoff verification is incomplete.** Fresh results
+cover the strengthened cell-index statement, both standalone targets, all 84
+modular sources, normal builds, the axiom audit, and four direct kernels.
+The [exact-source matrix](reports/CURRENT_VERIFICATION.md) separates these passes
+from the unperformed type/body Comparator and official hosted/rendering gates.
+The historical 83-module checkpoint is not used to certify changed source.
 
 ## Exact toolchain
 

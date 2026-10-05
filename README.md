@@ -1,10 +1,11 @@
 # Fundamental groups of arbitrary presentation complexes
 
-**Current repair: UNVERIFIED as a complete package.** The strengthened statements
-and regenerated review package require fresh exact-toolchain verification and
-independent review. Results from public checkpoint `4eb147d` do not certify these
-edits. See the [current verification matrix](reports/CURRENT_VERIFICATION.md) for
-stage-by-stage results. No official hosted verdict or registry acceptance is claimed.
+**Local proof checks passed; handoff verification is incomplete.** The repaired
+84-module source tree, both standalones, normal Lake builds, standard-only axiom
+audit, and four direct kernel checks pass on the exact pin. Independent automated
+source review passed. The local exact type/body Comparator and official hosted
+verification/rendering have not run for this repair; no submission or acceptance
+is claimed. See the [exact-source verification matrix](reports/CURRENT_VERIFICATION.md).
 
 ## Start here
 

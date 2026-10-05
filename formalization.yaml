@@ -70,10 +70,11 @@ status:
     independent generator and relator-index universes, ordinary CW structure,
     Hausdorffness, path connectedness, and compatible fundamental-group
     equivalence with the presented group. Every-group realization as a
-    two-dimensional CW complex included. Current repair is UNVERIFIED as a
-    complete package: fresh exact-toolchain builds, modular/standalone replay,
-    transitive axiom audits, direct kernel checks, and independent review must
-    cover the revised bytes. Prior results belong to checkpoint 4eb147d.
+    two-dimensional CW complex included. Fresh exact-toolchain normal builds,
+    all 84 modular sources and both standalone compilations, transitive
+    standard-only axiom audits, four direct kernels, and independent automated
+    source review passed for the repaired bytes. Local type/body Comparator and
+    official hosted/rendering gates remain unperformed; intake is incomplete.
     See reports/CURRENT_VERIFICATION.md for stage-specific status.
   sorry_count: 0
   sorry_in_definitions: 0
@@ -102,9 +103,9 @@ fidelity:
     There are no added mathematical hypotheses. The square-to-complex-disk
     bridge uses Mathlib's proved convex-body homeomorphism.
 review:
-  status: "UNVERIFIED complete repair package; focused checks do not establish full verification. Consult reports/CURRENT_VERIFICATION.md. Historical evidence is preserved under reports/history/pre-packaging-4eb147d; official hosted gates and registry intake remain unperformed."
+  status: "Independent automated source review and fresh exact-source local proof/build/kernel gates passed. Local type/body Comparator and official hosted/rendering gates remain unperformed. Consult reports/CURRENT_VERIFICATION.md; no registry intake or acceptance is asserted."
   notes: >-
-    Required review covers actual quotient topology, circle attaching maps from
+    Completed source review covers actual quotient topology, circle attaching maps from
     finite word loops, Mathlib CW structure with explicit zero/one/two cell-index
     equivalences, Hausdorffness, inclusion compatibility, independent universes,
     both independent Challenge targets, and accurate upstream provenance.
@@ -115,12 +116,12 @@ alignment:
     - source: "Hatcher Corollary 1.28, printed page 52, presentation-complex realization"
       lean: "PresentationComplex.presentation_complex"
       module: "Solution"
-      status: verification-pending
+      status: proved
       note: "Complete arbitrary presentation statement, including actual CW cell-index equivalences, inclusion and generator equations."
     - source: "Every-group realization via the explicit multiplication-table presentation and identity relator"
       lean: "PresentationComplex.every_group_fundamental_group"
       module: "Solution"
-      status: verification-pending
+      status: proved
       note: "Second independent Challenge target; connected Hausdorff CW realization with no cells above two and a nonempty two-cell type. The supplemental everyGroupPi1Equiv_generator equation is audited/exported separately, not part of this selected headline type."
 acknowledgements: >-
   Allen Hatcher for the classical exposition; Basold, Bruin and Lawson for

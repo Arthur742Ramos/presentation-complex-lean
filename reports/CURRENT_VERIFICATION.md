@@ -1,8 +1,10 @@
 # Current exact-source verification
 
 Source commit: `0d3c2d1fd36aa0aa94e56b5d309de25308267c1f`.
-This is a local repair candidate, not a public readiness or official acceptance verdict.
-The complete-package review/build gates below are not yet complete.
+This is a locally verified repair candidate, not an official readiness or acceptance verdict.
+All local proof/build gates below passed; the type/body Comparator and official
+hosted/rendering gates remain unperformed. Subsequent commits only organize
+documentation and record evidence; the proof inputs remain byte-identical.
 
 - Lean: `4.35.0-rc2`, compiler commit `11acb17ec6b07a8f9e9173e6845197929540936b`
 - Compiler SHA-256: `bf8d54e4714cc4b03d3f6bb34c83b7202b87e49c8bfcbff6895c085bb90ceb38`
@@ -17,10 +19,10 @@ The complete-package review/build gates below are not yet complete.
 | Isolated Solution and Challenge compilation | PASS; Challenge has exactly two intended theorem holes |
 | Complete selected/supplemental standard-only axiom audit | PASS |
 | Exact Challenge and Solution exports | PASS |
-| Four direct kernel checks | RUNNING |
-| Full 84-module isolated source replay | NOT RUN for repair |
-| Normal serial and aggregate Lake build | NOT RUN for repair |
-| Independent source/statement review | IN PROGRESS |
+| Four direct kernel checks | PASS: leanchecker, leanchecker-paranoid, nanoda, con-ron |
+| Full 84-module isolated source replay | PASS; frozen modular fingerprint unchanged |
+| Normal serial and aggregate Lake build | PASS; 86 serial targets and aggregate 3231 jobs; isolated private dependency copy |
+| Independent source/statement review | PASS on source commit 0d3c2d1; final publication consistency review remains separate |
 | Local exact type/body Comparator | NOT RUN for repair; prior checkpoint blocked at sandbox launch |
 | Official hosted verification / trusted rendering | NOT RUN |
 | Registry submission / acceptance | NOT SUBMITTED / NOT ACCEPTED |
@@ -31,3 +33,8 @@ Its current hashes bind the standalone stages; earlier pass records under
 No official protocol or security gate is bypassed. A direct kernel pass is not
 an official hosted verdict. See [the review manifest](../REVIEW.md) for the
 minimal review inputs and retained reproduction sources.
+
+The [minimal review file manifest](review-package-manifest.json) binds the primary
+review inputs. [Normal-build evidence](normal-lake-result.json) and
+[dependency isolation checks](private-cache-isolation.json) record the final
+ordinary build gate without copying bulky transient logs into the review interface.
