@@ -13,13 +13,13 @@
       "private_visibility_collisions": []
     },
     "source_replay": {
-      "status": "fail",
+      "status": "pass",
       "module_count": 87,
-      "modular_source_fingerprint_sha256": "c0e79989dc01488caa5fa9059c15ec9c620bc1d9898d71d5fb87d6f6017b1a50",
+      "modular_source_fingerprint_sha256": "c40a5d7c07dd9c20f1025ad63cf1fe0746811a34678a632620d7e749d14914b5",
       "modular_source_sha256": {
         "PresentationComplex/Bouquet.lean": "fb554ea90966f39e0860443b2ac1ed272e8a7606916d927bb99f5b7650b08c2c",
         "PresentationComplex/BouquetCells.lean": "3909f7c9c902869fe327ad745678e9c42609f9a5ccc9899a76df23c87fbb15ba",
-        "PresentationComplex/CW.lean": "9a18ed6b4ed132e9eae6d9e45252904e18210e3acee37152a3360ac58113e4f5",
+        "PresentationComplex/CW.lean": "e8615a9b1d29ff489e22ba8cfcfe9ed0ee82a4f5a047be6160f2dbda4c40c39d",
         "PresentationComplex/CellCharts.lean": "562c2ffe2b067102e8d94d131cf7f4ef846584f91f1297aa301dee0823d3804c",
         "PresentationComplex/Characteristic.lean": "f3386406142a47c5930202aa32732f647a01968ba98320909f08902594e30167",
         "PresentationComplex/Connected.lean": "53d5cd452944bc098633a948fb2a86e67c3bc2487ea229bddc7b183efb4aa6db",
@@ -27,7 +27,7 @@
         "PresentationComplex/EveryGroupPresentation.lean": "8c084a09e6c5011d8c90ce2997d1371a180c5361426760d0fd87527526057308",
         "PresentationComplex/FundamentalGroup.lean": "6ac67b5b557a47950d2e9ae4f292096f22fad7e91efc0f7bfe120739f5798fb2",
         "PresentationComplex/GraphCells.lean": "789edce5022d7ef8665292bfdd791880d928dd2d8c751e64adde036c2b503725",
-        "PresentationComplex/Hausdorff.lean": "fe081b9da367e6ae70830feb185f690bf6c3a48184492fa26f05838515100034",
+        "PresentationComplex/Hausdorff.lean": "a2be8bc1e1b8f73b718feef3a5b31d6c704dc8b5d59ae2fc81588717a37dad9e",
         "PresentationComplex/IntervalCharts.lean": "17f2a0841a7a3dec55aca835cc3ebcbf12174266a486916b27188c8b0a72c456",
         "PresentationComplex/LoopCircle.lean": "8799c6196bf999c4fdf73635364e80b47a68ca373275109a992e30be83d39ea3",
         "PresentationComplex/Main.lean": "bb4b5588c3886657a76cb23e494a38e143fb0af3735ce4edd4e893befb76b386",
@@ -105,23 +105,207 @@
         "ClassicalSVK.lean": "37f689f30e1b6029f3fc4fd236519c6b878b863886c5b296ea7a290354a26750",
         "Lean4.lean": "41ee0e5d5dcb36cd6c0525a0e6bc68e68f9e69a002d743fe844db699162f711d"
       },
-      "exit_code": 1,
-      "failed_module": "PresentationComplex.CW"
+      "exit_code": 0
     },
     "compile": {
-      "status": "not_run"
+      "status": "pass",
+      "modules": {
+        "PresentationPackage.Construction": {
+          "status": "pass",
+          "exit_code": 0,
+          "source_sha256": "5cb3f7a01e2e273639ad073688ee58439c8a2762385c188b63f170dd8d870b60",
+          "olean_sha256": "78030f9cb9b067d4ac5479ed6b236c2fdcf093efc7307c825842ed659c1050d4"
+        },
+        "PresentationPackage.Proof1": {
+          "status": "pass",
+          "exit_code": 0,
+          "source_sha256": "b23564f5231a5dc8754271e5d92799132b691ed7210a8427ca94e93c680df04f",
+          "olean_sha256": "0cf16ba659abf4bb1e77d87e6d387fe2f4021ecba914a66c86937f8f35cc3bb7"
+        },
+        "PresentationPackage.Proof2": {
+          "status": "pass",
+          "exit_code": 0,
+          "source_sha256": "9d98b83606e7b405f525e7e8c8057abbeec3154493c16b6ddd987ac06444c366",
+          "olean_sha256": "0b49a232c62714e191cfaebe5ba7dcd736da6f629d94afcd5c4f700acb182a96"
+        },
+        "Solution": {
+          "status": "pass",
+          "exit_code": 0,
+          "source_sha256": "da98d4236ce51347bfcf0ef21592c4de1010ab3639a1eb993ffcbe26d70b25a0",
+          "olean_sha256": "bbe087dd116be4977c353d9159a50e751b51a1df0154f1953c3a73990f805a79"
+        },
+        "Challenge": {
+          "status": "pass",
+          "exit_code": 0,
+          "source_sha256": "29f92f55295b947be8562d805a0793441f18c7c6aadab87a08d247e5473a6068",
+          "olean_sha256": "e78121c577c6cd49ac91b6729d2e99e4325fd908beff060f510694b562f888ad"
+        }
+      },
+      "challenge_intentional_theorem_holes": 2
     },
     "axioms": {
-      "status": "not_run"
+      "status": "pass",
+      "exit_code": 0,
+      "targets_checked": 21,
+      "axiom_closures": {
+        "PresentationComplex.presentation_complex": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.every_group_fundamental_group": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.presentationPi1Equiv": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.presentationPi1Equiv_inclusion": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.presentationPi1Equiv_generator": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.presentationMap_exact": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.bouquetEquiv": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.bouquetEquiv_edgeLoop": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.attachingLoopClass_eq": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.presentationCW": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.presentationCW_generatorCells": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.presentationCW_relatorCells": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.presentationCW_noHigherCells": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.presentation_t2Space": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.everyGroupPi1Equiv": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.everyGroupPi1Equiv_generator": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.everyGroupCW_hasTwoCell": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.groupPresentationEquiv": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.groupPresentationEquiv_generator": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "CellAttachment.cell_attachment_exact": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "FiniteGraphFreeGroup.graphCombinatorialToTopologicalEquiv": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      "missing_targets": [],
+      "forbidden_axioms": {}
     },
     "exports": {
-      "status": "not_run"
+      "status": "pass",
+      "modules": {
+        "Challenge": {
+          "status": "pass",
+          "exit_code": 0,
+          "target_count": 59,
+          "sha256": "200d46ddfae67e0b6a775634cbe85554d4496cd91b0dc250bc2cfdde4f570547"
+        },
+        "Solution": {
+          "status": "pass",
+          "exit_code": 0,
+          "target_count": 78,
+          "sha256": "0842222bf483c68b678e85460a1085903261cb8b948ed88080d0b08389bb8913"
+        }
+      }
     },
     "kernels": {
-      "status": "not_run"
+      "status": "pass",
+      "checks": {
+        "leanchecker": {
+          "status": "pass",
+          "exit_code": 0,
+          "binary_sha256": "9e36e955a251b1313c8eb5b7fa101282d51df109d34d8bb7c1cfdf51985aba29"
+        },
+        "leanchecker-paranoid": {
+          "status": "pass",
+          "exit_code": 0,
+          "binary_sha256": "ccd20c9ba4ad795e0969b9cd2dc386e58e4d885f7dcde6ce9d32101634ccb744"
+        },
+        "nanoda_bin": {
+          "status": "pass",
+          "exit_code": 0,
+          "binary_sha256": "8241c5e6baa29490aa118d382f97961b208ae730fdb96545c2abed74c9ece5a8"
+        },
+        "con-ron": {
+          "status": "pass",
+          "exit_code": 0,
+          "binary_sha256": "4e5616d94374cae37324dad2594f6230c2bb2297240249fc78ff508f3bc5acef"
+        }
+      },
+      "export_sha256": "0842222bf483c68b678e85460a1085903261cb8b948ed88080d0b08389bb8913"
     },
     "comparator": {
-      "status": "not_run"
+      "status": "blocked",
+      "exit_code": 1,
+      "sandbox_preserved": true,
+      "artifact_origin": "previous local exports; isolated-build provenance not established",
+      "blocker": "Running nanoda kernel on solution\nbwrap: loopback: Failed to create NETLINK_ROUTE socket: Operation not permitted\nnanoda kernel rejected the solution\nRunning Lean default kernel on solution\nbwrap: loopback: Failed to create NETLINK_ROUTE socket: Operation not permitted\nerror: nanoda exited with 1\nLean default kernel rejected the solution"
     }
   },
   "official_hosted_full_verification": {
@@ -134,7 +318,7 @@
     "status": "not_submitted"
   },
   "verification_boundary": "Direct local stages do not establish sandboxed build provenance or official hosted acceptance. No sandbox bypass is provided.",
-  "modular_source_fingerprint_sha256": "c0e79989dc01488caa5fa9059c15ec9c620bc1d9898d71d5fb87d6f6017b1a50",
+  "modular_source_fingerprint_sha256": "c40a5d7c07dd9c20f1025ad63cf1fe0746811a34678a632620d7e749d14914b5",
   "standalone_search_path": [
     ".toolchain/standalone/lean",
     "mathlib/.lake/build/lib/lean",
@@ -147,7 +331,7 @@
     "batteries/.lake/build/lib/lean"
   ],
   "standalone_environment": "Isolated outputs plus pinned external package caches; inherited LEAN_PATH and sibling project oleans excluded",
-  "updated_at_utc": "2026-10-05T12:00:20.102381+00:00",
+  "updated_at_utc": "2026-10-05T12:32:17.081419+00:00",
   "lean_version": "Lean (version 4.35.0-rc2, x86_64-unknown-linux-gnu, commit 11acb17ec6b07a8f9e9173e6845197929540936b, Release)",
   "lean_binary_sha256": "bf8d54e4714cc4b03d3f6bb34c83b7202b87e49c8bfcbff6895c085bb90ceb38"
 }

@@ -1,6 +1,6 @@
 {
   "scope": "Minimal review interface; not a registry submission or acceptance verdict.",
-  "proof_source_commit": "pending bounded-module repair commit; base 8d28fa01d660ce8ade2d49c9bc4306b20b1df83d",
+  "proof_source_commit": "29ab34cb685371dbe71dfd669c3a090e9a5e7e7d",
   "primary_review_files": [
     {
       "path": "Challenge.lean",
@@ -19,8 +19,8 @@
     },
     {
       "path": "formalization.yaml",
-      "sha256": "83c651e9ef6eeb629ab277dfc6b7bc4272563f6fa8505f0571feacbe842e5ff3",
-      "bytes": 7790
+      "sha256": "0f71e4936398c305133cefa1dfbae4a1033e2a42b310bea61841b5920912632b",
+      "bytes": 8100
     },
     {
       "path": "LICENSE",
@@ -69,5 +69,35 @@
     "PresentationComplex.presentation_complex",
     "PresentationComplex.every_group_fundamental_group"
   ],
-  "generated_package_module_count": 3
+  "generated_package_module_count": 3,
+  "evidence_files": [
+    {
+      "path": "reports/local-verification-results.json",
+      "sha256": "8ecdfc4e698e98cf32c6b4a8dfcaf9218bbf5a41238e67e4ec61259ba18c4f41"
+    },
+    {
+      "path": "reports/normal-lake-result.json",
+      "sha256": "8ea89c35816102f946c17911c8f94b2892176eafd4ac13f4bee903cb3666dd6f"
+    },
+    {
+      "path": "reports/static-source-audit.json",
+      "sha256": "1ebeba71d0ca455f87a9ee54349135aa6353bb49538125766f0dd3baabbd044b"
+    },
+    {
+      "path": "reports/intake-packaging-preservation.json",
+      "sha256": "38053905140e8bb47118283f028c9a0a77777b58d94780609d292cb4a3c8c4d1"
+    },
+    {
+      "path": "reports/module-visibility-inventory.json",
+      "sha256": "0617df25388266fb15420613d546eb2f2642f3f6466e2e439c22ac82e7e43f77"
+    },
+    {
+      "path": "reports/comparator-blocker.txt",
+      "sha256": "bff4bbf71a0b76d9282dc0a1855ec7b7cecca64f0405b2b83892d633496a7c31"
+    },
+    {
+      "path": "reports/private-cache-isolation.json",
+      "sha256": "85d6d324bf6fec0ffa7685f26a5bd9d20a4d10bee7efba6c9c062cf0260baa9b"
+    }
+  ]
 }

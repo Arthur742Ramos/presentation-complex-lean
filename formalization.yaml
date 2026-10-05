@@ -71,8 +71,10 @@ status:
     Hausdorffness, path connectedness, and compatible fundamental-group
     equivalence with the presented group. Every-group realization as a
     two-dimensional CW complex included. Bounded module packaging repair preserves
-    proof bodies and passes static checks; fresh exact-toolchain verification is
-    pending. Previous merged-source passes do not certify new module boundaries.
+    proof bodies. Fresh exact-toolchain module replay, package compilation, normal
+    serial and aggregate Lake builds, standard-only axiom audit, exports, and four
+    direct kernel checks passed. The supported local Comparator is blocked by the
+    host sandbox NETLINK_ROUTE restriction; no semantic comparison verdict is claimed.
     Official hosted/rendering gates remain unperformed; intake is incomplete.
     See reports/CURRENT_VERIFICATION.md for stage-specific status.
   sorry_count: 0
@@ -102,7 +104,7 @@ fidelity:
     There are no added mathematical hypotheses. The square-to-complex-disk
     bridge uses Mathlib's proved convex-body homeomorphism.
 review:
-  status: "Bounded module repair: static preservation checks pass; fresh verification pending. No registry intake or acceptance asserted."
+  status: "Bounded module repair: fresh exact local replay, package compilation, normal builds, axiom audit, exports, and four direct kernels pass. Comparator blocked by host sandbox; official hosted verification/rendering not run. No registry intake or acceptance asserted."
   notes: >-
     Completed source review covers actual quotient topology, circle attaching maps from
     finite word loops, Mathlib CW structure with explicit zero/one/two cell-index

@@ -1,6 +1,6 @@
 # Reproduction and verification gates
 
-**Bounded module repair: source/static checks passed; fresh proof verification pending.**
+**Bounded module repair: exact local proof/build checks passed; Comparator is sandbox-blocked.**
 See [the current verification matrix](reports/CURRENT_VERIFICATION.md). Previous merged-source passes are historical and do not certify these new module boundaries.
 
 ## Exact toolchain
@@ -29,7 +29,7 @@ Run these from the repository root with the pinned toolchain available:
    `python3 scripts/build_lake_serial.py` runs serial normal Lake builds followed
    by the aggregate build.
 5. Run `python3 scripts/build_sources.py` to replay every shipped modular source,
-   both standalones, and the generated audit harness.
+   both package entrypoints, and the generated audit harness.
 6. Print the complete target and transitive axiom audit:
    `lake env lean -j1 -M6144 reports/AuditSolution.lean`.
 

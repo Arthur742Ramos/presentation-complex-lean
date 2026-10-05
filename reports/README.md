@@ -1,6 +1,6 @@
 # Verification reports
 
-**Bounded module repair: source/static checks passed; fresh proof verification pending.**
+**Bounded module repair: exact local proof/build checks passed; Comparator is sandbox-blocked.**
 See [the current verification matrix](CURRENT_VERIFICATION.md). Previous merged-source passes are historical and do not certify these new module boundaries.
 
 ## Active script-managed paths

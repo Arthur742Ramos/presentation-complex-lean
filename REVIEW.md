@@ -1,6 +1,6 @@
 # Minimal review manifest
 
-**Bounded module repair: source/static checks passed; fresh proof verification pending.**
+**Bounded module repair: exact local proof/build checks passed; Comparator is sandbox-blocked.**
 See [the current verification matrix](reports/CURRENT_VERIFICATION.md). Previous merged-source passes are historical and do not certify these new module boundaries.
 
 ## Primary review package
@@ -18,8 +18,8 @@ Read these files first:
 6. `PROVENANCE.md`: exact upstream source commits and the mathematical reference
 
 `README.md`, this manifest, and `SETUP.md` provide the reading and reproduction
-instructions. Generated standalones retain source notices and both licenses.
-Edit modular sources and regenerate rather than hand-editing the standalones.
+instructions. Generated package modules retain source notices and both licenses.
+Edit modular sources and regenerate rather than hand-editing generated modules.
 
 ## Changes being reviewed
 

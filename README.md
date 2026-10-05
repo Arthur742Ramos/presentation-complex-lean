@@ -1,6 +1,6 @@
 # Fundamental groups of arbitrary presentation complexes
 
-**Bounded module repair: source/static checks passed; fresh proof verification pending.**
+**Bounded module repair: exact local proof/build checks passed; Comparator is sandbox-blocked.**
 See [the current verification matrix](reports/CURRENT_VERIFICATION.md). Previous merged-source passes are historical and do not certify these new module boundaries.
 
 ## Start here
@@ -9,6 +9,7 @@ The small review interface is:
 
 - [Challenge.lean](Challenge.lean): two theorem targets and their shared
   construction, with exactly two intended theorem holes
+- [PresentationPackage/](PresentationPackage/): mandatory shared construction and two bounded proof modules
 - [Solution.lean](Solution.lean): the public-import proof entrypoint, with no intended admissions
 - [comparator.json](comparator.json): both theorem targets; no definition holes
 - [formalization.yaml](formalization.yaml): scope, attribution, and status
