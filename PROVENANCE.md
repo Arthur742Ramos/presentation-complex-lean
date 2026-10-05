@@ -1,7 +1,8 @@
 # Source provenance and current status
 
 First-party authors: Arthur Freitas Ramos, David Barros Hulak,
-Ruy Jose Guerra Barretto de Queiroz. Arthur is sole responsible maintainer.
+Ruy Jose Guerra Barretto de Queiroz. Responsible maintainers: Arthur Freitas Ramos,
+David Barros Hulak, Ruy Jose Guerra Barretto de Queiroz.
 No invented roles or mathematical novelty are claimed.
 
 All 83 modular sources, both standalones, the standard-only transitive axiom

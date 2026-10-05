@@ -1,0 +1,119 @@
+version: "v0.4"
+project:
+  name: "Fundamental Groups of Arbitrary Presentation Complexes"
+  description: >-
+    Presentation-complex realization for ordinary topological fundamental groups.
+    For every generator type S, independently universe-polymorphic relator-index
+    type R, and family r : R → FreeGroup S, the genuine weak-topology endpoint
+    quotient of one vertex and one interval per generator is constructed, with a
+    circle attaching map for every relator from an actual finite word loop. The
+    genuine quotient of that bouquet and the family of closed complex disks
+    carries an ordinary Mathlib CW structure with one zero-cell, one one-cell
+    per generator, one two-cell per relator index, and no higher cells. The
+    actual quotient is Hausdorff and path connected, and its ordinary
+    path-based fundamental group is equivalent to FreeGroup S ⧸
+    Subgroup.normalClosure (Set.range r), with literal compatibility with the
+    actual bouquet inclusion and each generator interval loop. A second theorem
+    realizes every group as the fundamental group of a connected Hausdorff
+    two-dimensional CW complex. No finiteness, countability, CW input, assumed
+    generator identification, custom mathematical axiom, or admitted
+    topological bridge appears.
+  authors: ["Arthur Freitas Ramos", "David Barros Hulak", "Ruy Jose Guerra Barretto de Queiroz"]
+  responsible_maintainers: ["Arthur Freitas Ramos", "David Barros Hulak", "Ruy Jose Guerra Barretto de Queiroz"]
+  license: "Apache-2.0"
+classification:
+  arxiv: ["math.AT", "math.GR"]
+  msc2020: ["55Q05", "57M05"]
+sources:
+  - title: "Algebraic Topology"
+    authors: ["Allen Hatcher"]
+    type: book
+    id: "https://pi.math.cornell.edu/~hatcher/AT/AT..pdf#page=61"
+    location: "Corollary 1.28, printed page 52, live Cornell edition"
+    relationship: formalizes
+    note: >-
+      The source states the presentation-complex realization. This theorem
+      explicitly permits arbitrary independent-universe presentations with no
+      finiteness or countability restriction. No mathematical novelty claim
+      is made.
+    author_endorsement: not-contacted
+  - title: "The Directed Van Kampen Theorem in Lean"
+    authors: ["Henning Basold", "Peter Bruin", "Dominique Lawson"]
+    type: "conference paper and formalization"
+    id: "10.4230/LIPIcs.ITP.2024.8"
+    relationship: builds-on
+    location: "Credited path-subdivision and homotopy-grid infrastructure through the ordinary groupoid bridge"
+    note: "Inherited source and MIT notices are preserved; no independent authorship is claimed."
+    author_endorsement: not-contacted
+related_formalizations:
+  - id: "https://github.com/Arthur742Ramos/cell-attachment-lean/tree/8883b95e8ace951e27c2bc86f95d02397787dd59"
+    relationship: builds-on
+    note: >-
+      The actual complex-disk adjunction, arbitrary-family two-cell kernel
+      theorem, open cover, and groupoid quotient proof are reused from the
+      accepted two-cell attachment formalization.
+  - id: "https://github.com/Arthur742Ramos/classical-svk-lean/tree/874680e16db88b4a41daadf56eafbac79fd2f748"
+    relationship: builds-on
+    note: "Exact accepted ordinary all-object fundamental-groupoid open-cover pushout infrastructure."
+  - id: "https://github.com/Arthur742Ramos/finite-graph-fundamental-group/tree/dd57e3ab8bc5a7042fcc5498e778b008d87ac032"
+    relationship: builds-on
+    note: >-
+      The genuine arbitrary graph realization, covering, contraction, and
+      comparison are adapted from this finite-graph fundamental-group source.
+      Only the arbitrary-theorem dependency closure is retained.
+  - id: "https://github.com/Dominique-Lawson/Directed-Topology-Lean-4/tree/009529606c66d37ef93b4b81b8587f71ce4d2c56"
+    relationship: builds-on
+    note: "Basold-Bruin-Lawson subdivision helpers retain MIT license and original source credits."
+status:
+  scope: >-
+    Full arbitrary-presentation genuine quotient and actual inclusion map,
+    independent generator and relator-index universes, ordinary CW structure,
+    Hausdorffness, path connectedness, and compatible fundamental-group
+    equivalence with the presented group. Every-group realization as a
+    two-dimensional CW complex included. Exact-toolchain Lake build,
+    modular/standalone replay and complete standard-only axiom audits passed;
+    direct Lean kernels also passed; official hosted gates are separate.
+  sorry_count: 0
+  sorry_in_definitions: 0
+  axioms: ["propext", "Classical.choice", "Quot.sound"]
+automation:
+  methods:
+    - method: agent
+      models: ["GPT-6.1 Sol, High reasoning"]
+      framework: "Lean 4 and mathlib"
+      tool_setup: "AI-assisted proof construction, credited source reuse, kernel-checked tactics, separate source review and fresh exact-toolchain verification."
+  spend_usd: "not tracked"
+  notes: >-
+    Human direction selected and authorized the topology target. AI-assisted
+    construction and reviews are disclosed without assigning authorship to the
+    assistant. Challenge has one deliberate target theorem hole, excluded from
+    Solution's proof admission counts.
+fidelity:
+  divergences: >-
+    Presentations are arbitrary with independent universes for generators and
+    relator indices, strengthening any finite/countable reading of the source.
+    Duplicate and identity relators retain their genuine indexed disk cells.
+    Empty generators still give a vertex; empty relators give the bouquet.
+    There are no added mathematical hypotheses. The square-to-complex-disk
+    bridge uses Mathlib's proved convex-body homeomorphism.
+review:
+  status: "Independent automated source/statement/standalone fidelity review passed; fresh full Lake build, modular/standalone compilation, complete standard-only axiom audits and Lean kernel replay passed. Overall local Comparator is blocked at the bubblewrap kernel-sandbox launch; official hosted gates remain unperformed."
+  notes: >-
+    Review covers actual quotient topology, circle attaching maps from finite
+    word loops, Mathlib CW structure, Hausdorffness, inclusion-map
+    compatibility, independent universes, and accurate upstream provenance.
+    No human review, worldwide priority, registry submission or acceptance is asserted.
+alignment:
+  namespace: "PresentationComplex"
+  statements:
+    - source: "Hatcher Corollary 1.28, printed page 52, presentation-complex realization"
+      lean: "PresentationComplex.presentation_complex"
+      module: "Solution"
+      status: proved
+      note: "Complete arbitrary presentation statement, including the actual inclusion and generator equations."
+acknowledgements: >-
+  Allen Hatcher for the classical exposition; Basold, Bruin and Lawson for
+  subdivision; the accepted Cell attachment, ordinary SVK, and finite-graph
+  fundamental-group formalizations; Mathlib and Lean contributors.
+  Responsible maintainers: Arthur Freitas Ramos, David Barros Hulak,
+  Ruy Jose Guerra Barretto de Queiroz.

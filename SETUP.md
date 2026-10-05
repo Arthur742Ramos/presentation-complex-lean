@@ -58,6 +58,7 @@ recoverable gitbundle, explicitly labeled with their verification status.
 ## Provenance
 
 See PROVENANCE.md and reports/statement-review.md. First-party authors are Arthur
-Freitas Ramos, David Barros Hulak, and Ruy Jose Guerra Barretto de Queiroz; Arthur
-is sole responsible maintainer. Original reused Apache2/MIT source notices are
+Freitas Ramos, David Barros Hulak, and Ruy Jose Guerra Barretto de Queiroz; the
+responsible maintainers are Arthur Freitas Ramos, David Barros Hulak, and Ruy
+Jose Guerra Barretto de Queiroz. Original reused Apache2/MIT source notices are
 preserved. No mathematical or worldwide-priority novelty is claimed.
