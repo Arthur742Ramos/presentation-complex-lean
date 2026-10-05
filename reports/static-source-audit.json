@@ -200,10 +200,6 @@
       "module": "PresentationComplex.Hausdorff"
     },
     {
-      "stable_name": "PresentationComplex.rawBouquetHeight_respects",
-      "module": "PresentationComplex.Hausdorff"
-    },
-    {
       "stable_name": "PresentationComplex.bouquetAllInteriors",
       "module": "PresentationComplex.Hausdorff"
     },
@@ -248,7 +244,7 @@
     "PresentationComplex/EveryGroupPresentation.lean": "8c084a09e6c5011d8c90ce2997d1371a180c5361426760d0fd87527526057308",
     "PresentationComplex/FundamentalGroup.lean": "6ac67b5b557a47950d2e9ae4f292096f22fad7e91efc0f7bfe120739f5798fb2",
     "PresentationComplex/GraphCells.lean": "789edce5022d7ef8665292bfdd791880d928dd2d8c751e64adde036c2b503725",
-    "PresentationComplex/Hausdorff.lean": "fe081b9da367e6ae70830feb185f690bf6c3a48184492fa26f05838515100034",
+    "PresentationComplex/Hausdorff.lean": "a2be8bc1e1b8f73b718feef3a5b31d6c704dc8b5d59ae2fc81588717a37dad9e",
     "PresentationComplex/IntervalCharts.lean": "17f2a0841a7a3dec55aca835cc3ebcbf12174266a486916b27188c8b0a72c456",
     "PresentationComplex/LoopCircle.lean": "8799c6196bf999c4fdf73635364e80b47a68ca373275109a992e30be83d39ea3",
     "PresentationComplex/Main.lean": "bb4b5588c3886657a76cb23e494a38e143fb0af3735ce4edd4e893befb76b386",

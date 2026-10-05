@@ -54,7 +54,7 @@ def rawBouquetHeight : graphRealizationPre (Vertex S) → ℝ
   | Sum.inl _ => 0
   | Sum.inr z => min z.2.val (1-z.2.val)
 
-private theorem rawBouquetHeight_respects {x y : graphRealizationPre (Vertex S)}
+theorem rawBouquetHeight_respects {x y : graphRealizationPre (Vertex S)}
     (h : Relation.EqvGen (graphRealizationGenerator (V := Vertex S)) x y) :
     rawBouquetHeight S x = rawBouquetHeight S y := by
   induction h with

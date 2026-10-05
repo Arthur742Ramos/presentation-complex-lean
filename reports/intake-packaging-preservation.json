@@ -91,5 +91,5 @@
   },
   "all_77_generated_source_sections_preserved": true,
   "status": "static pass; no new compilation asserted",
-  "visibility_port": "Ten helpers used by public signatures or exposed computational/direct proof-term bodies made public; 32 by-proof-local helpers retain privacy. See module-visibility-inventory.json"
+  "visibility_port": "Eleven helpers used by public signatures or exposed computational/direct proof-term bodies made public; 31 by-proof-local helpers retain privacy. See module-visibility-inventory.json"
 }

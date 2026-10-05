@@ -627,9 +627,9 @@
     {
       "module": "PresentationComplex.Hausdorff",
       "path": "PresentationComplex/Hausdorff.lean",
-      "source_sha256": "fe081b9da367e6ae70830feb185f690bf6c3a48184492fa26f05838515100034",
+      "source_sha256": "a2be8bc1e1b8f73b718feef3a5b31d6c704dc8b5d59ae2fc81588717a37dad9e",
       "eof_scopes_closed": 1,
-      "private_modifiers_removed": 12
+      "private_modifiers_removed": 11
     },
     {
       "module": "PresentationComplex.Main",

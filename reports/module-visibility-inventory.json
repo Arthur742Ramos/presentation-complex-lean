@@ -1,7 +1,7 @@
 {
   "total_previous_private_helpers": 42,
-  "promoted_count": 10,
-  "preserved_private_count": 32,
+  "promoted_count": 11,
+  "preserved_private_count": 31,
   "helpers": [
     {
       "path": "FiniteGraphFreeGroup/TreeContraction.lean",
@@ -210,8 +210,8 @@
       "path": "PresentationComplex/Hausdorff.lean",
       "name": "rawBouquetHeight_respects",
       "kind": "theorem",
-      "public": false,
-      "reason": "Used only within private declarations or theorem/proof bodies; retain privacy"
+      "public": true,
+      "reason": "Direct lambda proof term passed to Quotient.lift in exposed bouquetHeight; outside a by proof block"
     },
     {
       "path": "PresentationComplex/Hausdorff.lean",
