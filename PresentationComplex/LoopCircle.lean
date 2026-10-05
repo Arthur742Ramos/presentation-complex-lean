@@ -22,7 +22,7 @@ def loopCircleMap (p : Path x₀ x₀) : C(Circle, X) where
     (AddCircle.liftIco_zero_continuous (by simp) p.continuous_extend.continuousOn).comp
       circleFromPeriod.symm.continuous
 
-theorem circleFromPeriod_generator (t : I) :
+private theorem circleFromPeriod_generator (t : I) :
     circleFromPeriod (t.val : AddCircle (1 : ℝ)) = CellAttachment.circleGenerator t := by
   rw [circleFromPeriod, AddCircle.homeomorphCircle_apply, AddCircle.toCircle_apply_mk,
     CellAttachment.circleGenerator_apply]

@@ -26,17 +26,17 @@ def planeCoordinates : (Fin 2 → ℝ) ≃L[ℝ] ℂ :=
 def square : Set ℂ :=
   planeCoordinates '' (closedBall (0 : Fin 2 → ℝ) 1)
 
-theorem square_compact : IsCompact square :=
+private theorem square_compact : IsCompact square :=
   (isCompact_closedBall (0 : Fin 2 → ℝ) 1).image planeCoordinates.continuous
 
-theorem square_interior : interior square =
+private theorem square_interior : interior square =
     planeCoordinates '' (ball (0 : Fin 2 → ℝ) 1) := by
   change interior (planeCoordinates.toHomeomorph '' closedBall 0 1) =
     planeCoordinates.toHomeomorph '' ball 0 1
   rw [← planeCoordinates.toHomeomorph.image_interior]
   rw [interior_closedBall _ (by norm_num : (1 : ℝ) ≠ 0)]
 
-theorem square_frontier : frontier square =
+private theorem square_frontier : frontier square =
     planeCoordinates '' (sphere (0 : Fin 2 → ℝ) 1) := by
   change frontier (planeCoordinates.toHomeomorph '' closedBall 0 1) =
     planeCoordinates.toHomeomorph '' sphere 0 1

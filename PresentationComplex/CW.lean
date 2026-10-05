@@ -44,16 +44,16 @@ def attachmentChar (f : R → C(Circle,Bouquet S)) :
   | 2, i => attachmentChar2 f i.down
   | _ + 3, i => PEmpty.elim i
 
-theorem attachmentChar0_embedding (f : R → C(Circle,Bouquet S)) :
+private theorem attachmentChar0_embedding (f : R → C(Circle,Bouquet S)) :
     Topology.IsEmbedding (cellInterior 0 (attachmentChar f 0 PUnit.unit)) :=
   Topology.IsEmbedding.of_subsingleton _
 
-theorem attachmentChar1_embedding (f : R → C(Circle,Bouquet S)) (i : S) :
+private theorem attachmentChar1_embedding (f : R → C(Circle,Bouquet S)) (i : S) :
     Topology.IsEmbedding (cellInterior 1 (attachmentChar f 1 ⟨i⟩)) := by
   exact (CellAttachment.inclusion_isClosedEmbedding f).isEmbedding.comp
     (bouquetChar1_interiorEmbedding i)
 
-theorem attachmentChar2_interior (f : R → C(Circle,Bouquet S)) (i : R) :
+private theorem attachmentChar2_interior (f : R → C(Circle,Bouquet S)) (i : R) :
     cellInterior 2 (attachmentChar2 f i) =
       (CellAttachment.interiorMap f).comp
         ⟨fun z => ⟨i,openDiskChart z⟩,
@@ -61,37 +61,37 @@ theorem attachmentChar2_interior (f : R → C(Circle,Bouquet S)) (i : R) :
   ext z
   rfl
 
-theorem attachmentChar2_embedding (f : R → C(Circle,Bouquet S)) (i : R) :
+private theorem attachmentChar2_embedding (f : R → C(Circle,Bouquet S)) (i : R) :
     Topology.IsEmbedding (cellInterior 2 (attachmentChar2 f i)) := by
   rw [attachmentChar2_interior]
   exact (CellAttachment.interiorMap_isOpenEmbedding f).isEmbedding.comp
     (Topology.IsEmbedding.sigmaMk.comp openDiskChart.isEmbedding)
 
-theorem attachmentChar0_interior_range (f : R → C(Circle,Bouquet S)) :
+private theorem attachmentChar0_interior_range (f : R → C(Circle,Bouquet S)) :
     Set.range (cellInterior 0 (attachmentChar f 0 PUnit.unit)) =
       {CellAttachment.inclusion f (base S)} := by
   change Set.range ((CellAttachment.inclusion f) ∘ cellInterior 0 (bouquetChar0 S)) = _
   rw [Set.range_comp,bouquetChar0_interior_range,Set.image_singleton]
 
-theorem attachmentChar1_interior_range (f : R → C(Circle,Bouquet S)) (s : S) :
+private theorem attachmentChar1_interior_range (f : R → C(Circle,Bouquet S)) (s : S) :
     Set.range (cellInterior 1 (attachmentChar f 1 ⟨s⟩)) =
       CellAttachment.inclusion f '' Set.range (cellInterior 1 (bouquetChar1 s)) := by
   change Set.range ((CellAttachment.inclusion f) ∘ cellInterior 1 (bouquetChar1 s)) = _
   exact Set.range_comp _ _
 
-theorem attachmentChar2_mem_interiors (f : R → C(Circle,Bouquet S))
+private theorem attachmentChar2_mem_interiors (f : R → C(Circle,Bouquet S))
     (i : R) (z : OpenCellDomain 2) :
     cellInterior 2 (attachmentChar2 f i) z ∈ CellAttachment.interiors f := by
   rw [attachmentChar2_interior]
   exact CellAttachment.interiorRepresentative_mem_interiors f i (openDiskChart z)
 
-theorem attachmentChar2_disjoint_base (f : R → C(Circle,Bouquet S))
+private theorem attachmentChar2_disjoint_base (f : R → C(Circle,Bouquet S))
     (i : R) (z : OpenCellDomain 2) (x : Bouquet S) :
     cellInterior 2 (attachmentChar2 f i) z ≠ CellAttachment.inclusion f x := by
   rw [attachmentChar2_interior]
   exact CellAttachment.interior_ne_inclusion f i (openDiskChart z) x
 
-theorem attachmentChar2_disjoint (f : R → C(Circle,Bouquet S))
+private theorem attachmentChar2_disjoint (f : R → C(Circle,Bouquet S))
     {i j : R} (hij : i ≠ j) :
     Disjoint (Set.range (cellInterior 2 (attachmentChar2 f i)))
       (Set.range (cellInterior 2 (attachmentChar2 f j))) := by
@@ -102,7 +102,7 @@ theorem attachmentChar2_disjoint (f : R → C(Circle,Bouquet S))
     (CellAttachment.interiorMap_isOpenEmbedding f).injective hw
   exact hij (congrArg Sigma.fst he).symm
 
-theorem attachmentChar_pairwiseDisjoint (f : R → C(Circle,Bouquet S)) :
+private theorem attachmentChar_pairwiseDisjoint (f : R → C(Circle,Bouquet S)) :
     (Set.univ : Set (Σ n,presentationCell S R n)).PairwiseDisjoint
       (fun ni => Set.range (cellInterior ni.1 (attachmentChar f ni.1 ni.2))) := by
   intro a _ b _ hab
@@ -161,7 +161,7 @@ theorem attachmentChar_pairwiseDisjoint (f : R → C(Circle,Bouquet S)) :
   · exact PEmpty.elim i
   · exact PEmpty.elim i
 
-theorem attachment_weakTopology (f : R → C(Circle,Bouquet S))
+private theorem attachment_weakTopology (f : R → C(Circle,Bouquet S))
     (A : Set (CellAttachment.Space f))
     (h : ∀ n i, IsClosed ((attachmentChar f n i) ⁻¹' A)) : IsClosed A := by
   rw [← (CellAttachment.quotientMap_isQuotientMap f).isCoinducing.isClosed_preimage]
@@ -179,7 +179,7 @@ theorem attachment_weakTopology (f : R → C(Circle,Bouquet S))
       ContinuousMap.coe_mk,closedDiskChart.apply_symm_apply]
     rfl
 
-theorem attachment_closed_cells_cover (f : R → C(Circle,Bouquet S))
+private theorem attachment_closed_cells_cover (f : R → C(Circle,Bouquet S))
     (x : CellAttachment.Space f) : ∃ n i z, attachmentChar f n i z = x := by
   obtain ⟨a,rfl⟩ := (CellAttachment.quotientMap_isQuotientMap f).surjective x
   cases a with
@@ -195,14 +195,14 @@ theorem attachment_closed_cells_cover (f : R → C(Circle,Bouquet S))
         ContinuousMap.coe_mk,closedDiskChart.apply_symm_apply]
       rfl⟩
 
-theorem closedDiskChart_boundary (z : ClosedCellDomain 2) (hz : ‖z.val‖ = 1) :
+private theorem closedDiskChart_boundary (z : ClosedCellDomain 2) (hz : ‖z.val‖ = 1) :
     ‖(closedDiskChart z : ℂ)‖ = 1 := by
   apply mem_sphere_zero_iff_norm.mp
   rw [← squareToComplex_sphere]
   exact ⟨z.val,mem_sphere_zero_iff_norm.mpr hz,rfl⟩
 
 /-- A finite word carrier is contained in the corresponding finitely many closed cells. -/
-theorem attachment_finite_boundary (f : R → C(Circle,Bouquet S))
+private theorem attachment_finite_boundary (f : R → C(Circle,Bouquet S))
     (support : R → Finset S)
     (hsupport : ∀ i,Set.range (f i) ⊆ {base S} ∪ ⋃ s ∈ support i,Set.range (edgeLoop s)) :
     ∀ n i, ∃ F : ∀ m,Finset (presentationCell S R m),

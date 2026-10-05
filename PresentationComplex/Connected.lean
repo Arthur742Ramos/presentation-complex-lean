@@ -14,7 +14,7 @@ namespace PresentationComplex
 universe u v
 variable {X : Type u} [TopologicalSpace X] {R : Type v}
 
-theorem disk_pathConnected : PathConnectedSpace CellAttachment.Disk := by
+private theorem disk_pathConnected : PathConnectedSpace CellAttachment.Disk := by
   have h : IsPathConnected (closedBall (0 : ℂ) 1) :=
     (convex_closedBall (0 : ℂ) 1).isPathConnected ⟨0, by simp⟩
   have hd : (closedBall (0 : ℂ) 1) = {z : ℂ | ‖z‖ ≤ 1} := by

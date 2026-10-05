@@ -165,9 +165,9 @@
     {
       "module": "PresentationComplex.LoopCircle",
       "path": "PresentationComplex/LoopCircle.lean",
-      "source_sha256": "b3a0527aa25dd8d72f4a1db6569760dcb8b261c4647a0b022b89bea371797d2f",
+      "source_sha256": "8799c6196bf999c4fdf73635364e80b47a68ca373275109a992e30be83d39ea3",
       "eof_scopes_closed": 1,
-      "private_modifiers_removed": 0
+      "private_modifiers_removed": 1
     },
     {
       "module": "CellAttachment.Adjunction",
@@ -179,9 +179,9 @@
     {
       "module": "PresentationComplex.Connected",
       "path": "PresentationComplex/Connected.lean",
-      "source_sha256": "00c81c76e755080a7b3d28c0710d6887becb3596d12036ed48ee4883863a17b2",
+      "source_sha256": "53d5cd452944bc098633a948fb2a86e67c3bc2487ea229bddc7b183efb4aa6db",
       "eof_scopes_closed": 1,
-      "private_modifiers_removed": 0
+      "private_modifiers_removed": 1
     },
     {
       "module": "CellAttachment.GroupQuotient",
@@ -200,9 +200,9 @@
     {
       "module": "PresentationComplex.Relators",
       "path": "PresentationComplex/Relators.lean",
-      "source_sha256": "e6f90835fc9440a9b207c0be3ae81a7a7e0947b05c822900a4f10b301d18fd35",
+      "source_sha256": "694b72637583332534104c6219581799708deb955eeda182d8073b5ca842ee89",
       "eof_scopes_closed": 1,
-      "private_modifiers_removed": 0
+      "private_modifiers_removed": 1
     },
     {
       "module": "PresentationComplex.EveryGroupConstruction",
@@ -214,9 +214,9 @@
     {
       "module": "PresentationComplex.GraphCells",
       "path": "PresentationComplex/GraphCells.lean",
-      "source_sha256": "0604d0faa2d1a013d5fe98e3b7522903c04413bc52a30fe00cf61ace8c6bc7b1",
+      "source_sha256": "789edce5022d7ef8665292bfdd791880d928dd2d8c751e64adde036c2b503725",
       "eof_scopes_closed": 1,
-      "private_modifiers_removed": 0
+      "private_modifiers_removed": 3
     },
     {
       "module": "PresentationComplex.Characteristic",
@@ -228,9 +228,9 @@
     {
       "module": "PresentationComplex.IntervalCharts",
       "path": "PresentationComplex/IntervalCharts.lean",
-      "source_sha256": "eb73ce4c51c284eeeeadd2baaf5264b246c085481af226eb9b76d557faac9c5e",
+      "source_sha256": "17f2a0841a7a3dec55aca835cc3ebcbf12174266a486916b27188c8b0a72c456",
       "eof_scopes_closed": 1,
-      "private_modifiers_removed": 0
+      "private_modifiers_removed": 1
     },
     {
       "module": "PresentationComplex.BouquetCells",
@@ -242,9 +242,9 @@
     {
       "module": "PresentationComplex.CellCharts",
       "path": "PresentationComplex/CellCharts.lean",
-      "source_sha256": "98ce74163a7378b750eda1ac389c7fa068e6141976e4635173e61d51c354afd4",
+      "source_sha256": "562c2ffe2b067102e8d94d131cf7f4ef846584f91f1297aa301dee0823d3804c",
       "eof_scopes_closed": 1,
-      "private_modifiers_removed": 0
+      "private_modifiers_removed": 3
     },
     {
       "module": "CellAttachment.NormalForm",
@@ -270,9 +270,9 @@
     {
       "module": "PresentationComplex.CW",
       "path": "PresentationComplex/CW.lean",
-      "source_sha256": "4fe9e3c6bd7c607781c7ff9ed429f74c5f48931e848928755e2d17f88b547044",
+      "source_sha256": "9a18ed6b4ed132e9eae6d9e45252904e18210e3acee37152a3360ac58113e4f5",
       "eof_scopes_closed": 1,
-      "private_modifiers_removed": 0
+      "private_modifiers_removed": 14
     },
     {
       "module": "CellAttachment.GroupoidQuotient",
@@ -627,9 +627,9 @@
     {
       "module": "PresentationComplex.Hausdorff",
       "path": "PresentationComplex/Hausdorff.lean",
-      "source_sha256": "318708b9772dc84fba6259a29574a2366658a82630541634efffb8809e75e75c",
+      "source_sha256": "fe081b9da367e6ae70830feb185f690bf6c3a48184492fa26f05838515100034",
       "eof_scopes_closed": 1,
-      "private_modifiers_removed": 0
+      "private_modifiers_removed": 12
     },
     {
       "module": "PresentationComplex.Main",
@@ -706,9 +706,9 @@
     {
       "module": "PresentationComplex.LoopCircle",
       "path": "PresentationComplex/LoopCircle.lean",
-      "source_sha256": "b3a0527aa25dd8d72f4a1db6569760dcb8b261c4647a0b022b89bea371797d2f",
+      "source_sha256": "8799c6196bf999c4fdf73635364e80b47a68ca373275109a992e30be83d39ea3",
       "eof_scopes_closed": 1,
-      "private_modifiers_removed": 0
+      "private_modifiers_removed": 1
     },
     {
       "module": "CellAttachment.Adjunction",
@@ -720,9 +720,9 @@
     {
       "module": "PresentationComplex.Connected",
       "path": "PresentationComplex/Connected.lean",
-      "source_sha256": "00c81c76e755080a7b3d28c0710d6887becb3596d12036ed48ee4883863a17b2",
+      "source_sha256": "53d5cd452944bc098633a948fb2a86e67c3bc2487ea229bddc7b183efb4aa6db",
       "eof_scopes_closed": 1,
-      "private_modifiers_removed": 0
+      "private_modifiers_removed": 1
     },
     {
       "module": "CellAttachment.GroupQuotient",
@@ -741,9 +741,9 @@
     {
       "module": "PresentationComplex.Relators",
       "path": "PresentationComplex/Relators.lean",
-      "source_sha256": "e6f90835fc9440a9b207c0be3ae81a7a7e0947b05c822900a4f10b301d18fd35",
+      "source_sha256": "694b72637583332534104c6219581799708deb955eeda182d8073b5ca842ee89",
       "eof_scopes_closed": 1,
-      "private_modifiers_removed": 0
+      "private_modifiers_removed": 1
     },
     {
       "module": "PresentationComplex.EveryGroupConstruction",

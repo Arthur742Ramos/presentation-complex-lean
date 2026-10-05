@@ -1,0 +1,301 @@
+{
+  "total_previous_private_helpers": 42,
+  "promoted_count": 6,
+  "preserved_private_count": 36,
+  "helpers": [
+    {
+      "path": "FiniteGraphFreeGroup/TreeContraction.lean",
+      "name": "treeContractionCoordinate",
+      "kind": "def",
+      "public": true,
+      "reason": "Occurs in public theorem signatures and graphTreeEdgeContraction exposed body"
+    },
+    {
+      "path": "PresentationComplex/CW.lean",
+      "name": "attachmentChar0_embedding",
+      "kind": "theorem",
+      "public": false,
+      "reason": "Used only within private declarations or theorem/proof bodies; retain privacy"
+    },
+    {
+      "path": "PresentationComplex/CW.lean",
+      "name": "attachmentChar1_embedding",
+      "kind": "theorem",
+      "public": false,
+      "reason": "Used only within private declarations or theorem/proof bodies; retain privacy"
+    },
+    {
+      "path": "PresentationComplex/CW.lean",
+      "name": "attachmentChar2_interior",
+      "kind": "theorem",
+      "public": false,
+      "reason": "Used only within private declarations or theorem/proof bodies; retain privacy"
+    },
+    {
+      "path": "PresentationComplex/CW.lean",
+      "name": "attachmentChar2_embedding",
+      "kind": "theorem",
+      "public": false,
+      "reason": "Used only within private declarations or theorem/proof bodies; retain privacy"
+    },
+    {
+      "path": "PresentationComplex/CW.lean",
+      "name": "attachmentChar0_interior_range",
+      "kind": "theorem",
+      "public": false,
+      "reason": "Used only within private declarations or theorem/proof bodies; retain privacy"
+    },
+    {
+      "path": "PresentationComplex/CW.lean",
+      "name": "attachmentChar1_interior_range",
+      "kind": "theorem",
+      "public": false,
+      "reason": "Used only within private declarations or theorem/proof bodies; retain privacy"
+    },
+    {
+      "path": "PresentationComplex/CW.lean",
+      "name": "attachmentChar2_mem_interiors",
+      "kind": "theorem",
+      "public": false,
+      "reason": "Used only within private declarations or theorem/proof bodies; retain privacy"
+    },
+    {
+      "path": "PresentationComplex/CW.lean",
+      "name": "attachmentChar2_disjoint_base",
+      "kind": "theorem",
+      "public": false,
+      "reason": "Used only within private declarations or theorem/proof bodies; retain privacy"
+    },
+    {
+      "path": "PresentationComplex/CW.lean",
+      "name": "attachmentChar2_disjoint",
+      "kind": "theorem",
+      "public": false,
+      "reason": "Used only within private declarations or theorem/proof bodies; retain privacy"
+    },
+    {
+      "path": "PresentationComplex/CW.lean",
+      "name": "attachmentChar_pairwiseDisjoint",
+      "kind": "theorem",
+      "public": false,
+      "reason": "Used only within private declarations or theorem/proof bodies; retain privacy"
+    },
+    {
+      "path": "PresentationComplex/CW.lean",
+      "name": "attachment_weakTopology",
+      "kind": "theorem",
+      "public": false,
+      "reason": "Used only within private declarations or theorem/proof bodies; retain privacy"
+    },
+    {
+      "path": "PresentationComplex/CW.lean",
+      "name": "attachment_closed_cells_cover",
+      "kind": "theorem",
+      "public": false,
+      "reason": "Used only within private declarations or theorem/proof bodies; retain privacy"
+    },
+    {
+      "path": "PresentationComplex/CW.lean",
+      "name": "closedDiskChart_boundary",
+      "kind": "theorem",
+      "public": false,
+      "reason": "Used only within private declarations or theorem/proof bodies; retain privacy"
+    },
+    {
+      "path": "PresentationComplex/CW.lean",
+      "name": "attachment_finite_boundary",
+      "kind": "theorem",
+      "public": false,
+      "reason": "Used only within private declarations or theorem/proof bodies; retain privacy"
+    },
+    {
+      "path": "PresentationComplex/CellCharts.lean",
+      "name": "square",
+      "kind": "def",
+      "public": true,
+      "reason": "Occurs in now-public rescale_exists signature"
+    },
+    {
+      "path": "PresentationComplex/CellCharts.lean",
+      "name": "square_compact",
+      "kind": "theorem",
+      "public": false,
+      "reason": "Used only within private declarations or theorem/proof bodies; retain privacy"
+    },
+    {
+      "path": "PresentationComplex/CellCharts.lean",
+      "name": "square_interior",
+      "kind": "theorem",
+      "public": false,
+      "reason": "Used only within private declarations or theorem/proof bodies; retain privacy"
+    },
+    {
+      "path": "PresentationComplex/CellCharts.lean",
+      "name": "square_frontier",
+      "kind": "theorem",
+      "public": false,
+      "reason": "Used only within private declarations or theorem/proof bodies; retain privacy"
+    },
+    {
+      "path": "PresentationComplex/CellCharts.lean",
+      "name": "rescale_exists",
+      "kind": "theorem",
+      "public": true,
+      "reason": "Used by Classical.choose in exposed squareToComplex computational body"
+    },
+    {
+      "path": "PresentationComplex/Connected.lean",
+      "name": "disk_pathConnected",
+      "kind": "theorem",
+      "public": false,
+      "reason": "Used only within private declarations or theorem/proof bodies; retain privacy"
+    },
+    {
+      "path": "PresentationComplex/GraphCells.lean",
+      "name": "rawEdgeInterior",
+      "kind": "def",
+      "public": false,
+      "reason": "Used only within private declarations or theorem/proof bodies; retain privacy"
+    },
+    {
+      "path": "PresentationComplex/GraphCells.lean",
+      "name": "rawEdgeInterior_isOpenMap",
+      "kind": "theorem",
+      "public": false,
+      "reason": "Used only within private declarations or theorem/proof bodies; retain privacy"
+    },
+    {
+      "path": "PresentationComplex/GraphCells.lean",
+      "name": "rawEdgeInterior_image_saturated",
+      "kind": "theorem",
+      "public": false,
+      "reason": "Used only within private declarations or theorem/proof bodies; retain privacy"
+    },
+    {
+      "path": "PresentationComplex/Hausdorff.lean",
+      "name": "Separated",
+      "kind": "def",
+      "public": false,
+      "reason": "Used only within private declarations or theorem/proof bodies; retain privacy"
+    },
+    {
+      "path": "PresentationComplex/Hausdorff.lean",
+      "name": "Separated.symm",
+      "kind": "theorem",
+      "public": false,
+      "reason": "Used only within private declarations or theorem/proof bodies; retain privacy"
+    },
+    {
+      "path": "PresentationComplex/Hausdorff.lean",
+      "name": "separated_continuous",
+      "kind": "theorem",
+      "public": false,
+      "reason": "Used only within private declarations or theorem/proof bodies; retain privacy"
+    },
+    {
+      "path": "PresentationComplex/Hausdorff.lean",
+      "name": "separated_openEmbedding",
+      "kind": "theorem",
+      "public": false,
+      "reason": "Used only within private declarations or theorem/proof bodies; retain privacy"
+    },
+    {
+      "path": "PresentationComplex/Hausdorff.lean",
+      "name": "rawBouquetHeight",
+      "kind": "def",
+      "public": true,
+      "reason": "Used in exposed bouquetHeight computational body"
+    },
+    {
+      "path": "PresentationComplex/Hausdorff.lean",
+      "name": "rawBouquetHeight_respects",
+      "kind": "theorem",
+      "public": false,
+      "reason": "Used only within private declarations or theorem/proof bodies; retain privacy"
+    },
+    {
+      "path": "PresentationComplex/Hausdorff.lean",
+      "name": "bouquetAllInteriors",
+      "kind": "def",
+      "public": false,
+      "reason": "Used only within private declarations or theorem/proof bodies; retain privacy"
+    },
+    {
+      "path": "PresentationComplex/Hausdorff.lean",
+      "name": "bouquetAllInteriors_isOpenEmbedding",
+      "kind": "theorem",
+      "public": false,
+      "reason": "Used only within private declarations or theorem/proof bodies; retain privacy"
+    },
+    {
+      "path": "PresentationComplex/Hausdorff.lean",
+      "name": "bouquet_point_cases",
+      "kind": "theorem",
+      "public": false,
+      "reason": "Used only within private declarations or theorem/proof bodies; retain privacy"
+    },
+    {
+      "path": "PresentationComplex/Hausdorff.lean",
+      "name": "bouquet_base_interior_separated",
+      "kind": "theorem",
+      "public": false,
+      "reason": "Used only within private declarations or theorem/proof bodies; retain privacy"
+    },
+    {
+      "path": "PresentationComplex/Hausdorff.lean",
+      "name": "rawDiskRadius",
+      "kind": "def",
+      "public": true,
+      "reason": "Used in exposed attachmentRadius computational body"
+    },
+    {
+      "path": "PresentationComplex/Hausdorff.lean",
+      "name": "attachment_point_cases",
+      "kind": "theorem",
+      "public": false,
+      "reason": "Used only within private declarations or theorem/proof bodies; retain privacy"
+    },
+    {
+      "path": "PresentationComplex/Hausdorff.lean",
+      "name": "attachment_old_points_separated",
+      "kind": "theorem",
+      "public": false,
+      "reason": "Used only within private declarations or theorem/proof bodies; retain privacy"
+    },
+    {
+      "path": "PresentationComplex/Hausdorff.lean",
+      "name": "attachment_old_interior_separated",
+      "kind": "theorem",
+      "public": false,
+      "reason": "Used only within private declarations or theorem/proof bodies; retain privacy"
+    },
+    {
+      "path": "PresentationComplex/IntervalCharts.lean",
+      "name": "norm_finOne",
+      "kind": "theorem",
+      "public": false,
+      "reason": "Used only within private declarations or theorem/proof bodies; retain privacy"
+    },
+    {
+      "path": "PresentationComplex/LoopCircle.lean",
+      "name": "circleFromPeriod",
+      "kind": "def",
+      "public": true,
+      "reason": "Used in exposed loopCircleMap computational body"
+    },
+    {
+      "path": "PresentationComplex/LoopCircle.lean",
+      "name": "circleFromPeriod_generator",
+      "kind": "theorem",
+      "public": false,
+      "reason": "Used only within private declarations or theorem/proof bodies; retain privacy"
+    },
+    {
+      "path": "PresentationComplex/Relators.lean",
+      "name": "based_attaching_class",
+      "kind": "theorem",
+      "public": false,
+      "reason": "Used only within private declarations or theorem/proof bodies; retain privacy"
+    }
+  ]
+}

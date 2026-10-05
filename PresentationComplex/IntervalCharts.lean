@@ -10,7 +10,7 @@ noncomputable section
 open Set Metric unitInterval
 namespace PresentationComplex
 
-theorem norm_finOne (x : Fin 1 → ℝ) : ‖x‖ = |x 0| := by
+private theorem norm_finOne (x : Fin 1 → ℝ) : ‖x‖ = |x 0| := by
   have hc : x = fun _ => x 0 := funext fun i => congrArg x (Subsingleton.elim i 0)
   rw [hc,pi_norm_const,Real.norm_eq_abs]
 
