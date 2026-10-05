@@ -1,10 +1,11 @@
 {
   "scope": "Minimal review interface; not a registry submission or acceptance verdict.",
+  "proof_source_commit": "29ab34cb685371dbe71dfd669c3a090e9a5e7e7d",
   "primary_review_files": [
     {
       "path": "Challenge.lean",
-      "sha256": "2690aaf4e12651244f880bf4e5ed6c57d3cf8dd089a97afdad079e88e476a270",
-      "bytes": 257036
+      "sha256": "29f92f55295b947be8562d805a0793441f18c7c6aadab87a08d247e5473a6068",
+      "bytes": 14765
     },
     {
       "path": "Solution.lean",
@@ -18,8 +19,8 @@
     },
     {
       "path": "formalization.yaml",
-      "sha256": "f12dcac9102b2b19e3dc0e76ae1dbd9907c77bf775f1679c7d4e8086274e2b6f",
-      "bytes": 8345
+      "sha256": "0f71e4936398c305133cefa1dfbae4a1033e2a42b310bea61841b5920912632b",
+      "bytes": 8100
     },
     {
       "path": "LICENSE",
@@ -50,16 +51,6 @@
       "path": "PresentationPackage/Proof2.lean",
       "sha256": "9d98b83606e7b405f525e7e8c8057abbeec3154493c16b6ddd987ac06444c366",
       "bytes": 196145
-    },
-    {
-      "path": "scripts/check_canonical_challenge.py",
-      "sha256": "9ba3d6b0eca4a0b1122110a24658c9fb6399dcd537d6da79520312a6699f9cf9",
-      "bytes": 8084
-    },
-    {
-      "path": "scripts/CompareCanonical.lean",
-      "sha256": "77c506465db8e3799480f65a8b7ffef54d45944b34a9fc9d274807530ba493d7",
-      "bytes": 7819
     }
   ],
   "reproduction_modular_source_count": 84,
@@ -72,8 +63,7 @@
   "verification_matrix": "reports/CURRENT_VERIFICATION.md",
   "historical_reports": [
     "reports/history/pre-packaging-4eb147d",
-    "reports/history/pre-bounded-a4e65503",
-    "reports/history/pre-canonical-a209b96"
+    "reports/history/pre-bounded-a4e65503"
   ],
   "challenge_intentional_theorem_holes": [
     "PresentationComplex.presentation_complex",
@@ -82,38 +72,32 @@
   "generated_package_module_count": 3,
   "evidence_files": [
     {
-      "path": "reports/canonical-challenge.json",
-      "sha256": "21c1a9ae37ed596094788a799cc78b494fcfb1ed1549d9d15730e951fa1cc6f7"
+      "path": "reports/local-verification-results.json",
+      "sha256": "8ecdfc4e698e98cf32c6b4a8dfcaf9218bbf5a41238e67e4ec61259ba18c4f41"
     },
     {
-      "path": "reports/canonical-challenge-negative-control.json",
-      "sha256": "d22be41b988fce6bbd86fa07ac46967c86286075fffbf02e983e4826f404d7af"
-    },
-    {
-      "path": "reports/canonical-normal-lake.json",
-      "sha256": "de2ed5d69d1c550f5b30f32e4bf4ec37ebb536d56cb99525db327308df2a639c"
-    },
-    {
-      "path": "reports/canonical-source-preservation.json",
-      "sha256": "039fe7e46d01fff2aec1f3d7b022e22dba98fdb49a30f4d2162f3c36f24154a2"
+      "path": "reports/normal-lake-result.json",
+      "sha256": "8ea89c35816102f946c17911c8f94b2892176eafd4ac13f4bee903cb3666dd6f"
     },
     {
       "path": "reports/static-source-audit.json",
-      "sha256": "19874a65f00d2b80c564f78fb456c5fb5991fdf9563a8b40607981b3eb2051bb"
+      "sha256": "1ebeba71d0ca455f87a9ee54349135aa6353bb49538125766f0dd3baabbd044b"
     },
     {
-      "path": "reports/local-verification-results.json",
-      "sha256": "53cbd596e646c4584c02f5418806f188440f0a8960fa059cbcfd1fb1e430b4d0"
+      "path": "reports/intake-packaging-preservation.json",
+      "sha256": "38053905140e8bb47118283f028c9a0a77777b58d94780609d292cb4a3c8c4d1"
     },
     {
-      "path": "reports/canonical-challenge-comparison-signal9.json",
-      "sha256": "72405403cf060381cdadefa55a4f973fd3694ebdfa954fdb402a28e0e0f4ba7e"
+      "path": "reports/module-visibility-inventory.json",
+      "sha256": "0617df25388266fb15420613d546eb2f2642f3f6466e2e439c22ac82e7e43f77"
     },
     {
-      "path": "reports/canonical-challenge-private-name-failure.json",
-      "sha256": "e39a927a4cce108ae367a37bc7d6e9b36192c388a2126b6f716d3cc63f760d4b"
+      "path": "reports/comparator-blocker.txt",
+      "sha256": "bff4bbf71a0b76d9282dc0a1855ec7b7cecca64f0405b2b83892d633496a7c31"
+    },
+    {
+      "path": "reports/private-cache-isolation.json",
+      "sha256": "85d6d324bf6fec0ffa7685f26a5bd9d20a4d10bee7efba6c9c062cf0260baa9b"
     }
-  ],
-  "unchanged_solution_proof_source_commit": "29ab34cb685371dbe71dfd669c3a090e9a5e7e7d",
-  "comparison_scope": "All 550 canonical declaration types and 169 definition bodies. Public declarations need no private-name normalization; nine compiler-private auxiliaries use an explicit bijection. Supplemental local check only, not official Comparator."
+  ]
 }

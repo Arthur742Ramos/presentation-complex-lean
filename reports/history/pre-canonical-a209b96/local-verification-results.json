@@ -1,6 +1,6 @@
 {
   "solution_sha256": "da98d4236ce51347bfcf0ef21592c4de1010ab3639a1eb993ffcbe26d70b25a0",
-  "challenge_sha256": "2690aaf4e12651244f880bf4e5ed6c57d3cf8dd089a97afdad079e88e476a270",
+  "challenge_sha256": "29f92f55295b947be8562d805a0793441f18c7c6aadab87a08d247e5473a6068",
   "generated_package_sha256": "66c38baabf69976eb7350d877718d4f3bb83735f3467a6a4b98e5def2176e4f5",
   "export_targets_sha256": "6a0caa18a367f1e22675087053a856136c0453f5b914311807456237be110ffa",
   "solution_export_targets_sha256": "3729efce0d428ae8232d25a462bbd19562b19cc8344f3f882baf273f7950267d",
@@ -105,23 +105,207 @@
         "ClassicalSVK.lean": "37f689f30e1b6029f3fc4fd236519c6b878b863886c5b296ea7a290354a26750",
         "Lean4.lean": "41ee0e5d5dcb36cd6c0525a0e6bc68e68f9e69a002d743fe844db699162f711d"
       },
-      "exit_code": 0,
-      "reuse_basis": "Exact identical modular source fingerprint; changed generated standalone hashes do not alter modular replay inputs"
+      "exit_code": 0
     },
     "compile": {
-      "status": "not_run"
+      "status": "pass",
+      "modules": {
+        "PresentationPackage.Construction": {
+          "status": "pass",
+          "exit_code": 0,
+          "source_sha256": "5cb3f7a01e2e273639ad073688ee58439c8a2762385c188b63f170dd8d870b60",
+          "olean_sha256": "78030f9cb9b067d4ac5479ed6b236c2fdcf093efc7307c825842ed659c1050d4"
+        },
+        "PresentationPackage.Proof1": {
+          "status": "pass",
+          "exit_code": 0,
+          "source_sha256": "b23564f5231a5dc8754271e5d92799132b691ed7210a8427ca94e93c680df04f",
+          "olean_sha256": "0cf16ba659abf4bb1e77d87e6d387fe2f4021ecba914a66c86937f8f35cc3bb7"
+        },
+        "PresentationPackage.Proof2": {
+          "status": "pass",
+          "exit_code": 0,
+          "source_sha256": "9d98b83606e7b405f525e7e8c8057abbeec3154493c16b6ddd987ac06444c366",
+          "olean_sha256": "0b49a232c62714e191cfaebe5ba7dcd736da6f629d94afcd5c4f700acb182a96"
+        },
+        "Solution": {
+          "status": "pass",
+          "exit_code": 0,
+          "source_sha256": "da98d4236ce51347bfcf0ef21592c4de1010ab3639a1eb993ffcbe26d70b25a0",
+          "olean_sha256": "bbe087dd116be4977c353d9159a50e751b51a1df0154f1953c3a73990f805a79"
+        },
+        "Challenge": {
+          "status": "pass",
+          "exit_code": 0,
+          "source_sha256": "29f92f55295b947be8562d805a0793441f18c7c6aadab87a08d247e5473a6068",
+          "olean_sha256": "e78121c577c6cd49ac91b6729d2e99e4325fd908beff060f510694b562f888ad"
+        }
+      },
+      "challenge_intentional_theorem_holes": 2
     },
     "axioms": {
-      "status": "not_run"
+      "status": "pass",
+      "exit_code": 0,
+      "targets_checked": 21,
+      "axiom_closures": {
+        "PresentationComplex.presentation_complex": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.every_group_fundamental_group": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.presentationPi1Equiv": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.presentationPi1Equiv_inclusion": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.presentationPi1Equiv_generator": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.presentationMap_exact": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.bouquetEquiv": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.bouquetEquiv_edgeLoop": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.attachingLoopClass_eq": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.presentationCW": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.presentationCW_generatorCells": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.presentationCW_relatorCells": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.presentationCW_noHigherCells": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.presentation_t2Space": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.everyGroupPi1Equiv": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.everyGroupPi1Equiv_generator": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.everyGroupCW_hasTwoCell": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.groupPresentationEquiv": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.groupPresentationEquiv_generator": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "CellAttachment.cell_attachment_exact": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "FiniteGraphFreeGroup.graphCombinatorialToTopologicalEquiv": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      "missing_targets": [],
+      "forbidden_axioms": {}
     },
     "exports": {
-      "status": "not_run"
+      "status": "pass",
+      "modules": {
+        "Challenge": {
+          "status": "pass",
+          "exit_code": 0,
+          "target_count": 59,
+          "sha256": "200d46ddfae67e0b6a775634cbe85554d4496cd91b0dc250bc2cfdde4f570547"
+        },
+        "Solution": {
+          "status": "pass",
+          "exit_code": 0,
+          "target_count": 78,
+          "sha256": "0842222bf483c68b678e85460a1085903261cb8b948ed88080d0b08389bb8913"
+        }
+      }
     },
     "kernels": {
-      "status": "not_run"
+      "status": "pass",
+      "checks": {
+        "leanchecker": {
+          "status": "pass",
+          "exit_code": 0,
+          "binary_sha256": "9e36e955a251b1313c8eb5b7fa101282d51df109d34d8bb7c1cfdf51985aba29"
+        },
+        "leanchecker-paranoid": {
+          "status": "pass",
+          "exit_code": 0,
+          "binary_sha256": "ccd20c9ba4ad795e0969b9cd2dc386e58e4d885f7dcde6ce9d32101634ccb744"
+        },
+        "nanoda_bin": {
+          "status": "pass",
+          "exit_code": 0,
+          "binary_sha256": "8241c5e6baa29490aa118d382f97961b208ae730fdb96545c2abed74c9ece5a8"
+        },
+        "con-ron": {
+          "status": "pass",
+          "exit_code": 0,
+          "binary_sha256": "4e5616d94374cae37324dad2594f6230c2bb2297240249fc78ff508f3bc5acef"
+        }
+      },
+      "export_sha256": "0842222bf483c68b678e85460a1085903261cb8b948ed88080d0b08389bb8913"
     },
     "comparator": {
-      "status": "not_run"
+      "status": "blocked",
+      "exit_code": 1,
+      "sandbox_preserved": true,
+      "artifact_origin": "previous local exports; isolated-build provenance not established",
+      "blocker": "Running nanoda kernel on solution\nbwrap: loopback: Failed to create NETLINK_ROUTE socket: Operation not permitted\nnanoda kernel rejected the solution\nRunning Lean default kernel on solution\nbwrap: loopback: Failed to create NETLINK_ROUTE socket: Operation not permitted\nerror: nanoda exited with 1\nLean default kernel rejected the solution"
     }
   },
   "official_hosted_full_verification": {
@@ -147,5 +331,7 @@
     "batteries/.lake/build/lib/lean"
   ],
   "standalone_environment": "Isolated outputs plus pinned external package caches; inherited LEAN_PATH and sibling project oleans excluded",
-  "updated_at_utc": "2026-10-05T16:10:17.788751+00:00"
+  "updated_at_utc": "2026-10-05T12:32:17.081419+00:00",
+  "lean_version": "Lean (version 4.35.0-rc2, x86_64-unknown-linux-gnu, commit 11acb17ec6b07a8f9e9173e6845197929540936b, Release)",
+  "lean_binary_sha256": "bf8d54e4714cc4b03d3f6bb34c83b7202b87e49c8bfcbff6895c085bb90ceb38"
 }

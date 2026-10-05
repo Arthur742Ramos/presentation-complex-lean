@@ -97,7 +97,7 @@
   "statement_source": "PresentationComplex/Main.lean:completeStatement",
   "statement_sha256": "61e023318353ab21fab0ad4c6eba85c652f656a72c4ae7565ac6272ef895645d",
   "solution_sha256": "da98d4236ce51347bfcf0ef21592c4de1010ab3639a1eb993ffcbe26d70b25a0",
-  "challenge_sha256": "29f92f55295b947be8562d805a0793441f18c7c6aadab87a08d247e5473a6068",
+  "challenge_sha256": "2690aaf4e12651244f880bf4e5ed6c57d3cf8dd089a97afdad079e88e476a270",
   "solution_local_modules": [
     {
       "module": "FiniteGraphFreeGroup.Proof",
@@ -898,7 +898,7 @@
     "PresentationComplex.Relators",
     "PresentationComplex.EveryGroupConstruction"
   ],
-  "shared_environment_note": "Both entrypoints publicly import the same construction module, which imports the frozen external Mathlib environment and no proof chunks. Proof chunks preserve the original module/declaration order.",
+  "shared_environment_note": "Challenge inlines the exact generated Construction source, with only pinned external imports; Solution imports that same source as a module. Stable public helper names and identical declaration order preserve common construction bodies across module names. Proof chunks preserve original module/declaration order.",
   "challenge_intentional_holes": [
     "PresentationComplex.presentation_complex",
     "PresentationComplex.every_group_fundamental_group"

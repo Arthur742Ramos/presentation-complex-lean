@@ -233,8 +233,9 @@ def generate() -> dict[str, str]:
     challenge_external = list(solution_external)
     construction_names = {name for name, _ in challenge_order}
     solution_order = challenge_order + [(name, path) for name, path in solution_order if name not in construction_names]
-    # Share the construction physically, so imported definitions have identical
-    # names and bodies on both sides. Never include completed headline proofs.
+    # Render one identical construction prefix for both environments. Challenge
+    # must inline it: canonical intake deliberately excludes repository oleans.
+    # Solution may import the bounded construction/proof modules.
     construction, challenge_manifest = render(challenge_order, challenge_external)
     proof_order = [(name, path) for name, path in solution_order if name not in construction_names]
     generated_modules = {'PresentationPackage/Construction.lean': construction}
@@ -260,7 +261,7 @@ def generate() -> dict[str, str]:
         chunks.append({'module': module, 'source_modules': chunk_modules})
         previous = module
     solution = prefix([previous])
-    challenge = prefix(['PresentationPackage.Construction'])
+    challenge = construction
     statement = statement_source()
     challenge += '\n' + statement + '''
 namespace PresentationComplex
@@ -295,7 +296,7 @@ theorem presentation_complex : completeStatement.{u,v} := by
         'solution_external_imports': solution_external, 'challenge_external_imports': challenge_external,
         'challenge_minimal_construction_imports': minimal_challenge_external,
         'shared_construction_prefix': [name for name, _ in challenge_order],
-        'shared_environment_note': 'Both entrypoints publicly import the same construction module, which imports the frozen external Mathlib environment and no proof chunks. Proof chunks preserve the original module/declaration order.',
+        'shared_environment_note': 'Challenge inlines the exact generated Construction source, with only pinned external imports; Solution imports that same source as a module. Stable public helper names and identical declaration order preserve common construction bodies across module names. Proof chunks preserve original module/declaration order.',
         'challenge_intentional_holes': ['PresentationComplex.presentation_complex',
                                         'PresentationComplex.every_group_fundamental_group'],
         'source_transform': 'Remove import/module/expose-section commands; isolate module scopes in sections and close EOF scopes; remove private visibility modifiers for stable helper names across Challenge/Solution. All declaration bodies and source notices are retained.',

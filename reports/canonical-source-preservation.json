@@ -1,0 +1,18 @@
+{
+  "Solution.lean": {
+    "unchanged": true,
+    "sha256": "da98d4236ce51347bfcf0ef21592c4de1010ab3639a1eb993ffcbe26d70b25a0"
+  },
+  "PresentationPackage/Construction.lean": {
+    "unchanged": true,
+    "sha256": "5cb3f7a01e2e273639ad073688ee58439c8a2762385c188b63f170dd8d870b60"
+  },
+  "PresentationPackage/Proof2.lean": {
+    "unchanged": true,
+    "sha256": "9d98b83606e7b405f525e7e8c8057abbeec3154493c16b6ddd987ac06444c366"
+  },
+  "PresentationPackage/Proof1.lean": {
+    "unchanged": true,
+    "sha256": "b23564f5231a5dc8754271e5d92799132b691ed7210a8427ca94e93c680df04f"
+  }
+}

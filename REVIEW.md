@@ -1,7 +1,7 @@
 # Minimal review manifest
 
-**Bounded module repair: exact local proof/build checks passed; Comparator is sandbox-blocked.**
-See [the current verification matrix](reports/CURRENT_VERIFICATION.md). Previous merged-source passes are historical and do not certify these new module boundaries.
+**Canonical Challenge repair: dependency-only compilation and supplemental type/body comparison passed; official Comparator remains unverified.**
+See [the current verification matrix](reports/CURRENT_VERIFICATION.md). Historical proof checks apply to the byte-identical Solution package; the repaired Challenge has separate hash-bound evidence.
 
 ## Primary review package
 
@@ -30,8 +30,10 @@ Edit modular sources and regenerate rather than hand-editing generated modules.
   Challenge targets and Comparator theorem targets
 - `PresentationComplex/EveryGroupConstruction.lean` supplies shared construction
   definitions without bringing the every-group proof into Challenge
-- Both entrypoints publicly import `PresentationPackage.Construction`;
-  `Proof1` and `Proof2` preserve proof-source order and never enter Challenge
+- Challenge inlines the exact `PresentationPackage.Construction` source, so a
+  uniquely renamed copy compiles with only pinned external dependencies. Solution
+  publicly imports that construction; `Proof1` and `Proof2` preserve proof-source
+  order and never enter Challenge
 
 Challenge has exactly two intended theorem holes and no definition holes.
 Solution must solve both against the same construction. The supplemental

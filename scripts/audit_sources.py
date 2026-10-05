@@ -75,7 +75,7 @@ def audit() -> dict:
     targets = ['PresentationComplex.presentation_complex', 'PresentationComplex.every_group_fundamental_group']
     comparator_valid = (comparator == local_comparator and comparator.get('theorem_names') == targets
                         and comparator.get('definition_names') == [])
-    active = shipped + [ROOT/'Challenge.lean', ROOT/'Solution.lean', ROOT/'reports/AuditSolution.lean']
+    active = shipped + [ROOT/'Challenge.lean', ROOT/'Solution.lean', ROOT/'reports/AuditSolution.lean'] + sorted((ROOT/'scripts').glob('*.lean'))
     headers = [str(p.relative_to(ROOT)) for p in active if not code_only(p.read_text()).lstrip().startswith('module\n')]
     oversized = [str(p.relative_to(ROOT)) for p in active if len(p.read_text().splitlines()) > 10000]
     challenge_closure, _ = closure(['Challenge'])
@@ -87,9 +87,14 @@ def audit() -> dict:
     leaked_targets = [n for n in ['presentation_complex', 'every_group_fundamental_group']
                       if re.search(r'\b(?:theorem|def|axiom)\s+' + n + r'\b', construction)]
     extra_generated = sorted(str(p.relative_to(ROOT)) for p in (ROOT/'PresentationPackage').glob('*.lean') if str(p.relative_to(ROOT)) not in generated)
-    packaging_ok = not (extra_generated or headers or oversized or bad_imports or leaked_targets)
+    local_challenge_imports = [n for n in imports(generated['Challenge.lean'])
+                               if n.split('.')[0] in LOCAL_PREFIXES or n in ['Solution', 'Challenge']]
+    construction_prefix_matches = generated['Challenge.lean'].startswith(generated['PresentationPackage/Construction.lean'])
+    packaging_ok = not (extra_generated or headers or oversized or bad_imports or leaked_targets or local_challenge_imports) and construction_prefix_matches
     result = {
         'unexpected_generated_modules': extra_generated,
+        'challenge_repository_import_failures': local_challenge_imports,
+        'challenge_identical_construction_prefix': construction_prefix_matches,
         'packaging_module_header_failures': headers,
         'packaging_line_cap_failures': oversized,
         'packaging_line_cap_basis': 'Conservative user-provided 10,000 lines/file; current official policy not re-read',

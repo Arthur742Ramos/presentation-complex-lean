@@ -29,6 +29,8 @@ jobs:
           python3 scripts/audit_sources.py
       - name: Normal serial and aggregate Lake builds
         run: python3 scripts/build_lake_serial.py
+      - name: Compile renamed canonical Challenge without repository imports
+        run: python3 scripts/check_canonical_challenge.py --compare-solution-dir .lake/build/lib/lean
       - name: Replay every shipped Lean source
         run: python3 scripts/build_sources.py
       - name: Print full target and complete axiom closures
