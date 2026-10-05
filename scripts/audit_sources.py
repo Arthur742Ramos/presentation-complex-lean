@@ -70,8 +70,14 @@ def audit() -> dict:
             violations.append(str(path.relative_to(ROOT)))
     challenge = code_only(generated['Challenge.lean'])
     solution = code_only(generated['Solution.lean'])
+    comparator = json.loads((ROOT/'comparator.json').read_text())
+    local_comparator = json.loads((ROOT/'reports/comparator-local.json').read_text())
+    targets = ['PresentationComplex.presentation_complex', 'PresentationComplex.every_group_fundamental_group']
+    comparator_valid = (comparator == local_comparator and comparator.get('theorem_names') == targets
+                        and comparator.get('definition_names') == [])
     result = {
-        'status': 'pass' if not (stale or collisions or violations) else 'fail',
+        'status': 'pass' if not (stale or collisions or violations) and comparator_valid else 'fail',
+        'comparator_targets_and_configs_match': comparator_valid,
         'scope': 'static audit only; does not assert elaboration, kernel checking, hosted verification, or registry acceptance',
         'stale_generated_files': stale,
         'private_visibility_transform': 'Remove private modifiers only in generated standalones to eliminate module-dependent helper names; no modular source changed.',

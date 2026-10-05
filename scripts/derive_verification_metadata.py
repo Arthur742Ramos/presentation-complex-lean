@@ -95,7 +95,7 @@ def derive(source_path: Path) -> dict[str, str]:
         'construction_export_targets': CONSTRUCTION_TARGETS,
         'axiom_audit_targets': AXIOM_TARGETS, 'permitted_axioms': PERMITTED_AXIOMS,
         'challenge_export_target_count': len(common), 'solution_export_target_count': len(solution),
-        'note': 'Every-group and generator compatibility are audited/exported from Solution. The independent Challenge compares its arbitrary-presentation target with all transitive construction bodies. No definition holes are authorized; definition_names is empty.',
+        'note': 'Every-group and generator compatibility are audited/exported from Solution. The independent Challenge compares both headline targets with all transitive construction bodies. No definition holes are authorized; definition_names is empty.',
     }
     audit = ('module\n\nimport Solution\n\nuniverse u v\n'
              'example : PresentationComplex.completeStatement.{u,v} :=\n'
@@ -106,6 +106,7 @@ def derive(source_path: Path) -> dict[str, str]:
              '\n'.join('#print axioms ' + name for name in AXIOM_TARGETS) + '\n')
     def dump(value): return json.dumps(value, indent=2) + '\n'
     return {
+        'comparator.json': dump(comparator),
         'reports/comparator-local.json': dump(comparator),
         'reports/export-targets.json': dump(common),
         'reports/solution-export-targets.json': dump(solution),

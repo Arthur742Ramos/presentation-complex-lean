@@ -1,5 +1,6 @@
 {
   "status": "pass",
+  "comparator_targets_and_configs_match": true,
   "scope": "static audit only; does not assert elaboration, kernel checking, hosted verification, or registry acceptance",
   "stale_generated_files": [],
   "private_visibility_transform": "Remove private modifiers only in generated standalones to eliminate module-dependent helper names; no modular source changed.",

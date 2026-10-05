@@ -97,5 +97,5 @@
   ],
   "challenge_export_target_count": 59,
   "solution_export_target_count": 78,
-  "note": "Every-group and generator compatibility are audited/exported from Solution. The independent Challenge compares its arbitrary-presentation target with all transitive construction bodies. No definition holes are authorized; definition_names is empty."
+  "note": "Every-group and generator compatibility are audited/exported from Solution. The independent Challenge compares both headline targets with all transitive construction bodies. No definition holes are authorized; definition_names is empty."
 }
