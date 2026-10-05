@@ -5,8 +5,12 @@ This module tree is derived from
 `009529606c66d37ef93b4b81b8587f71ce4d2c56`, under the upstream `Lean4/`
 directory (with the upstream root module `Lean4.lean`). The upstream MIT
 license is preserved in [LICENSE.md](LICENSE.md), and the source README is
-preserved in [README.md](README.md). `vendor-manifest.json` records the SHA-256
-of each copied Lean source file both at that commit and in this port.
+preserved, with a current-package notice, in [README.md](README.md). Its Lean 4.6
+installation paragraph is historical; [../SETUP.md](../SETUP.md) is authoritative
+for this package. `vendor-manifest.json` retains the imported provenance inventory,
+including historical entries for `Lean4/all.lean` and
+`Lean4/directed_van_kampen.lean`, which are intentionally absent here. It records
+upstream and port hashes, not a current full-package verification verdict.
 
 The port updates old Lean 4.6 / Mathlib APIs for Lean 4.35.0-rc2 and Mathlib commit
 `065356127b1dc0016f66b7283ce0ce2c4055aa55`. The compatibility edits are in:
@@ -22,7 +26,6 @@ The port updates old Lean 4.6 / Mathlib APIs for Lean 4.35.0-rc2 and Mathlib com
 - `Lean4/directed_path_homotopy.lean`
 - `Lean4/directed_space.lean`
 - `Lean4/directed_unit_interval.lean`
-- `Lean4/directed_van_kampen.lean`
 - `Lean4/dTop.lean`
 - `Lean4/fraction_equalities.lean`
 - `Lean4/fraction.lean`
@@ -42,7 +45,10 @@ The path subdivision and homotopy-grid construction formerly grouped with the
 final directed theorem in `Lean4/directed_van_kampen.lean` is extracted into
 `Lean4/path_descent_helpers.lean`. The helper file is attributed to that exact
 upstream source and commit in `vendor-manifest.json`; it does not contain or
-invoke the packaged directed Van Kampen theorem.
+invoke the packaged directed Van Kampen theorem. The original
+`Lean4/directed_van_kampen.lean` and the broad upstream `Lean4/all.lean` import
+umbrella are deliberately not shipped; restoring them is not required to build
+this retained dependency closure.
 
 These changes adapt the source to current Lean and Mathlib declarations. The
 selected result reuses the path-cover subdivision and homotopy-grid
