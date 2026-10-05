@@ -1,7 +1,7 @@
 # Minimal review manifest
 
-**Canonical Challenge repair: dependency-only compilation and supplemental type/body comparison passed; official Comparator remains unverified.**
-See [the current verification matrix](reports/CURRENT_VERIFICATION.md). Historical proof checks apply to the byte-identical Solution package; the repaired Challenge has separate hash-bound evidence.
+**Compact Challenge desktop validation: fresh local source, axiom, export and direct-checker gates pass; independent review remains pending.**
+See [the current verification matrix](reports/CURRENT_VERIFICATION.md). Older pass records apply only to their recorded source hashes; the compact package has fresh receipts.
 
 ## Primary review package
 
@@ -32,7 +32,7 @@ Edit modular sources and regenerate rather than hand-editing generated modules.
   definitions without bringing the every-group proof into Challenge
 - Challenge inlines the exact `PresentationPackage.Construction` source, so a
   uniquely renamed copy compiles with only pinned external dependencies. Solution
-  publicly imports that construction; `Proof1` and `Proof2` preserve proof-source
+  publicly imports that construction; `Proof1`, `Proof2`, and `Proof3` preserve proof-source
   order and never enter Challenge
 
 Challenge has exactly two intended theorem holes and no definition holes.
@@ -57,11 +57,7 @@ The small review interface does not replace its auditable reproduction source:
 - Active files in [reports/README.md](reports/README.md): generated module/hash
   manifests, comparison/export targets, stage results, and the audit harness
 
-The repaired tree contains 84 reproduction Lean sources plus three generated package modules, including five library root
-modules, plus two generated entrypoints and an audit harness. Solution's local
-proof closure contains 77 modules; Challenge's shared construction closure contains
-16. These are packaging counts, not compilation verdicts. Every-source replay
-covers the complete retained modular tree, beyond the headline dependency closure.
+The compact tree contains 91 shipped Lean sources, including the generated construction and three proof modules, plus Challenge, Solution and the audit harness. Solution's local proof closure contains 80 modules; Challenge's construction closure contains 12. These are packaging counts. Fresh every-source replay and package receipts are recorded in the current verification matrix.
 
 The upstream `Lean4/directed_van_kampen.lean` and `Lean4/all.lean` umbrella are
 intentionally absent. The ordinary-path proof uses the attributed

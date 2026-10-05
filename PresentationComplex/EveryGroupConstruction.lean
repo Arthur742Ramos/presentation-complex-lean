@@ -1,6 +1,6 @@
 module
 
-public import PresentationComplex.Relators
+public import PresentationComplex.RelatorConstruction
 
 @[expose] public section
 

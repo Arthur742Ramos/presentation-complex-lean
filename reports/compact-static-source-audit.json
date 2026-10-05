@@ -2,7 +2,6 @@
   "unexpected_generated_modules": [],
   "challenge_repository_import_failures": [],
   "challenge_utf8_bytes": 74913,
-  "challenge_byte_cap_exceeded": false,
   "challenge_byte_cap": 102400,
   "challenge_identical_construction_prefix": true,
   "packaging_module_header_failures": [],

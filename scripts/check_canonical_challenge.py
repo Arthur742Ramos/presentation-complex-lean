@@ -27,7 +27,13 @@ def main() -> None:
     parser.add_argument('--expect-missing-package', action='store_true', help='Negative control for the historical import-only Challenge')
     args = parser.parse_args()
     if not args.lean_bin: parser.error('Pass the pinned --lean-bin')
-    lean = str(Path(args.lean_bin).resolve())
+    # Resolve elan's project-selected toolchain before entering the empty cwd.
+    # Keep the launcher's basename intact: resolving a symlink to elan can
+    # change multicall dispatch. No global/default toolchain is configured.
+    launcher = str(Path(args.lean_bin).absolute())
+    selected_prefix = subprocess.check_output([launcher, '-j1', '--print-prefix'], cwd=ROOT, text=True).strip()
+    executable = 'lean.exe' if os.name == 'nt' else 'lean'
+    lean = str((Path(selected_prefix)/'bin'/executable).resolve())
     manifest = json.loads((ROOT/'lake-manifest.json').read_text())
     package_root = ROOT/manifest.get('packagesDir', '.lake/packages')
     paths = [(package_root/p['name']/'.lake/build/lib/lean').resolve() for p in manifest['packages']]
@@ -44,10 +50,13 @@ def main() -> None:
         if any((path/name).exists() or (path/(name+'.olean')).exists() for name in local_modules):
             raise SystemExit(f'Repository module contaminates dependency path: {path}')
     env = dict(os.environ)
+    # findSysroot inside the extraction harness must also use the resolved
+    # compiler, rather than invoke an elan proxy outside the project.
+    env['PATH'] = str(Path(lean).parent) + os.pathsep + env.get('PATH', '')
     env['LEAN_PATH'] = os.pathsep.join(map(str, paths))
     env.pop('LEAN_SRC_PATH', None)
     expected = (ROOT/'lean-toolchain').read_text().strip().split(':v')[-1]
-    version = subprocess.check_output([lean, '--version'], env=env, text=True).strip()
+    version = subprocess.check_output([lean, '-j1', '--version'], env=env, text=True).strip()
     if f'version {expected},' not in version: raise SystemExit(f'Wrong pinned compiler: {version}')
     data = args.source.read_bytes()
     # A fresh directory is also the working directory. Neither implicit '.' nor
@@ -69,6 +78,7 @@ def main() -> None:
         passed = expected_failure if args.expect_missing_package else result.returncode == 0
         report = {'status': 'pass' if passed else 'fail', 'negative_control': args.expect_missing_package,
                   'source_sha256': hashlib.sha256(data).hexdigest(), 'lean_version': version,
+                  'compiler_launcher': launcher, 'resolved_compiler': lean,
                   'lean_binary_sha256': hashlib.sha256(Path(lean).read_bytes()).hexdigest(),
                   'dependency_manifest_sha256': hashlib.sha256((ROOT/'lake-manifest.json').read_bytes()).hexdigest(),
                   'module_name': name, 'command': command, 'exit_code': result.returncode,
@@ -98,7 +108,7 @@ def main() -> None:
             report['comparison_solution_sources'] = {str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest() for p in [ROOT/'Solution.lean', *sorted((ROOT/'PresentationPackage').glob('*.lean'))]}
             report['expression_comparison'] = {'status': 'pass' if equal else 'fail', 'extractions': extraction, 'mismatch_lines': mismatches,
                 'snapshots': {p.name: {'bytes': p.stat().st_size, 'sha256': hashlib.sha256(p.read_bytes()).hexdigest()} for p in snapshots if p.exists()},
-                'scope': 'Byte equality of deterministic alpha-normalized Lean expression DAGs, with only nine explicit compiler-private auxiliary names mapped bijectively; public declarations reference no private names; separate processes; not sandboxed Comparator'}
+                'scope': 'Byte equality of deterministic alpha-normalized Lean expression DAGs, with only six explicit compiler-private auxiliary names mapped bijectively; public declarations reference no private names; separate processes; not sandboxed Comparator'}
             if not equal:
                 report['status'] = 'fail'; passed = False
                 evidence = ROOT/'.toolchain/canonical-diagnostics'/name

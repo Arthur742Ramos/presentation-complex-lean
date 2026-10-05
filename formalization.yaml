@@ -70,15 +70,17 @@ status:
     independent generator and relator-index universes, ordinary CW structure,
     Hausdorffness, path connectedness, and compatible fundamental-group
     equivalence with the presented group. Every-group realization as a
-    two-dimensional CW complex included. Canonical Challenge repair inlines the
-    byte-identical construction and preserves all Solution proof bodies. Renamed
-    dependency-only compilation and supplemental comparison of 550 declaration
-    types and 169 definition bodies passed. Nine compiler-private auxiliaries
-    use an explicit bijective module-name mapping; public declarations need none.
-    Historical replay, axioms, exports and kernel passes remain bound to unchanged
-    Solution package bytes. The supported local Comparator remains blocked by
-    the host sandbox NETLINK_ROUTE restriction; no official Comparator verdict is claimed.
-    Official hosted/rendering gates remain unperformed; intake is incomplete.
+    two-dimensional CW complex included. The compact Challenge inlines shared
+    construction data from construction-only modules. Its literal selected
+    headline statements are retained. Fresh dependency-only compilation and
+    supplemental comparison of 252 declaration types and 94 definition bodies
+    passed, with six compiler-private auxiliaries mapped bijectively. Fresh
+    desktop source replay, axiom, export and direct-checker gates passed for the
+    recorded compact hashes. Historical pass records retain their original hash
+    boundaries. Sandboxed Comparator requires Linux namespaces and is blocked
+    on this Windows host; no sandbox bypass or official acceptance is claimed.
+    Independent review of the changed source and portability scripts is pending.
+    Hosted verification and rendering remain unperformed; intake is incomplete.
     See reports/CURRENT_VERIFICATION.md for stage-specific status.
   sorry_count: 0
   sorry_in_definitions: 0
@@ -97,7 +99,7 @@ automation:
     presentation_complex and every_group_fundamental_group, excluded from
     Solution's proof admission counts. Zero Solution admissions describes the
     intended source boundary; permitted axioms above require a fresh transitive
-    audit. No current whole-package verification pass is asserted.
+    audit. Fresh direct local gate receipts are recorded; no hosted whole-package acceptance is asserted.
 fidelity:
   divergences: >-
     Presentations are arbitrary with independent universes for generators and
@@ -107,7 +109,7 @@ fidelity:
     There are no added mathematical hypotheses. The square-to-complex-disk
     bridge uses Mathlib's proved convex-body homeomorphism.
 review:
-  status: "Canonical Challenge isolation repair: dependency-only compile and supplemental type/body comparison pass. Solution package bytes unchanged. Official Comparator remains sandbox-blocked; hosted verification/rendering not run. No new registry submission or acceptance asserted."
+  status: "Compact Challenge desktop local gates pass for fresh recorded hashes. Independent review pending. Sandboxed Comparator requires Linux namespaces and remains blocked on Windows. Hosted verification/rendering and registry submission not run."
   notes: >-
     Completed source review covers actual quotient topology, circle attaching maps from
     finite word loops, Mathlib CW structure with explicit zero/one/two cell-index

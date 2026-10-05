@@ -25,6 +25,10 @@ from audit_sources import audit
 STAGES = ['static', 'source_replay', 'compile', 'axioms', 'exports', 'kernels', 'comparator']
 
 
+def distribution_binary(prefix: Path, name: str) -> Path:
+    return prefix/'bin'/(name + ('.exe' if os.name == 'nt' else ''))
+
+
 def digest(path: Path) -> str:
     h = hashlib.sha256()
     with path.open('rb') as stream:
@@ -67,13 +71,13 @@ def main() -> None:
     parser.add_argument('--lean-bin', type=Path)
     parser.add_argument('--lean-prefix', type=Path)
     parser.add_argument('--memory-mb', type=int, default=6144)
-    parser.add_argument('--kernels', nargs='+', choices=['leanchecker', 'leanchecker-paranoid', 'nanoda_bin', 'con-ron', 'lean4lean'],
+    parser.add_argument('--kernels', nargs='+', choices=['leanchecker', 'leanchecker-paranoid', 'nanoda_bin', 'con-ron', 'lean4lean', 'con-leche'],
                         default=['leanchecker', 'leanchecker-paranoid', 'nanoda_bin', 'con-ron'])
     parser.add_argument('--report', default='reports/local-verification-results.json')
     args = parser.parse_args()
     if args.lean_prefix:
         prefix = args.lean_prefix.resolve()
-        lean = args.lean_bin.resolve() if args.lean_bin else prefix/'bin/lean'
+        lean = args.lean_bin.resolve() if args.lean_bin else distribution_binary(prefix, 'lean')
     elif args.lean_bin or os.environ.get('CELL_LEAN_BIN') or shutil.which('lean'):
         lean = Path(args.lean_bin or os.environ.get('CELL_LEAN_BIN') or shutil.which('lean')).resolve()
         prefix = lean.parent.parent
@@ -220,7 +224,7 @@ def main() -> None:
                 for name, targetfile in [('Challenge', 'export-targets.json'), ('Solution', 'solution-export-targets.json')]:
                     targets = json.loads((ROOT/'reports'/targetfile).read_text())
                     output = exports/(name.lower()+'.ndjson')
-                    ret = run([str(prefix/'bin/leanexport'), name, '--', *targets], name.lower()+'-export.log', output)
+                    ret = run([str(distribution_binary(prefix, 'leanexport')), name, '--', *targets], name.lower()+'-export.log', output)
                     entry['modules'][name] = {'status': 'pass' if ret == 0 else 'fail', 'exit_code': ret,
                                              'target_count': len(targets), 'sha256': digest(output)}
                 entry['status'] = 'pass' if all(m['exit_code'] == 0 for m in entry['modules'].values()) else 'fail'
@@ -235,10 +239,10 @@ def main() -> None:
                 commands = {'leanchecker': ['--silent', '--from-export', str(output)],
                             'leanchecker-paranoid': ['--silent', '--from-export', str(output)],
                             'nanoda_bin': [str(configpath)], 'con-ron': ['--verified', '--jobs=1', str(output)],
-                            'lean4lean': ['--import', str(output)]}
+                            'lean4lean': ['--import', str(output)], 'con-leche': [str(output)]}
                 entry['checks'] = {}
                 for name in args.kernels:
-                    binary = prefix/'bin'/name
+                    binary = distribution_binary(prefix, name)
                     if not binary.is_file():
                         entry['checks'][name] = {'status': 'blocked', 'blocker': 'Checker is absent from pinned distribution'}; continue
                     ret = run([str(binary), *commands[name]], name+'.log')
@@ -246,11 +250,11 @@ def main() -> None:
                                             'binary_sha256': digest(binary)}
                 entry.update(status='pass' if all(c['status'] == 'pass' for c in entry['checks'].values()) else 'fail', export_sha256=digest(output))
             elif stage == 'comparator':
-                ret = run([str(prefix/'bin/lake'), 'comparator', '--config', 'reports/comparator-local.json',
+                ret = run([str(distribution_binary(prefix, 'lake')), 'comparator', '--config', 'reports/comparator-local.json',
                            '--challenge-from-export', str(exports/'challenge.ndjson'),
                            '--solution-from-export', str(exports/'solution.ndjson')], 'comparator-from-export.log')
                 log = (ROOT/'reports/comparator-from-export.log').read_text()
-                sandbox_failure = ret != 0 and any(term in log for term in ['NETLINK_ROUTE', 'Operation not permitted', 'needs `bwrap`', 'Creating new namespace failed'])
+                sandbox_failure = ret != 0 and any(term in log for term in ['NETLINK_ROUTE', 'Operation not permitted', 'needs `bwrap`', 'Creating new namespace failed', 'which needs Linux namespaces'])
                 entry.update(status='blocked' if sandbox_failure else 'pass' if ret == 0 else 'fail', exit_code=ret,
                              sandbox_preserved=True, artifact_origin='previous local exports; isolated-build provenance not established')
                 if sandbox_failure: entry['blocker'] = log.strip()[-1500:]

@@ -211,7 +211,7 @@ def render(order: list[tuple[str, Path]], external: list[str]) -> tuple[str, lis
             raise ValueError(f'proof source contains an admission or custom axiom: {name}')
         wrapped, closures = wrap(name, source)
         output += wrapped
-        manifest.append({'module': name, 'path': str(path.relative_to(ROOT)),
+        manifest.append({'module': name, 'path': path.relative_to(ROOT).as_posix(),
                          'source_sha256': sha256(source), 'eof_scopes_closed': closures,
                          'private_modifiers_removed': len(re.findall(r'^\s*private\s+(?:def|theorem|lemma|abbrev|instance|opaque)\b', code_only(source), re.M))})
     return output, manifest
@@ -282,7 +282,10 @@ theorem presentation_complex : completeStatement.{u,v} := by
     for name, content in {**generated_modules, 'Challenge.lean': challenge, 'Solution.lean': solution}.items():
         if len(content.splitlines()) > 10000:
             raise ValueError(f'{name} exceeds the conservative 10,000-line cap')
+    if len(challenge.encode('utf-8')) > 102400:
+        raise ValueError('Challenge exceeds the user-reported canonical 100 KiB byte cap')
     metadata = {
+        'challenge_byte_cap': {'maximum': 102400, 'actual': len(challenge.encode('utf-8')), 'basis': 'user-reported actual canonical intake gate'},
         'generated_modules': {name: {'sha256': sha256(content), 'lines': len(content.splitlines())} for name, content in generated_modules.items()},
         'proof_chunks': chunks,
         'line_cap': {'maximum': 10000, 'basis': 'user-provided intake constraint; official current policy not independently verified'},
@@ -303,7 +306,7 @@ theorem presentation_complex : completeStatement.{u,v} := by
     }
     return {**generated_modules, 'Solution.lean': solution, 'Challenge.lean': challenge,
             'reports/standalone-manifest.json': json.dumps(metadata, indent=2) + '\n',
-            'reports/standalone-manifest.txt': ''.join(f'{n} {p.relative_to(ROOT)}\n' for n, p in solution_order)}
+            'reports/standalone-manifest.txt': ''.join(f'{n} {p.relative_to(ROOT).as_posix()}\n' for n, p in solution_order)}
 
 
 def main() -> None:
@@ -318,11 +321,11 @@ def main() -> None:
     for relative, content in generated.items():
         path = ROOT / relative
         if args.check:
-            if not path.is_file() or path.read_text(encoding='utf-8') != content:
+            if not path.is_file() or path.read_bytes() != content.encode('utf-8'):
                 raise SystemExit(f'STALE: {relative}; rerun scripts/generate_standalone.py')
         else:
             path.parent.mkdir(parents=True, exist_ok=True)
-            path.write_text(content, encoding='utf-8')
+            path.write_text(content, encoding='utf-8', newline='\n')
     manifest = json.loads(generated['reports/standalone-manifest.json'])
     print(f"{'CHECKED' if args.check else 'GENERATED'}: Solution {len(manifest['solution_local_modules'])} local modules, "
           f"Challenge {len(manifest['challenge_local_modules'])} construction modules, two intentional theorem holes")

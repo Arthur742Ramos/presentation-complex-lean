@@ -1,7 +1,9 @@
 # Verification reports
 
-**Canonical Challenge repair: dependency-only compilation and supplemental type/body comparison passed; official Comparator remains unverified.**
-See [the current verification matrix](CURRENT_VERIFICATION.md). Historical proof checks apply to the byte-identical Solution package; the repaired Challenge has separate hash-bound evidence.
+**Compact Challenge desktop validation: fresh local source, axiom, export and direct-checker gates pass; independent review remains pending.**
+See [the current verification matrix](CURRENT_VERIFICATION.md). Older pass records apply only to their recorded source hashes; the compact package has fresh receipts.
+
+Fresh compact desktop receipts are `desktop-local-verification.json`, `desktop-final-canonical-challenge.json`, `desktop-build-receipt.json` and `desktop-supplemental-receipt.json`. Older canonical reports below are historical for the earlier package hashes.
 
 ## Active script-managed paths
 

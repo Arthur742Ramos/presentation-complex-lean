@@ -48,7 +48,7 @@ def declaration_names(source: str) -> list[tuple[str, bool]]:
 def audit() -> dict:
     generated = generate()
     stale = [name for name, content in generated.items()
-             if not (ROOT/name).is_file() or (ROOT/name).read_text(encoding='utf-8') != content]
+             if not (ROOT/name).is_file() or (ROOT/name).read_bytes() != content.encode('utf-8')]
     closure_modules, _ = closure(['PresentationComplex.Main'])
     locations: dict[str, list[dict]] = {}
     privacy = []
@@ -65,7 +65,7 @@ def audit() -> dict:
     hashes = {}
     for path in shipped:
         source = path.read_text(encoding='utf-8')
-        hashes[str(path.relative_to(ROOT))] = hashlib.sha256(source.encode()).hexdigest()
+        hashes[str(path.relative_to(ROOT))] = hashlib.sha256(path.read_bytes()).hexdigest()
         if re.search(r'\b(?:sorry|admit|axiom)\b', code_only(source)):
             violations.append(str(path.relative_to(ROOT)))
     challenge = code_only(generated['Challenge.lean'])
@@ -86,14 +86,19 @@ def audit() -> dict:
     construction = code_only(generated['PresentationPackage/Construction.lean'])
     leaked_targets = [n for n in ['presentation_complex', 'every_group_fundamental_group']
                       if re.search(r'\b(?:theorem|def|axiom)\s+' + n + r'\b', construction)]
-    extra_generated = sorted(str(p.relative_to(ROOT)) for p in (ROOT/'PresentationPackage').glob('*.lean') if str(p.relative_to(ROOT)) not in generated)
+    extra_generated = sorted(p.relative_to(ROOT).as_posix() for p in (ROOT/'PresentationPackage').glob('*.lean') if p.relative_to(ROOT).as_posix() not in generated)
     local_challenge_imports = [n for n in imports(generated['Challenge.lean'])
                                if n.split('.')[0] in LOCAL_PREFIXES or n in ['Solution', 'Challenge']]
     construction_prefix_matches = generated['Challenge.lean'].startswith(generated['PresentationPackage/Construction.lean'])
-    packaging_ok = not (extra_generated or headers or oversized or bad_imports or leaked_targets or local_challenge_imports) and construction_prefix_matches
+    challenge_bytes = len((ROOT/'Challenge.lean').read_bytes())
+    challenge_byte_cap_exceeded = challenge_bytes > 102400
+    packaging_ok = not (extra_generated or headers or oversized or bad_imports or leaked_targets or local_challenge_imports or challenge_byte_cap_exceeded) and construction_prefix_matches
     result = {
         'unexpected_generated_modules': extra_generated,
         'challenge_repository_import_failures': local_challenge_imports,
+        'challenge_utf8_bytes': challenge_bytes,
+        'challenge_byte_cap_exceeded': challenge_byte_cap_exceeded,
+        'challenge_byte_cap': 102400,
         'challenge_identical_construction_prefix': construction_prefix_matches,
         'packaging_module_header_failures': headers,
         'packaging_line_cap_failures': oversized,

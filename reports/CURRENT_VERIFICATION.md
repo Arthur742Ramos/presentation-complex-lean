@@ -1,62 +1,36 @@
-# Current canonical Challenge repair
+# Compact Challenge desktop verification
 
-The user-reported canonical build excludes repository-generated oleans. The old
-Challenge imported `PresentationPackage.Construction`, so its earlier ordinary
-package-build pass did not test that boundary. The repair inlines exactly the
-same construction source and leaves Solution and all three package modules
-byte-for-byte unchanged.
+The previous public Challenge was 257,036 bytes and exceeded the user-reported 102,400-byte intake cap. The compact Challenge is 74,913 bytes, with 1,691 lines and two intended theorem holes. Construction definitions moved into three construction-only modules; Solution uses the construction and three proof modules. Both selected headline statements are retained.
 
-| Gate | Result |
+| Gate | Current result |
 | --- | --- |
-| Historical negative control | PASS: renamed old Challenge fails at line 225 with unknown module prefix `PresentationPackage` in the dependency-only environment |
-| Renamed canonical Challenge | PASS: fresh unique module and empty working directory, eight pinned dependency build paths plus standard library; no repository/generated-package oleans |
-| Supplemental expression comparison | PASS: 550 declaration types and 169 definition bodies, including both headline types; equal serialized bytes |
-| Compiler-private auxiliary handling | Exactly nine names mapped bijectively: six equation theorems and three splitter definitions; kinds checked; no other names normalized |
-| Public declaration comparison | All 541 public declaration types and 166 definition bodies match without private-name mapping; no public type/body references a private constant or projection |
-| Deterministic generation and static audit | PASS: module headers and fewer than 10,000 lines for every active Lean source, including the comparison harness; exactly two Challenge holes |
-| Proof source preservation | PASS: Solution, Construction, Proof1, Proof2 unchanged from the reviewed bounded package |
-| Normal Lake and fresh audit/export | PASS: Challenge 3,149 jobs; Solution 3,152; aggregate 3,234; all 21 Solution audit targets standard-only; fresh repaired Challenge export |
-| Historical Solution replay / axioms / direct kernels | Passes apply to unchanged, hash-bound Solution package only; see the preserved pre-canonical report |
-| Official sandboxed Comparator | No new verdict; previously blocked by host NETLINK_ROUTE restriction; no bypass or retry |
-| Remote ordinary CI | PENDING publication |
-| Hosted canonical acceptance / rendering | NOT RUN for this repair |
-| Registry submission | No new submission authorized or performed |
+| Frozen generation, actual file-byte cap and static source audit | PASS; exact LF output; 74,913 bytes; no Solution/modular admissions or custom axioms |
+| Project-sensitive compiler launcher regression | PASS; repository-local resolver and empty-directory negative control |
+| Normal modular, Challenge, Solution and aggregate builds | PASS; each exit 0 |
+| Every shipped source replay | PASS; 93 modules, exit 0 |
+| Renamed dependency-only Challenge compilation | PASS; fresh directory; repository build paths excluded |
+| Supplemental theorem/construction expression comparison | PASS; 252 declaration types and 94 definition bodies; equal serialized bytes; only six explicit private auxiliary names mapped bijectively |
+| Isolated generated-package compilation | PASS; construction, Proof1, Proof2, Proof3, Solution and Challenge; exact source/artifact hashes recorded |
+| Transitive axiom closures | PASS; 21 audited targets; only propext, Classical.choice and Quot.sound |
+| Fresh Challenge and Solution exports | PASS; exact export hashes recorded |
+| Direct bundled checkers | PASS; leanchecker, leanchecker-paranoid, lean4lean, nanoda_bin, con-leche, con-ron |
+| Sandboxed Comparator | BLOCKED; pinned Lake requires Linux namespaces on this Windows host; sandbox preserved |
+| Fresh independent review | PENDING for the compact source and desktop portability deltas |
+| Remote CI, hosted verification and trusted rendering | NOT RUN |
+| Registry submission and public push | NOT PERFORMED |
 
-## Evidence and limits
+These are local gates. They do not establish hosted or sandboxed Comparator acceptance. Older source-replay and checker reports do not apply to this changed generated package.
 
-- [Canonical compile and comparison receipt](canonical-challenge.json)
-- [Historical failure reproduction](canonical-challenge-negative-control.json)
-- [Source preservation](canonical-source-preservation.json)
-- [Static audit](static-source-audit.json)
-- [Normal builds, audit and export](canonical-normal-lake.json)
-- [Historical proof and package evidence](history/pre-canonical-a209b96/README.md)
+The normal build used dependency-ordered library roots and an aggregate Lake build within a Windows Job Object. Every-source replay then compiled every shipped module serially. This replaces the repeated per-module Lake startup loop for this desktop run; the interrupted earlier attempt is retained as an operational interruption, not a theorem failure.
 
-The supplemental checker extracts one environment per process. It compares exact
-bytes of deterministic Lean expression DAGs, ignoring binder names/annotations
-and metadata, and rewriting only nine explicitly listed compiler-private names.
-It preserves constant names, levels, expressions, let flags, and definition
-values otherwise. Both 2,153,939-byte snapshots have SHA-256
-`16358cb422a8e8e207eebb09fcfd5841bbc8f7d0559f417030af036eb38519ba`.
-This is additional local evidence, not the official sandboxed Comparator.
-The first dual-environment attempt was killed by signal 9; its receipt is retained.
-The first sequential attempt correctly rejected unmatched module-local private
-names; its receipt and diagnostic snapshots were retained before adding the
-reviewed explicit mapping.
+## Exact inputs and receipts
 
-The manifest's unused `Cli` dependency has no local build directory and is the
-only explicitly allowed omission. Its exact pinned manifest entry is recorded.
-All other missing dependency builds cause failure. Successful isolated
-elaboration establishes that no Cli artifact was required.
-
-## Exact package
-
-- Challenge: 5,913 lines; Construction: 5,877; Proof1: 7,996; Proof2: 4,236; Solution: 229
-- Challenge SHA-256: `2690aaf4e12651244f880bf4e5ed6c57d3cf8dd089a97afdad079e88e476a270`
-- Lean: `4.35.0-rc2`, compiler commit `11acb17ec6b07a8f9e9173e6845197929540936b`
+- Upstream source commit: `7a0c182015b38a5b851d1d9cca805531f63b9f89`; verified Git tree `5026d2d70a234373c18107ad1316c15da39b108c`
+- Reviewed compact input patch: `59e22f7ae54ecc877606743338301ea02990a031a70a136450a21ad58cf6167f`
+- Challenge SHA-256: `6ca5faef5b964e41aa2c45e343160218d5cdeb2f0fe73c72bec1a978b07b2446`
+- Lean: `Lean (version 4.35.0-rc2, x86_64-w64-windows-gnu, commit 11acb17ec6b07a8f9e9173e6845197929540936b, Release)`
+- Windows Lean binary SHA-256: `16e2c9c597d71fbbadd2b909c3fad5ea7830a4b7aa0123b93e0f3b19de7b959e`
 - Mathlib: `065356127b1dc0016f66b7283ce0ce2c4055aa55`
-- The line cap follows the user-provided constraint; current official policy was not re-read
+- [Build and replay receipt](desktop-build-receipt.json), [supplemental stage receipt](desktop-supplemental-receipt.json), [isolated compile/axiom/export/checker receipt](desktop-local-verification.json), [final canonical comparison](desktop-final-canonical-challenge.json)
 
-Both selected theorem statements, all three maintainers, source notices, and
-licenses are preserved. No target or hypothesis is weakened. Ordinary CI now
-runs the renamed dependency-only regression and supplemental comparison after
-its normal build. It performs no registry submission.
+All heavy stages ran sequentially on CPC-arfre-036B6, restricted to four exposed CPUs and 24 GiB aggregate job memory, with a 16 GiB free-RAM floor and a 90-minute stage deadline. No credential, permission, network or security setting was changed. Both selected targets, all maintainers, source notices and licenses are retained. The original source snapshot is verified by tree contents; its local baseline commit is synthetic and does not supply upstream history.

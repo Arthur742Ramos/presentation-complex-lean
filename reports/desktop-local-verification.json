@@ -1,0 +1,261 @@
+{
+  "solution_sha256": "ad35d43b3fe740210c7d937e1f927e21f939f1b1e4b2620cf9726109e3ab0f1c",
+  "challenge_sha256": "6ca5faef5b964e41aa2c45e343160218d5cdeb2f0fe73c72bec1a978b07b2446",
+  "generated_package_sha256": "d6df891da122f5cdabeea9ec803067bb4489e2128e0865b649c0c546b3a2ca52",
+  "export_targets_sha256": "6a0caa18a367f1e22675087053a856136c0453f5b914311807456237be110ffa",
+  "solution_export_targets_sha256": "3729efce0d428ae8232d25a462bbd19562b19cc8344f3f882baf273f7950267d",
+  "lean_toolchain": "leanprover/lean4:v4.35.0-rc2",
+  "mathlib_commit": "065356127b1dc0016f66b7283ce0ce2c4055aa55",
+  "stages": {
+    "static": {
+      "status": "pass",
+      "modular_sources": 91,
+      "private_visibility_collisions": []
+    },
+    "source_replay": {
+      "status": "not_run"
+    },
+    "compile": {
+      "status": "pass",
+      "modules": {
+        "PresentationPackage.Construction": {
+          "status": "pass",
+          "exit_code": 0,
+          "source_sha256": "8a80b1ea4f9b163cd28f2e3ee33a437afc279eaad2396ba1332b3dc6045a7fa8",
+          "olean_sha256": "6e5a4b84d1e648dbc20fd29316a30e85ee1de954e74306deb8c8139c8987c0d3"
+        },
+        "PresentationPackage.Proof1": {
+          "status": "pass",
+          "exit_code": 0,
+          "source_sha256": "4adcbc16fd92c4fd76d173e582ca24c266e82d765fdad48ab213d4e42987458c",
+          "olean_sha256": "fb9ceffd529ba7b8a438788b9f214235a42c2f18a4cf6ad2bbfa3cbe38d44d9f"
+        },
+        "PresentationPackage.Proof2": {
+          "status": "pass",
+          "exit_code": 0,
+          "source_sha256": "ec590d4f90d8cd001c4a2b5e6ea3db0d16d504081727a3a4578c8a430dede468",
+          "olean_sha256": "96feafa34accd319681013ad737c9f1c9865a40549ec8c3c0f3d8d7f2e2a1b0f"
+        },
+        "PresentationPackage.Proof3": {
+          "status": "pass",
+          "exit_code": 0,
+          "source_sha256": "60281d13e68bfbaad28c5c3cc23078d09cd1ec63e8d940a9890f7a28e3815c1f",
+          "olean_sha256": "0d5b9ddf1a33bb2651c6edf76bb2aea16df5bf60c74001baae8541bc3010c34e"
+        },
+        "Solution": {
+          "status": "pass",
+          "exit_code": 0,
+          "source_sha256": "ad35d43b3fe740210c7d937e1f927e21f939f1b1e4b2620cf9726109e3ab0f1c",
+          "olean_sha256": "dd0243803f7de680c3e1cb08916fa281b3bcb519d86539de00d6071e593c7a49"
+        },
+        "Challenge": {
+          "status": "pass",
+          "exit_code": 0,
+          "source_sha256": "6ca5faef5b964e41aa2c45e343160218d5cdeb2f0fe73c72bec1a978b07b2446",
+          "olean_sha256": "9dc7b8714c398bc3e2be12e738717e7f229aae6455a80660bec82ec56e1728e6"
+        }
+      },
+      "challenge_intentional_theorem_holes": 2
+    },
+    "axioms": {
+      "status": "pass",
+      "exit_code": 0,
+      "targets_checked": 21,
+      "axiom_closures": {
+        "PresentationComplex.presentation_complex": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.every_group_fundamental_group": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.presentationPi1Equiv": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.presentationPi1Equiv_inclusion": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.presentationPi1Equiv_generator": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.presentationMap_exact": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.bouquetEquiv": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.bouquetEquiv_edgeLoop": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.attachingLoopClass_eq": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.presentationCW": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.presentationCW_generatorCells": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.presentationCW_relatorCells": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.presentationCW_noHigherCells": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.presentation_t2Space": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.everyGroupPi1Equiv": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.everyGroupPi1Equiv_generator": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.everyGroupCW_hasTwoCell": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.groupPresentationEquiv": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "PresentationComplex.groupPresentationEquiv_generator": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "CellAttachment.cell_attachment_exact": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "FiniteGraphFreeGroup.graphCombinatorialToTopologicalEquiv": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ]
+      },
+      "missing_targets": [],
+      "forbidden_axioms": {}
+    },
+    "exports": {
+      "status": "pass",
+      "modules": {
+        "Challenge": {
+          "status": "pass",
+          "exit_code": 0,
+          "target_count": 59,
+          "sha256": "6218876e69d456729005a8e8a3cb3378462b6a6b54bba30d39385307573ba596"
+        },
+        "Solution": {
+          "status": "pass",
+          "exit_code": 0,
+          "target_count": 78,
+          "sha256": "cec0f7bce4ee3453366a3c2a466d80ecfeb36e67fdebeb75c92dda968a6e0aa5"
+        }
+      }
+    },
+    "kernels": {
+      "status": "pass",
+      "checks": {
+        "leanchecker": {
+          "status": "pass",
+          "exit_code": 0,
+          "binary_sha256": "344dbe9cc1c826e2a5a58e1337bb51079cdc6317931cffcc8579e8560815de85"
+        },
+        "leanchecker-paranoid": {
+          "status": "pass",
+          "exit_code": 0,
+          "binary_sha256": "ffa8a1a27a41498438f1e40ae7d9ed550327a9581f9744eb4f0b6d88a2859a55"
+        },
+        "lean4lean": {
+          "status": "pass",
+          "exit_code": 0,
+          "binary_sha256": "d5bc313564b6f2ed7d8cbb617074b9e8da139ff22e521890f5460136929b0f7e"
+        },
+        "nanoda_bin": {
+          "status": "pass",
+          "exit_code": 0,
+          "binary_sha256": "d85480c1e8b2588cd8753583c53eb483477e2db4f6463d05fcec9ea1abf44da4"
+        },
+        "con-leche": {
+          "status": "pass",
+          "exit_code": 0,
+          "binary_sha256": "8ad0243f22992791a2a3b7d851454ec25f9f8253fe46bf8163d6e9d6c0a30acd"
+        },
+        "con-ron": {
+          "status": "pass",
+          "exit_code": 0,
+          "binary_sha256": "f77e4dede920208708216a67f49872fb662d64595726bf9b76b41223e46d16c9"
+        }
+      },
+      "export_sha256": "cec0f7bce4ee3453366a3c2a466d80ecfeb36e67fdebeb75c92dda968a6e0aa5"
+    },
+    "comparator": {
+      "status": "blocked",
+      "exit_code": 2,
+      "sandbox_preserved": true,
+      "artifact_origin": "previous local exports; isolated-build provenance not established",
+      "blocker": "error: `lake comparator` sandboxes the code it checks with `bwrap`, which needs Linux namespaces."
+    }
+  },
+  "official_hosted_full_verification": {
+    "status": "not_run"
+  },
+  "trusted_challenge_render": {
+    "status": "not_run"
+  },
+  "registry_submission": {
+    "status": "not_submitted"
+  },
+  "verification_boundary": "Direct local stages do not establish sandboxed build provenance or official hosted acceptance. No sandbox bypass is provided.",
+  "modular_source_fingerprint_sha256": "c417acf0e8675c16e4954ea13b14ee11b7cda6da86dd5413b76211f7faf4aba2",
+  "standalone_search_path": [
+    ".toolchain\\standalone\\lean",
+    "mathlib\\.lake\\build\\lib\\lean",
+    "plausible\\.lake\\build\\lib\\lean",
+    "LeanSearchClient\\.lake\\build\\lib\\lean",
+    "importGraph\\.lake\\build\\lib\\lean",
+    "proofwidgets\\.lake\\build\\lib\\lean",
+    "aesop\\.lake\\build\\lib\\lean",
+    "Qq\\.lake\\build\\lib\\lean",
+    "batteries\\.lake\\build\\lib\\lean"
+  ],
+  "standalone_environment": "Isolated outputs plus pinned external package caches; inherited LEAN_PATH and sibling project oleans excluded",
+  "updated_at_utc": "2026-10-05T19:09:06.019309+00:00",
+  "lean_version": "Lean (version 4.35.0-rc2, x86_64-w64-windows-gnu, commit 11acb17ec6b07a8f9e9173e6845197929540936b, Release)",
+  "lean_binary_sha256": "16e2c9c597d71fbbadd2b909c3fad5ea7830a4b7aa0123b93e0f3b19de7b959e"
+}

@@ -20,19 +20,16 @@ partial def parseName (j : Json) : Except String Name := do
   | .str s => return .str p s
   | _ => return .num p (← a[1]!.getNat?)
 
-/-- Exactly the compiler-generated auxiliaries created by the three matchers. -/
+/-- Exactly the compiler-generated auxiliaries created by the two matchers. -/
 def privateHelpers : List Name :=
   [`FiniteGraphFreeGroup.graphRealizationEndpointLabel.match_1.eq_1,
    `FiniteGraphFreeGroup.graphRealizationEndpointLabel.match_1.eq_2,
    `FiniteGraphFreeGroup.graphRealizationEndpointLabel.match_1.splitter,
-   `FiniteGraphFreeGroup.graphVertexStarPre.match_1.eq_1,
-   `FiniteGraphFreeGroup.graphVertexStarPre.match_1.eq_2,
-   `FiniteGraphFreeGroup.graphVertexStarPre.match_1.splitter,
    `PresentationComplex.wordLoop.match_1.eq_1,
    `PresentationComplex.wordLoop.match_1.eq_2,
    `PresentationComplex.wordLoop.match_1.splitter]
 
-/-- No name outside the explicit nine-element mapping is rewritten. -/
+/-- No name outside the explicit six-element mapping is rewritten. -/
 def normalizedName (privateModule n : Name) : Name :=
   let helper := privateToUserName n
   if privateHelpers.contains helper && n == mkPrivateNameCore privateModule helper then
@@ -99,7 +96,7 @@ def main (args : List String) : IO UInt32 := do
   if !targets.all names.contains || names.isEmpty then
     throw <| IO.userError "Missing headline declarations"
   let privateNames := names.filter isPrivateName
-  if privateNames.size != 9 then throw <| IO.userError "Unexpected private auxiliary inventory"
+  if privateNames.size != privateHelpers.length then throw <| IO.userError "Unexpected private auxiliary inventory"
   let privateModule := if mode == "canonical" then moduleName.toName else `PresentationPackage.Construction
   -- Canonical original names are carried through the name file. The helper
   -- suffix must be in the explicit allowlist; target names are constructed
@@ -110,7 +107,7 @@ def main (args : List String) : IO UInt32 := do
     if mode == "canonical" && name != mkPrivateNameCore moduleName.toName (privateToUserName name) then
       throw <| IO.userError s!"Unexpected private name prefix {name}"
   let mapped := privateNames.toList.map fun n => mkPrivateNameCore `PresentationPackage.Construction (privateToUserName n)
-  if mapped.eraseDups.length != 9 then throw <| IO.userError "Private name mapping is not bijective"
+  if mapped.eraseDups.length != privateHelpers.length then throw <| IO.userError "Private name mapping is not bijective"
   let out ← IO.FS.Handle.mk outputPath .write
   let mut definitions := 0
   for name in names do
@@ -132,6 +129,6 @@ def main (args : List String) : IO UInt32 := do
     out.putStrLn <| (Json.arr #[nameJson (normalizedName privateModule lookup), Json.arr (info.levelParams.toArray.map nameJson),
       exprJson privateModule info.type, value.getD Json.null]).compress
   if definitions == 0 then throw <| IO.userError "No construction definition bodies"
-  IO.println "Private auxiliary mapping: six equation theorems and three splitter definitions; public declarations have no private references"
+  IO.println "Private auxiliary mapping: four equation theorems and two splitter definitions; public declarations have no private references"
   IO.println s!"Extracted {names.size} declaration types and {definitions} definition bodies from {moduleName}"
   return 0
