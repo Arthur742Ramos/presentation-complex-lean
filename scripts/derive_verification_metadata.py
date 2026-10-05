@@ -16,9 +16,12 @@ from generate_standalone import ROOT, code_only
 
 PERMITTED_AXIOMS = ['propext', 'Quot.sound', 'Classical.choice']
 THEOREM = 'PresentationComplex.presentation_complex'
+THEOREMS = [THEOREM, 'PresentationComplex.every_group_fundamental_group']
 # Only declarations independently present in both files are comparison targets.
 CONSTRUCTION_TARGETS = [
     'PresentationComplex.completeStatement',
+    'PresentationComplex.groupRelators', 'PresentationComplex.EveryGroupSpace',
+    'PresentationComplex.everyGroupPoint',
     'PresentationComplex.Vertex', 'PresentationComplex.Bouquet',
     'PresentationComplex.base', 'PresentationComplex.edgeLoop',
     'PresentationComplex.signedEdgeLoop', 'PresentationComplex.wordLoop',
@@ -76,11 +79,11 @@ def derive(source_path: Path) -> dict[str, str]:
     if condition is None or array is None:
         raise ValueError('unrecognized Lake.Check builtin-target logic; review the exact source')
     builtins = re.findall(r'``([A-Za-z_][A-Za-z_0-9.]*)', array.group(1)) if 'Quot.sound' in PERMITTED_AXIOMS else []
-    common = unique(builtins + [THEOREM] + PERMITTED_AXIOMS + primitives + CONSTRUCTION_TARGETS)
+    common = unique(builtins + THEOREMS + PERMITTED_AXIOMS + primitives + CONSTRUCTION_TARGETS)
     solution = unique(common + AXIOM_TARGETS)
     comparator = {
         'challenge_module': 'Challenge', 'solution_module': 'Solution',
-        'theorem_names': [THEOREM], 'definition_names': [],
+        'theorem_names': THEOREMS, 'definition_names': [],
         'permitted_axioms': PERMITTED_AXIOMS, 'enable_nanoda': True,
     }
     metadata = {
@@ -88,7 +91,7 @@ def derive(source_path: Path) -> dict[str, str]:
         'primitive_source_sha256': hashlib.sha256(source.encode()).hexdigest(),
         'primitive_source': 'pinned Lean distribution src/lean/lake/Lake/CLI/Check.lean',
         'primitive_targets': primitives, 'builtin_targets': builtins,
-        'comparison_theorems': [THEOREM], 'comparison_definitions': [],
+        'comparison_theorems': THEOREMS, 'comparison_definitions': [],
         'construction_export_targets': CONSTRUCTION_TARGETS,
         'axiom_audit_targets': AXIOM_TARGETS, 'permitted_axioms': PERMITTED_AXIOMS,
         'challenge_export_target_count': len(common), 'solution_export_target_count': len(solution),

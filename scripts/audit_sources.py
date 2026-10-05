@@ -96,7 +96,7 @@ def main() -> None:
     path.write_text(json.dumps(result, indent=2)+'\n', encoding='utf-8')
     print(f"STATIC {result['status'].upper()}: {result['shipped_modular_source_count']} modular sources; "
           f"{len(result['stable_publicized_helpers'])} stable helpers, {len(result['publicized_name_collisions'])} visibility collisions")
-    if result['status'] != 'pass' or result['challenge_sorry_count'] != 1 or result['solution_sorry_count'] != 0:
+    if result['status'] != 'pass' or result['challenge_sorry_count'] != 2 or result['solution_sorry_count'] != 0:
         raise SystemExit(1)
 
 

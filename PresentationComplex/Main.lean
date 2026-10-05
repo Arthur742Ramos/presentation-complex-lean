@@ -20,6 +20,8 @@ def completeStatement : Prop :=
       (e : FundamentalGroup (Space r) (point r) ≃*
         (FreeGroup S ⧸ relatorNormalClosure r)),
       T2Space (Space r) ∧ PathConnectedSpace (Space r) ∧
+      Nonempty (cw.cell 0 ≃ PUnit.{max u v + 1}) ∧
+      Nonempty (cw.cell 1 ≃ S) ∧ Nonempty (cw.cell 2 ≃ R) ∧
       (∀ n, 2 < n → IsEmpty (cw.cell n)) ∧
       (∀ s, b (Path.Homotopic.Quotient.mk (edgeLoop s)) = FreeGroup.of s) ∧
       e.toMonoidHom.comp (CellAttachment.inclusionPi1 (relatorMap r) (base S)) =
@@ -32,14 +34,10 @@ of dimension at most two, with exact ordinary fundamental group and generators. 
 theorem presentation_complex : completeStatement.{u,v} := by
   intro S R r
   exact ⟨presentationCW r,bouquetEquiv S,presentationPi1Equiv r,
-    inferInstance,inferInstance,presentationCW_noHigherCells r,
+    inferInstance,inferInstance,⟨Equiv.refl _⟩,
+    ⟨presentationCW_generatorCells r⟩,⟨presentationCW_relatorCells r⟩,
+    presentationCW_noHigherCells r,
     bouquetEquiv_edgeLoop,presentationPi1Equiv_inclusion r,presentationPi1Equiv_generator r⟩
-
-/-- The actual complex associated to the multiplication-and-identity presentation. -/
-abbrev EveryGroupSpace (G : Type u) [Group G] := Space (groupRelators G)
-
-/-- Its actual distinguished zero-cell. -/
-def everyGroupPoint (G : Type u) [Group G] : EveryGroupSpace G := point (groupRelators G)
 
 /-- Every group is the fundamental group of this genuine presentation space. -/
 def everyGroupPi1Equiv (G : Type u) [Group G] :

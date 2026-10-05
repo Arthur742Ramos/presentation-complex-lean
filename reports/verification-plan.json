@@ -37,11 +37,15 @@
     "Quot.ind"
   ],
   "comparison_theorems": [
-    "PresentationComplex.presentation_complex"
+    "PresentationComplex.presentation_complex",
+    "PresentationComplex.every_group_fundamental_group"
   ],
   "comparison_definitions": [],
   "construction_export_targets": [
     "PresentationComplex.completeStatement",
+    "PresentationComplex.groupRelators",
+    "PresentationComplex.EveryGroupSpace",
+    "PresentationComplex.everyGroupPoint",
     "PresentationComplex.Vertex",
     "PresentationComplex.Bouquet",
     "PresentationComplex.base",
@@ -91,7 +95,7 @@
     "Quot.sound",
     "Classical.choice"
   ],
-  "challenge_export_target_count": 55,
-  "solution_export_target_count": 75,
+  "challenge_export_target_count": 59,
+  "solution_export_target_count": 78,
   "note": "Every-group and generator compatibility are audited/exported from Solution. The independent Challenge compares its arbitrary-presentation target with all transitive construction bodies. No definition holes are authorized; definition_names is empty."
 }
