@@ -102,7 +102,7 @@ private theorem attachmentChar2_disjoint (f : R → C(Circle,Bouquet S))
     (CellAttachment.interiorMap_isOpenEmbedding f).injective hw
   exact hij (congrArg Sigma.fst he).symm
 
-private theorem attachmentChar_pairwiseDisjoint (f : R → C(Circle,Bouquet S)) :
+theorem attachmentChar_pairwiseDisjoint (f : R → C(Circle,Bouquet S)) :
     (Set.univ : Set (Σ n,presentationCell S R n)).PairwiseDisjoint
       (fun ni => Set.range (cellInterior ni.1 (attachmentChar f ni.1 ni.2))) := by
   intro a _ b _ hab
@@ -161,7 +161,7 @@ private theorem attachmentChar_pairwiseDisjoint (f : R → C(Circle,Bouquet S)) 
   · exact PEmpty.elim i
   · exact PEmpty.elim i
 
-private theorem attachment_weakTopology (f : R → C(Circle,Bouquet S))
+theorem attachment_weakTopology (f : R → C(Circle,Bouquet S))
     (A : Set (CellAttachment.Space f))
     (h : ∀ n i, IsClosed ((attachmentChar f n i) ⁻¹' A)) : IsClosed A := by
   rw [← (CellAttachment.quotientMap_isQuotientMap f).isCoinducing.isClosed_preimage]
@@ -179,7 +179,7 @@ private theorem attachment_weakTopology (f : R → C(Circle,Bouquet S))
       ContinuousMap.coe_mk,closedDiskChart.apply_symm_apply]
     rfl
 
-private theorem attachment_closed_cells_cover (f : R → C(Circle,Bouquet S))
+theorem attachment_closed_cells_cover (f : R → C(Circle,Bouquet S))
     (x : CellAttachment.Space f) : ∃ n i z, attachmentChar f n i z = x := by
   obtain ⟨a,rfl⟩ := (CellAttachment.quotientMap_isQuotientMap f).surjective x
   cases a with
@@ -202,7 +202,7 @@ private theorem closedDiskChart_boundary (z : ClosedCellDomain 2) (hz : ‖z.val
   exact ⟨z.val,mem_sphere_zero_iff_norm.mpr hz,rfl⟩
 
 /-- A finite word carrier is contained in the corresponding finitely many closed cells. -/
-private theorem attachment_finite_boundary (f : R → C(Circle,Bouquet S))
+theorem attachment_finite_boundary (f : R → C(Circle,Bouquet S))
     (support : R → Finset S)
     (hsupport : ∀ i,Set.range (f i) ⊆ {base S} ∪ ⋃ s ∈ support i,Set.range (edgeLoop s)) :
     ∀ n i, ∃ F : ∀ m,Finset (presentationCell S R m),

@@ -1,7 +1,7 @@
 {
   "total_previous_private_helpers": 42,
-  "promoted_count": 6,
-  "preserved_private_count": 36,
+  "promoted_count": 10,
+  "preserved_private_count": 32,
   "helpers": [
     {
       "path": "FiniteGraphFreeGroup/TreeContraction.lean",
@@ -77,22 +77,22 @@
       "path": "PresentationComplex/CW.lean",
       "name": "attachmentChar_pairwiseDisjoint",
       "kind": "theorem",
-      "public": false,
-      "reason": "Used only within private declarations or theorem/proof bodies; retain privacy"
+      "public": true,
+      "reason": "Direct proof-term record field in exposed attachmentCWGeometry, outside a by proof block; requires public visibility"
     },
     {
       "path": "PresentationComplex/CW.lean",
       "name": "attachment_weakTopology",
       "kind": "theorem",
-      "public": false,
-      "reason": "Used only within private declarations or theorem/proof bodies; retain privacy"
+      "public": true,
+      "reason": "Direct proof-term record field in exposed attachmentCWGeometry, outside a by proof block; requires public visibility"
     },
     {
       "path": "PresentationComplex/CW.lean",
       "name": "attachment_closed_cells_cover",
       "kind": "theorem",
-      "public": false,
-      "reason": "Used only within private declarations or theorem/proof bodies; retain privacy"
+      "public": true,
+      "reason": "Direct proof-term record field in exposed attachmentCWGeometry, outside a by proof block; requires public visibility"
     },
     {
       "path": "PresentationComplex/CW.lean",
@@ -105,8 +105,8 @@
       "path": "PresentationComplex/CW.lean",
       "name": "attachment_finite_boundary",
       "kind": "theorem",
-      "public": false,
-      "reason": "Used only within private declarations or theorem/proof bodies; retain privacy"
+      "public": true,
+      "reason": "Direct proof-term record field in exposed attachmentCWGeometry, outside a by proof block; requires public visibility"
     },
     {
       "path": "PresentationComplex/CellCharts.lean",

@@ -270,9 +270,9 @@
     {
       "module": "PresentationComplex.CW",
       "path": "PresentationComplex/CW.lean",
-      "source_sha256": "9a18ed6b4ed132e9eae6d9e45252904e18210e3acee37152a3360ac58113e4f5",
+      "source_sha256": "e8615a9b1d29ff489e22ba8cfcfe9ed0ee82a4f5a047be6160f2dbda4c40c39d",
       "eof_scopes_closed": 1,
-      "private_modifiers_removed": 14
+      "private_modifiers_removed": 10
     },
     {
       "module": "CellAttachment.GroupoidQuotient",

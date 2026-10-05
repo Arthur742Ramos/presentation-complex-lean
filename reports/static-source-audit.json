@@ -180,23 +180,7 @@
       "module": "PresentationComplex.CW"
     },
     {
-      "stable_name": "PresentationComplex.attachmentChar_pairwiseDisjoint",
-      "module": "PresentationComplex.CW"
-    },
-    {
-      "stable_name": "PresentationComplex.attachment_weakTopology",
-      "module": "PresentationComplex.CW"
-    },
-    {
-      "stable_name": "PresentationComplex.attachment_closed_cells_cover",
-      "module": "PresentationComplex.CW"
-    },
-    {
       "stable_name": "PresentationComplex.closedDiskChart_boundary",
-      "module": "PresentationComplex.CW"
-    },
-    {
-      "stable_name": "PresentationComplex.attachment_finite_boundary",
       "module": "PresentationComplex.CW"
     },
     {
@@ -256,7 +240,7 @@
   "modular_source_sha256": {
     "PresentationComplex/Bouquet.lean": "fb554ea90966f39e0860443b2ac1ed272e8a7606916d927bb99f5b7650b08c2c",
     "PresentationComplex/BouquetCells.lean": "3909f7c9c902869fe327ad745678e9c42609f9a5ccc9899a76df23c87fbb15ba",
-    "PresentationComplex/CW.lean": "9a18ed6b4ed132e9eae6d9e45252904e18210e3acee37152a3360ac58113e4f5",
+    "PresentationComplex/CW.lean": "e8615a9b1d29ff489e22ba8cfcfe9ed0ee82a4f5a047be6160f2dbda4c40c39d",
     "PresentationComplex/CellCharts.lean": "562c2ffe2b067102e8d94d131cf7f4ef846584f91f1297aa301dee0823d3804c",
     "PresentationComplex/Characteristic.lean": "f3386406142a47c5930202aa32732f647a01968ba98320909f08902594e30167",
     "PresentationComplex/Connected.lean": "53d5cd452944bc098633a948fb2a86e67c3bc2487ea229bddc7b183efb4aa6db",
