@@ -13,7 +13,6 @@ PresentationComplex.Connected PresentationComplex/Connected.lean
 CellAttachment.GroupQuotient CellAttachment/GroupQuotient.lean
 CellAttachment.Statement CellAttachment/Statement.lean
 PresentationComplex.Relators PresentationComplex/Relators.lean
-PresentationComplex.EveryGroupConstruction PresentationComplex/EveryGroupConstruction.lean
 PresentationComplex.GraphCells PresentationComplex/GraphCells.lean
 PresentationComplex.Characteristic PresentationComplex/Characteristic.lean
 PresentationComplex.IntervalCharts PresentationComplex/IntervalCharts.lean

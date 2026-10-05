@@ -272,7 +272,6 @@ public import Mathlib.CategoryTheory.EqToHom
 public import Mathlib.Topology.LocallyConstant.Basic
 public import Mathlib.Topology.CompactOpen
 public import Mathlib.Topology.Homotopy.Equiv
-public import Mathlib.GroupTheory.FreeGroup.Basic
 public import Mathlib.Topology.Separation.Hausdorff
 
 @[expose] public section
@@ -5826,6 +5825,32 @@ instance relatorNormalClosure_normal (r : R → FreeGroup S) :
 end PresentationComplex
 end
 end Standalone_PresentationComplex_Relators
+
+/-! Source module: PresentationComplex.EveryGroupConstruction -/
+section Standalone_PresentationComplex_EveryGroupConstruction
+
+/-! Construction-only data for the every-group realization challenge.
+No CW structure, Hausdorffness, or fundamental-group realization proof is imported. -/
+noncomputable section
+universe u
+namespace PresentationComplex
+variable (G : Type u) [Group G]
+
+/-- One relator for every multiplication table entry, plus the identity generator. -/
+def groupRelators : (G × G) ⊕ PUnit.{u+1} → FreeGroup G
+  | Sum.inl (g,h) => FreeGroup.of g * FreeGroup.of h * (FreeGroup.of (g*h))⁻¹
+  | Sum.inr _ => FreeGroup.of (1 : G)
+
+
+/-- The actual complex associated to the multiplication-and-identity presentation. -/
+abbrev EveryGroupSpace (G : Type u) [Group G] := Space (groupRelators G)
+
+/-- Its actual distinguished zero-cell. -/
+def everyGroupPoint (G : Type u) [Group G] : EveryGroupSpace G := point (groupRelators G)
+
+end PresentationComplex
+end
+end Standalone_PresentationComplex_EveryGroupConstruction
 
 /-! Source module: PresentationComplex.GraphCells -/
 section Standalone_PresentationComplex_GraphCells
@@ -17207,10 +17232,6 @@ universe u
 namespace PresentationComplex
 variable (G : Type u) [Group G]
 
-/-- One relator for every multiplication table entry, plus the identity generator. -/
-def groupRelators : (G × G) ⊕ PUnit.{u+1} → FreeGroup G
-  | Sum.inl (g,h) => FreeGroup.of g * FreeGroup.of h * (FreeGroup.of (g*h))⁻¹
-  | Sum.inr _ => FreeGroup.of (1 : G)
 
 abbrev groupNormalClosure := Subgroup.normalClosure (Set.range (groupRelators G))
 abbrev GroupPresentation := FreeGroup G ⧸ groupNormalClosure G
@@ -17532,6 +17553,8 @@ def completeStatement : Prop :=
       (e : FundamentalGroup (Space r) (point r) ≃*
         (FreeGroup S ⧸ relatorNormalClosure r)),
       T2Space (Space r) ∧ PathConnectedSpace (Space r) ∧
+      Nonempty (cw.cell 0 ≃ PUnit.{max u v + 1}) ∧
+      Nonempty (cw.cell 1 ≃ S) ∧ Nonempty (cw.cell 2 ≃ R) ∧
       (∀ n, 2 < n → IsEmpty (cw.cell n)) ∧
       (∀ s, b (Path.Homotopic.Quotient.mk (edgeLoop s)) = FreeGroup.of s) ∧
       e.toMonoidHom.comp (CellAttachment.inclusionPi1 (relatorMap r) (base S)) =
@@ -17544,14 +17567,10 @@ of dimension at most two, with exact ordinary fundamental group and generators. 
 theorem presentation_complex : completeStatement.{u,v} := by
   intro S R r
   exact ⟨presentationCW r,bouquetEquiv S,presentationPi1Equiv r,
-    inferInstance,inferInstance,presentationCW_noHigherCells r,
+    inferInstance,inferInstance,⟨Equiv.refl _⟩,
+    ⟨presentationCW_generatorCells r⟩,⟨presentationCW_relatorCells r⟩,
+    presentationCW_noHigherCells r,
     bouquetEquiv_edgeLoop,presentationPi1Equiv_inclusion r,presentationPi1Equiv_generator r⟩
-
-/-- The actual complex associated to the multiplication-and-identity presentation. -/
-abbrev EveryGroupSpace (G : Type u) [Group G] := Space (groupRelators G)
-
-/-- Its actual distinguished zero-cell. -/
-def everyGroupPoint (G : Type u) [Group G] : EveryGroupSpace G := point (groupRelators G)
 
 /-- Every group is the fundamental group of this genuine presentation space. -/
 def everyGroupPi1Equiv (G : Type u) [Group G] :

@@ -1,0 +1,33 @@
+module
+
+import Solution
+
+universe u v
+example : PresentationComplex.completeStatement.{u,v} :=
+  PresentationComplex.presentation_complex
+
+#print PresentationComplex.completeStatement
+#check PresentationComplex.every_group_fundamental_group
+#check PresentationComplex.everyGroupPi1Equiv_generator
+
+#print axioms PresentationComplex.presentation_complex
+#print axioms PresentationComplex.every_group_fundamental_group
+#print axioms PresentationComplex.presentationPi1Equiv
+#print axioms PresentationComplex.presentationPi1Equiv_inclusion
+#print axioms PresentationComplex.presentationPi1Equiv_generator
+#print axioms PresentationComplex.presentationMap_exact
+#print axioms PresentationComplex.bouquetEquiv
+#print axioms PresentationComplex.bouquetEquiv_edgeLoop
+#print axioms PresentationComplex.attachingLoopClass_eq
+#print axioms PresentationComplex.presentationCW
+#print axioms PresentationComplex.presentationCW_generatorCells
+#print axioms PresentationComplex.presentationCW_relatorCells
+#print axioms PresentationComplex.presentationCW_noHigherCells
+#print axioms PresentationComplex.presentation_t2Space
+#print axioms PresentationComplex.everyGroupPi1Equiv
+#print axioms PresentationComplex.everyGroupPi1Equiv_generator
+#print axioms PresentationComplex.everyGroupCW_hasTwoCell
+#print axioms PresentationComplex.groupPresentationEquiv
+#print axioms PresentationComplex.groupPresentationEquiv_generator
+#print axioms CellAttachment.cell_attachment_exact
+#print axioms FiniteGraphFreeGroup.graphCombinatorialToTopologicalEquiv

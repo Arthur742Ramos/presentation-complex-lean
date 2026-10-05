@@ -1,4 +1,4 @@
-import Mathlib.GroupTheory.FreeGroup.Basic
+import PresentationComplex.EveryGroupConstruction
 import CellAttachment.GroupQuotient
 
 /-! Every group has an explicit multiplication-and-identity presentation.
@@ -10,10 +10,6 @@ universe u
 namespace PresentationComplex
 variable (G : Type u) [Group G]
 
-/-- One relator for every multiplication table entry, plus the identity generator. -/
-def groupRelators : (G × G) ⊕ PUnit.{u+1} → FreeGroup G
-  | Sum.inl (g,h) => FreeGroup.of g * FreeGroup.of h * (FreeGroup.of (g*h))⁻¹
-  | Sum.inr _ => FreeGroup.of (1 : G)
 
 abbrev groupNormalClosure := Subgroup.normalClosure (Set.range (groupRelators G))
 abbrev GroupPresentation := FreeGroup G ⧸ groupNormalClosure G

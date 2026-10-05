@@ -2,11 +2,11 @@
   "status": "generated; compilation and kernel verification not asserted",
   "generator": "scripts/generate_standalone.py",
   "solution_root": "PresentationComplex.Main",
-  "challenge_construction_root": "PresentationComplex.EveryGroupConstruction",
+  "challenge_construction_root": "PresentationComplex.Relators",
   "statement_source": "PresentationComplex/Main.lean:completeStatement",
-  "statement_sha256": "61e023318353ab21fab0ad4c6eba85c652f656a72c4ae7565ac6272ef895645d",
-  "solution_sha256": "c767e45dbf54df02239aec8e17adf709c43c8ba9c97508d8b7527dcbda83ef86",
-  "challenge_sha256": "1620d6f2a345f461657ad3be3dc512dcc2b6c5b2530a38325b649043afb68e96",
+  "statement_sha256": "02ffe68e698a55a62dcee3eeae6c4ee83653202f9478512839e15bde93cd8883",
+  "solution_sha256": "28c5b595148867ee82bc7eb1aac900982792175f95c3c9c5007ee36529eaf5c4",
+  "challenge_sha256": "44f1038460f1eb0d0299dedc14534e960b96bf2116a7166fcd68771e456db29f",
   "solution_local_modules": [
     {
       "module": "FiniteGraphFreeGroup.Proof",
@@ -112,13 +112,6 @@
       "source_sha256": "beb51f33e32080939cb9ead1de42bff9943897006a803da18950ec4faaf5061a",
       "eof_scopes_closed": 1,
       "private_modifiers_removed": 1
-    },
-    {
-      "module": "PresentationComplex.EveryGroupConstruction",
-      "path": "PresentationComplex/EveryGroupConstruction.lean",
-      "source_sha256": "4f1933be5ffb2a795e601396a3fe2b3a107672f4b09ba983bd84b89508cd49b2",
-      "eof_scopes_closed": 1,
-      "private_modifiers_removed": 0
     },
     {
       "module": "PresentationComplex.GraphCells",
@@ -529,7 +522,7 @@
     {
       "module": "PresentationComplex.EveryGroupPresentation",
       "path": "PresentationComplex/EveryGroupPresentation.lean",
-      "source_sha256": "0f86c4ba69a4841356fbbe45ada6011f12e9ae79d81b42000c8e8ce675fa896e",
+      "source_sha256": "ae99c664f929bc297f9d2b6cb3095a1c819ef339f4662e74ec397481e63d29bf",
       "eof_scopes_closed": 1,
       "private_modifiers_removed": 0
     },
@@ -543,7 +536,7 @@
     {
       "module": "PresentationComplex.Main",
       "path": "PresentationComplex/Main.lean",
-      "source_sha256": "914259f282146c626ee40cfa9863f9e7464a56e0cc3d0e2ef10570671b889f1f",
+      "source_sha256": "e98254d8c49cb1a277ec6074cbe43b3071e116a41a1552fdc89e320b68809e5b",
       "eof_scopes_closed": 1,
       "private_modifiers_removed": 0
     }
@@ -653,13 +646,6 @@
       "source_sha256": "beb51f33e32080939cb9ead1de42bff9943897006a803da18950ec4faaf5061a",
       "eof_scopes_closed": 1,
       "private_modifiers_removed": 1
-    },
-    {
-      "module": "PresentationComplex.EveryGroupConstruction",
-      "path": "PresentationComplex/EveryGroupConstruction.lean",
-      "source_sha256": "4f1933be5ffb2a795e601396a3fe2b3a107672f4b09ba983bd84b89508cd49b2",
-      "eof_scopes_closed": 1,
-      "private_modifiers_removed": 0
     }
   ],
   "solution_external_imports": [
@@ -711,6 +697,7 @@
     "Mathlib.Topology.LocallyConstant.Basic",
     "Mathlib.Topology.CompactOpen",
     "Mathlib.Topology.Homotopy.Equiv",
+    "Mathlib.GroupTheory.FreeGroup.Basic",
     "Mathlib.Topology.Separation.Hausdorff"
   ],
   "challenge_external_imports": [
@@ -762,6 +749,7 @@
     "Mathlib.Topology.LocallyConstant.Basic",
     "Mathlib.Topology.CompactOpen",
     "Mathlib.Topology.Homotopy.Equiv",
+    "Mathlib.GroupTheory.FreeGroup.Basic",
     "Mathlib.Topology.Separation.Hausdorff"
   ],
   "challenge_minimal_construction_imports": [
@@ -804,13 +792,11 @@
     "PresentationComplex.Connected",
     "CellAttachment.GroupQuotient",
     "CellAttachment.Statement",
-    "PresentationComplex.Relators",
-    "PresentationComplex.EveryGroupConstruction"
+    "PresentationComplex.Relators"
   ],
   "shared_environment_note": "Both standalones import the same external Mathlib environment and elaborate the identical local construction prefix first, preserving exact shared declaration bodies.",
   "challenge_intentional_holes": [
-    "PresentationComplex.presentation_complex",
-    "PresentationComplex.every_group_fundamental_group"
+    "PresentationComplex.presentation_complex"
   ],
   "source_transform": "Remove import/module/expose-section commands; isolate module scopes in sections and close EOF scopes; remove private visibility modifiers for stable helper names across Challenge/Solution. All declaration bodies and source notices are retained."
 }

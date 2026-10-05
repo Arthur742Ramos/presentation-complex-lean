@@ -2,8 +2,7 @@
   "challenge_module": "Challenge",
   "solution_module": "Solution",
   "theorem_names": [
-    "PresentationComplex.presentation_complex",
-    "PresentationComplex.every_group_fundamental_group"
+    "PresentationComplex.presentation_complex"
   ],
   "definition_names": [],
   "permitted_axioms": [

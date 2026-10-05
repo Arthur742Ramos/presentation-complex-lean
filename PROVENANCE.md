@@ -5,11 +5,14 @@ Ruy Jose Guerra Barretto de Queiroz. Responsible maintainers: Arthur Freitas Ram
 David Barros Hulak, Ruy Jose Guerra Barretto de Queiroz.
 No invented roles or mathematical novelty are claimed.
 
-All 83 modular sources, both standalones, the standard-only transitive axiom
-audit, and four direct independent kernels pass on the exact toolchain. Normal
-serial and aggregate Lake builds also pass.
-The sandboxed Comparator is blocked at
-kernel launch; no official hosted or registry verdict is claimed.
+**Local proof checks passed; handoff verification is incomplete.** The strengthened
+cell-index statement and two-target package have fresh exact-source compilation,
+replay, standard-only axiom, and direct-kernel passes, plus independent automated
+source review. See [reports/CURRENT_VERIFICATION.md](reports/CURRENT_VERIFICATION.md).
+The local type/body Comparator and official hosted/rendering gates have not run
+for this repair. No registry submission or acceptance is claimed. The earlier
+[checkpoint reports](reports/history/pre-packaging-4eb147d/README.md) retain their
+original bytes and apply only to their recorded inputs.
 
 The genuine arbitrary graph realization, covering, contraction, and comparison
 are adapted from Arthur742Ramos/finite-graph-fundamental-group exact commit
@@ -31,7 +34,11 @@ Arthur742Ramos/classical-svk-lean exact commit
 Inherited Basold–Bruin–Lawson path subdivision source is from
 Dominique-Lawson/Directed-Topology-Lean-4 exact commit
 `009529606c66d37ef93b4b81b8587f71ce4d2c56`. Its MIT notices are preserved
-in Lean4/LICENSE.md. Original backport author notices in CellAttachment/
+in Lean4/LICENSE.md. Lean4/README.md preserves the historical upstream Lean 4.6
+instructions; this project uses the exact pin below. The packaged directed
+Van Kampen theorem and upstream all.lean umbrella are intentionally omitted;
+only the credited helper extraction and its retained dependencies are used.
+See Lean4/PORTING.md for that boundary. Original backport author notices in CellAttachment/
 CircleGenerator.lean are preserved. First-party source remains Apache-2.0.
 
 The square-to-complex-disk bridge uses Yury Kudryashov's proved convex-body

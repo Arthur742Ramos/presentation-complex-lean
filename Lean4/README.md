@@ -1,3 +1,10 @@
+> **Historical upstream README.** The text below is preserved from the vendored
+> directed-topology project. Its Lean 4.6 installation instructions and project
+> scope describe that upstream source, not this package. This repository pins
+> Lean 4.35.0-rc2; follow [../SETUP.md](../SETUP.md). See
+> [PORTING.md](PORTING.md) for the retained helper closure and intentionally
+> omitted directed Van Kampen theorem.
+
 # Directed Topology
 
 ## Description

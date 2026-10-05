@@ -203,7 +203,7 @@ def main() -> None:
                                              'source_sha256': digest(ROOT/(name+'.lean')),
                                              'olean_sha256': digest(artifact) if ret == 0 and artifact.is_file() else None}
                 entry.update(status='pass' if all(m['exit_code'] == 0 for m in entry['modules'].values()) else 'fail')
-                entry['challenge_intentional_theorem_holes'] = 1
+                entry['challenge_intentional_theorem_holes'] = 2
             elif stage == 'axioms':
                 ret = run([str(lean), '-j1', f'-M{args.memory_mb}', 'reports/AuditSolution.lean'], 'standalone-axioms.log')
                 log = (ROOT/'reports/standalone-axioms.log').read_text()

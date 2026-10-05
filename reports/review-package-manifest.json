@@ -1,0 +1,54 @@
+{
+  "scope": "Minimal review interface; not a registry submission or acceptance verdict.",
+  "proof_source_commit": "0d3c2d1fd36aa0aa94e56b5d309de25308267c1f",
+  "primary_review_files": [
+    {
+      "path": "Challenge.lean",
+      "sha256": "1620d6f2a345f461657ad3be3dc512dcc2b6c5b2530a38325b649043afb68e96",
+      "bytes": 257012
+    },
+    {
+      "path": "Solution.lean",
+      "sha256": "c767e45dbf54df02239aec8e17adf709c43c8ba9c97508d8b7527dcbda83ef86",
+      "bytes": 755871
+    },
+    {
+      "path": "comparator.json",
+      "sha256": "3eac2f7d7e879ce12a01c07c6f87d200612452d28f1a276b63cb95ba67e1ead9",
+      "bytes": 337
+    },
+    {
+      "path": "formalization.yaml",
+      "sha256": "675176926530fa1e4d1fc26b2064fde05b1a978e3788d8a94234a6a2869ca6f5",
+      "bytes": 7995
+    },
+    {
+      "path": "LICENSE",
+      "sha256": "5f3751276afe718ffa78ec1fc61490d4185712554bcb6a90059416dc424ce9a6",
+      "bytes": 11351
+    },
+    {
+      "path": "Lean4/LICENSE.md",
+      "sha256": "2ced362d7ffbb9c04bb1f7471d63fc4a96e148a4358eca72afbd860367f41a2d",
+      "bytes": 1063
+    },
+    {
+      "path": "PROVENANCE.md",
+      "sha256": "7505418cadb75a3d8d35980e528504d077a18f80848ac4433f17d0c33e90f938",
+      "bytes": 3383
+    }
+  ],
+  "reproduction_modular_source_count": 84,
+  "solution_closure_count": 77,
+  "challenge_construction_closure_count": 16,
+  "reproduction_manifests": [
+    "reports/standalone-manifest.json",
+    "reports/static-source-audit.json"
+  ],
+  "verification_matrix": "reports/CURRENT_VERIFICATION.md",
+  "historical_reports": "reports/history/pre-packaging-4eb147d",
+  "challenge_intentional_theorem_holes": [
+    "PresentationComplex.presentation_complex",
+    "PresentationComplex.every_group_fundamental_group"
+  ]
+}
