@@ -228,6 +228,4204 @@ public import PresentationPackage.Construction
 
 @[expose] public section
 
+/-! Source module: FiniteGraphFreeGroup.Cover -/
+section Standalone_FiniteGraphFreeGroup_Cover
+
+
+
+open CategoryTheory Quiver
+
+noncomputable section
+
+universe u
+
+namespace FiniteGraphFreeGroup
+
+/-!
+# The path-lifting cover
+
+For a root `r`, a vertex of the cover remembers both a graph vertex `v` and a
+morphism from `r` to `v` in the free groupoid.  An edge is a base edge whose
+lift has exactly the prescribed endpoint.  This is the standard combinatorial
+unfolding construction; the covering proof below is independent of the rank
+calculation.
+-/
+
+/-- Vertices of the path-lifting cover over a chosen root. -/
+abbrev graphCoverVertex {V : Type u} [Quiver.{u} V] (root : V) :=
+  Σ v : V, ((Quiver.FreeGroupoid.of V).obj root ⟶
+    (Quiver.FreeGroupoid.of V).obj v)
+
+/-- The lifted edges whose endpoint is prescribed by composition in the free groupoid. -/
+instance graphCoverQuiver {V : Type u} [Quiver.{u} V] (root : V) :
+    Quiver (graphCoverVertex root) where
+  Hom x y := {e : x.1 ⟶ y.1 //
+    x.2 ≫ (Quiver.FreeGroupoid.of V).map e = y.2}
+
+/-- The projection from the path-lifting cover to the original quiver. -/
+def graphCoverProjection {V : Type u} [Quiver.{u} V] (root : V) :
+    graphCoverVertex root ⥤q V where
+  obj x := x.1
+  map e := e.1
+
+lemma graphCoverStar_ext {V : Type u} [Quiver.{u} V] {root : V}
+    {x z y : graphCoverVertex root} (hy : z = y)
+    {f : x ⟶ z} {e : x ⟶ y} (h : HEq f.1 e.1) :
+    (⟨z, f⟩ : Quiver.Star x) = ⟨y, e⟩ := by
+  cases hy
+  refine Sigma.ext rfl ?_
+  exact heq_of_eq (Subtype.ext (eq_of_heq h))
+
+lemma graphCoverCostar_ext {V : Type u} [Quiver.{u} V] {root : V}
+    {x z y : graphCoverVertex root} (hy : z = y)
+    {f : z ⟶ x} {e : y ⟶ x} (h : HEq f.1 e.1) :
+    (⟨z, f⟩ : Quiver.Costar x) = ⟨y, e⟩ := by
+  cases hy
+  refine Sigma.ext rfl ?_
+  exact heq_of_eq (Subtype.ext (eq_of_heq h))
+
+/-- Explicit lifting of a star at a cover vertex. -/
+def graphCoverStarEquiv {V : Type u} [Quiver.{u} V] (root : V)
+    (x : graphCoverVertex root) :
+    Quiver.Star x ≃ Quiver.Star x.1 where
+  toFun := (graphCoverProjection root).star x
+  invFun := fun e =>
+    ⟨⟨e.1, x.2 ≫ (Quiver.FreeGroupoid.of V).map e.2⟩,
+      ⟨e.2, rfl⟩⟩
+  left_inv := by
+    rintro ⟨y, e⟩
+    have hy :
+        (⟨y.1, x.2 ≫ (Quiver.FreeGroupoid.of V).map e.1⟩ :
+          graphCoverVertex root) = y := by
+      apply Sigma.ext
+      · rfl
+      · exact heq_of_eq e.property
+    let z : graphCoverVertex root :=
+      ⟨y.1, x.2 ≫ (Quiver.FreeGroupoid.of V).map e.1⟩
+    let f : x ⟶ z := ⟨e.1, rfl⟩
+    change (⟨z, f⟩ : Quiver.Star x) = ⟨y, e⟩
+    exact graphCoverStar_ext hy HEq.rfl
+  right_inv := by
+    rintro ⟨y, e⟩
+    rfl
+
+/-- Explicit lifting of a costar at a cover vertex. -/
+def graphCoverCostarEquiv {V : Type u} [Quiver.{u} V] (root : V)
+    (x : graphCoverVertex root) :
+    Quiver.Costar x ≃ Quiver.Costar x.1 where
+  toFun := (graphCoverProjection root).costar x
+  invFun := fun e =>
+    ⟨⟨e.1, x.2 ≫ Groupoid.inv ((Quiver.FreeGroupoid.of V).map e.2)⟩,
+      ⟨e.2, by simp [Category.assoc]⟩⟩
+  left_inv := by
+    rintro ⟨y, e⟩
+    have hpath :
+        x.2 ≫ Groupoid.inv ((Quiver.FreeGroupoid.of V).map e.1) = y.2 := by
+      calc
+        x.2 ≫ Groupoid.inv ((Quiver.FreeGroupoid.of V).map e.1) =
+            (y.2 ≫ (Quiver.FreeGroupoid.of V).map e.1) ≫
+              Groupoid.inv ((Quiver.FreeGroupoid.of V).map e.1) :=
+          congrArg (fun q => q ≫ Groupoid.inv ((Quiver.FreeGroupoid.of V).map e.1))
+            e.property.symm
+        _ = y.2 := by simp [Category.assoc]
+    have hy :
+        (⟨y.1, x.2 ≫ Groupoid.inv ((Quiver.FreeGroupoid.of V).map e.1)⟩ :
+          graphCoverVertex root) = y := by
+      apply Sigma.ext
+      · rfl
+      · exact heq_of_eq hpath
+    let z : graphCoverVertex root :=
+      ⟨y.1, x.2 ≫ Groupoid.inv ((Quiver.FreeGroupoid.of V).map e.1)⟩
+    let f : z ⟶ x := ⟨e.1, by simp [z, Category.assoc]⟩
+    change (⟨z, f⟩ : Quiver.Costar x) = ⟨y, e⟩
+    exact graphCoverCostar_ext hy HEq.rfl
+  right_inv := by
+    rintro ⟨y, e⟩
+    rfl
+
+/-- The path-lifting projection is a covering of quivers. -/
+theorem graphCoverProjection_isCovering {V : Type u} [Quiver.{u} V] (root : V) :
+    (graphCoverProjection root).IsCovering := by
+  refine ⟨fun x => (graphCoverStarEquiv root x).bijective,
+    fun x => (graphCoverCostarEquiv root x).bijective⟩
+
+end FiniteGraphFreeGroup
+end
+end Standalone_FiniteGraphFreeGroup_Cover
+
+/-! Source module: FiniteGraphFreeGroup.TopologicalCover -/
+section Standalone_FiniteGraphFreeGroup_TopologicalCover
+
+
+
+open Set Function
+open CategoryTheory CategoryTheory.SingleObj Quiver
+open unitInterval
+
+noncomputable section
+
+universe u
+
+namespace FiniteGraphFreeGroup
+
+/-!
+# Local charts for graph realizations
+
+The quotient realization has two kinds of local charts.  At a vertex we use
+the vertex together with the two half-open germs of every incident edge.  At
+an edge-interior point we use the open interval cell.  These sets are kept at
+the prequotient level so that openness is checked by `isOpen_coinduced` and
+the endpoint quotient is handled by a small saturation lemma.
+-/
+
+def graphHalf : I :=
+  ⟨(1 : ℝ) / 2, by constructor <;> norm_num⟩
+
+@[simp]
+theorem graphHalf_coe : (graphHalf : ℝ) = (1 : ℝ) / 2 := rfl
+
+@[simp]
+theorem graphHalf_pos : (0 : I) < graphHalf := by
+  change (0 : ℝ) < (1 : ℝ) / 2
+  norm_num
+
+@[simp]
+theorem graphHalf_lt_one : graphHalf < (1 : I) := by
+  change (1 : ℝ) / 2 < 1
+  norm_num
+
+@[simp]
+theorem graphHalf_not_lt_zero : ¬graphHalf < (0 : I) := by
+  exact not_lt_of_ge (le_of_lt graphHalf_pos)
+
+@[simp]
+theorem one_not_lt_graphHalf : ¬(1 : I) < graphHalf := by
+  exact not_lt_of_ge (le_of_lt graphHalf_lt_one)
+
+def graphVertexStarPre {V : Type u} [Quiver.{u} V] (v : V) :
+    Set (graphRealizationPre V) := {x | match x with
+      | Sum.inl w => graphVertexUnderlying w = v
+      | Sum.inr z =>
+          let e := graphEdgeUnderlying z.1
+          (e.left = v ∧ z.2 < graphHalf) ∨
+            (e.right = v ∧ graphHalf < z.2)}
+
+theorem graphVertexStarPre_isOpen {V : Type u} [Quiver.{u} V]
+    (v : V) : IsOpen (graphVertexStarPre v) := by
+  rw [isOpen_sum_iff]
+  constructor
+  · exact isOpen_discrete _
+  · rw [isOpen_sigma_iff]
+    intro e
+    change IsOpen {t : I |
+      ((graphEdgeUnderlying e).left = v ∧ t < graphHalf) ∨
+        ((graphEdgeUnderlying e).right = v ∧ graphHalf < t)}
+    by_cases hleft : (graphEdgeUnderlying e).left = v
+    · by_cases hright : (graphEdgeUnderlying e).right = v
+      · simp only [hleft, hright, true_and]
+        change IsOpen {t : I | t < graphHalf ∨ graphHalf < t}
+        exact isOpen_Iio.union isOpen_Ioi
+      · simp only [hleft, hright, true_and, false_and, or_false]
+        change IsOpen {t : I | t < graphHalf}
+        exact isOpen_Iio
+    · by_cases hright : (graphEdgeUnderlying e).right = v
+      · simp only [hleft, hright, false_and, true_and, false_or]
+        change IsOpen {t : I | graphHalf < t}
+        exact isOpen_Ioi
+      · simp only [hleft, hright, false_and, false_or]
+        exact isOpen_empty
+
+theorem graphVertexStarPre_saturated {V : Type u} [Quiver.{u} V]
+    (v : V) {x y : graphRealizationPre V}
+    (h : Relation.EqvGen (graphRealizationGenerator (V := V)) x y) :
+    (x ∈ graphVertexStarPre v ↔ y ∈ graphVertexStarPre v) := by
+  induction h with
+  | rel x y h =>
+      cases h with
+      | source e => simp [graphVertexStarPre]
+      | target e => simp [graphVertexStarPre]
+  | refl x => rfl
+  | symm x y h ih => exact ih.symm
+  | trans x y z hxy hyz ihxy ihyz => exact ihxy.trans ihyz
+
+theorem graphVertexStarPre_disjoint {V : Type u} [Quiver.{u} V]
+    {v w : V} (hvw : v ≠ w) :
+    Disjoint (graphVertexStarPre v) (graphVertexStarPre w) := by
+  rw [Set.disjoint_left]
+  intro z hzv hzw
+  cases z with
+  | inl z =>
+      exact hvw (by
+        have hv : graphVertexUnderlying z = v := by simpa [graphVertexStarPre] using hzv
+        have hw : graphVertexUnderlying z = w := by simpa [graphVertexStarPre] using hzw
+        exact hv.symm.trans hw)
+  | inr z =>
+      rcases z with ⟨z, t⟩
+      change (((graphEdgeUnderlying z).left = v ∧ t < graphHalf) ∨
+        ((graphEdgeUnderlying z).right = v ∧ graphHalf < t)) at hzv
+      change (((graphEdgeUnderlying z).left = w ∧ t < graphHalf) ∨
+        ((graphEdgeUnderlying z).right = w ∧ graphHalf < t)) at hzw
+      rcases hzv with hzv | hzv <;> rcases hzw with hzw | hzw
+      · exact hvw (hzv.1.symm.trans hzw.1)
+      · exact (not_lt_of_ge (le_of_lt hzw.2)) hzv.2
+      · exact (not_lt_of_ge (le_of_lt hzv.2)) hzw.2
+      · exact hvw (hzv.1.symm.trans hzw.1)
+
+def graphVertexStar {V : Type u} [Quiver.{u} V] (v : V) :
+    Set (graphRealization V) :=
+  graphRealizationQuotient '' graphVertexStarPre v
+
+theorem graphVertexStar_isOpen {V : Type u} [Quiver.{u} V]
+    (v : V) : IsOpen (graphVertexStar v) :=
+  graphRealization_image_isOpen_of_saturated
+    (graphVertexStarPre_saturated v) (graphVertexStarPre_isOpen v)
+
+theorem graphVertexStar_preimage {V : Type u} [Quiver.{u} V]
+    (v : V) :
+    graphRealizationQuotient ⁻¹' graphVertexStar v = graphVertexStarPre v :=
+  graphRealization_image_preimage_eq_of_saturated (graphVertexStarPre_saturated v)
+
+theorem graphVertex_mem_graphVertexStar {V : Type u} [Quiver.{u} V]
+    (v : V) : graphVertex v ∈ graphVertexStar v := by
+  exact ⟨Sum.inl (graphDiscreteVertex v), by simp [graphVertexStarPre], rfl⟩
+
+def graphEdgeInteriorPre {V : Type u} [Quiver.{u} V]
+    (e : Quiver.Total V) : Set (graphRealizationPre V) :=
+  {x | match x with
+    | Sum.inl _ => False
+    | Sum.inr z => z.1 = graphDiscreteEdge e ∧ z.2 ∈ Ioo (0 : I) 1}
+
+theorem graphEdgeInteriorPre_isOpen {V : Type u} [Quiver.{u} V]
+    (e : Quiver.Total V) : IsOpen (graphEdgeInteriorPre e) := by
+  rw [isOpen_sum_iff]
+  constructor
+  · exact isOpen_empty
+  · rw [isOpen_sigma_iff]
+    intro e'
+    by_cases h : e' = graphDiscreteEdge e
+    · subst h
+      change IsOpen {t : I |
+        graphDiscreteEdge e = graphDiscreteEdge e ∧ t ∈ Ioo (0 : I) 1}
+      simp only [true_and]
+      exact isOpen_Ioo
+    · simpa [graphEdgeInteriorPre, h] using
+        (isOpen_empty : IsOpen (∅ : Set I))
+
+theorem graphEdgeInteriorPre_saturated {V : Type u} [Quiver.{u} V]
+    (e : Quiver.Total V) {x y : graphRealizationPre V}
+    (h : Relation.EqvGen (graphRealizationGenerator (V := V)) x y) :
+    (x ∈ graphEdgeInteriorPre e ↔ y ∈ graphEdgeInteriorPre e) := by
+  induction h with
+  | rel x y h =>
+      cases h <;> simp [graphEdgeInteriorPre]
+  | refl x => rfl
+  | symm x y h ih => exact ih.symm
+  | trans x y z hxy hyz ihxy ihyz => exact ihxy.trans ihyz
+
+def graphEdgeInterior {V : Type u} [Quiver.{u} V]
+    (e : Quiver.Total V) : Set (graphRealization V) :=
+  graphRealizationQuotient '' graphEdgeInteriorPre e
+
+theorem graphEdgeInterior_isOpen {V : Type u} [Quiver.{u} V]
+    (e : Quiver.Total V) : IsOpen (graphEdgeInterior e) :=
+  graphRealization_image_isOpen_of_saturated
+    (graphEdgeInteriorPre_saturated e) (graphEdgeInteriorPre_isOpen e)
+
+theorem graphEdgeInterior_preimage {V : Type u} [Quiver.{u} V]
+    (e : Quiver.Total V) :
+    graphRealizationQuotient ⁻¹' graphEdgeInterior e = graphEdgeInteriorPre e :=
+  graphRealization_image_preimage_eq_of_saturated (graphEdgeInteriorPre_saturated e)
+
+theorem graphEdgePath_mem_graphEdgeInterior {V : Type u} [Quiver.{u} V]
+    (e : Quiver.Total V) {t : I} (ht0 : 0 < t) (ht1 : t < 1) :
+    graphEdgePath e t ∈ graphEdgeInterior e := by
+  exact ⟨Sum.inr ⟨graphDiscreteEdge e, t⟩, by simp [graphEdgeInteriorPre, ht0, ht1], rfl⟩
+
+def graphRealizationInteriorLabel {V : Type u} [Quiver.{u} V]
+    : graphRealizationPre V → Option (Quiver.Total V × I)
+  | Sum.inl _ => none
+  | Sum.inr z =>
+      if z.2 = 0 ∨ z.2 = 1 then none
+      else some (graphEdgeUnderlying z.1, z.2)
+
+theorem graphRealizationGenerator_interiorLabel {V : Type u}
+    [Quiver.{u} V] {x y : graphRealizationPre V}
+    (h : graphRealizationGenerator x y) :
+    graphRealizationInteriorLabel x = graphRealizationInteriorLabel y := by
+  cases h with
+  | source e => simp [graphRealizationInteriorLabel]
+  | target e => simp [graphRealizationInteriorLabel]
+
+theorem graphRealization_eqvGen_interiorLabel {V : Type u}
+    [Quiver.{u} V] {x y : graphRealizationPre V}
+    (h : Relation.EqvGen (graphRealizationGenerator (V := V)) x y) :
+    graphRealizationInteriorLabel x = graphRealizationInteriorLabel y := by
+  induction h with
+  | rel x y h => exact graphRealizationGenerator_interiorLabel h
+  | refl x => rfl
+  | symm x y h ih => exact ih.symm
+  | trans x y z hxy hyz ihxy ihyz => exact ihxy.trans ihyz
+
+theorem graphRealization_interior_eqvGen_eq {V : Type u}
+    [Quiver.{u} V] {e e' : Quiver.Total V} {t t' : I}
+    (ht0 : 0 < t) (ht1 : t < 1) (ht0' : 0 < t') (ht1' : t' < 1)
+    (h : Relation.EqvGen (graphRealizationGenerator (V := V))
+      (Sum.inr ⟨graphDiscreteEdge e, t⟩)
+      (Sum.inr ⟨graphDiscreteEdge e', t'⟩)) :
+    e = e' ∧ t = t' := by
+  have hl := graphRealization_eqvGen_interiorLabel h
+  have hne0 : t ≠ 0 := ne_of_gt ht0
+  have hne1 : t ≠ 1 := ne_of_lt ht1
+  have hne0' : t' ≠ 0 := ne_of_gt ht0'
+  have hne1' : t' ≠ 1 := ne_of_lt ht1'
+  simp only [graphRealizationInteriorLabel, hne0, hne1, hne0', hne1',
+    false_or, ↓reduceIte, Option.some.injEq] at hl
+  exact Prod.ext_iff.mp hl
+
+theorem graphRealization_vertex_edge_endpoint {V : Type u} [Quiver.{u} V]
+    {v : V} {e : Quiver.Total V} {t : I}
+    (h : graphRealizationQuotient (Sum.inl (graphDiscreteVertex v)) =
+      graphRealizationQuotient (Sum.inr ⟨graphDiscreteEdge e, t⟩)) :
+    t = 0 ∨ t = 1 := by
+  by_cases ht0 : t = 0
+  · exact Or.inl ht0
+  by_cases ht1 : t = 1
+  · exact Or.inr ht1
+  have hl := congrArg graphRealizationEndpointLabelQuotient h
+  simp [graphRealizationEndpointLabelQuotient_mk,
+    graphRealizationEndpointLabel, ht0, ht1] at hl
+
+theorem graphRealization_vertex_edge_source {V : Type u} [Quiver.{u} V]
+    {v : V} {e : Quiver.Total V} {t : I}
+    (h : graphRealizationQuotient (Sum.inl (graphDiscreteVertex v)) =
+      graphRealizationQuotient (Sum.inr ⟨graphDiscreteEdge e, t⟩))
+    (ht : t = 0) : v = e.left := by
+  have hl := congrArg graphRealizationEndpointLabelQuotient h
+  simp [graphRealizationEndpointLabelQuotient_mk,
+    graphRealizationEndpointLabel, ht] at hl
+  exact hl
+
+theorem graphRealization_vertex_edge_target {V : Type u} [Quiver.{u} V]
+    {v : V} {e : Quiver.Total V} {t : I}
+    (h : graphRealizationQuotient (Sum.inl (graphDiscreteVertex v)) =
+      graphRealizationQuotient (Sum.inr ⟨graphDiscreteEdge e, t⟩))
+    (ht : t = 1) : v = e.right := by
+  have hl := congrArg graphRealizationEndpointLabelQuotient h
+  simp [graphRealizationEndpointLabelQuotient_mk,
+    graphRealizationEndpointLabel, ht] at hl
+  exact hl
+
+/-! The combinatorial cover viewed through the same geometric-realization
+    construction. -/
+
+abbrev graphCoverRealization {V : Type u} [Quiver.{u} V] (root : V) :=
+  graphRealization (graphCoverVertex root)
+
+def graphCoverRealizationProjection {V : Type u} [Quiver.{u} V] (root : V) :
+    graphCoverRealization root → graphRealization V :=
+  graphRealizationMap (graphCoverProjection root)
+
+theorem continuous_graphCoverRealizationProjection
+    {V : Type u} [Quiver.{u} V] (root : V) :
+    Continuous (graphCoverRealizationProjection root) :=
+  continuous_graphRealizationMap (graphCoverProjection root)
+
+@[simp]
+theorem graphRealizationMap_quotient {V W : Type u} [Quiver.{u} V]
+    [Quiver.{u} W] (F : V ⥤q W) (x : graphRealizationPre V) :
+    graphRealizationMap F (graphRealizationQuotient x) =
+      graphRealizationQuotient (graphRealizationPreMap F x) := rfl
+
+def graphCoverRootVertex {V : Type u} [Quiver.{u} V] (root : V) :
+    graphCoverVertex root :=
+  ⟨root, 𝟙 _⟩
+
+@[simp]
+theorem graphCoverRootVertex_projection {V : Type u} [Quiver.{u} V]
+    (root : V) : (graphCoverRootVertex root).1 = root := rfl
+
+def graphCoverVertexOver {V : Type u} [Quiver.{u} V] (root v : V) :=
+  {x : graphCoverVertex root // x.1 = v}
+
+instance graphCoverVertexOver_topology {V : Type u} [Quiver.{u} V]
+    (root v : V) : TopologicalSpace (graphCoverVertexOver root v) := ⊥
+
+instance graphCoverVertexOver_discrete {V : Type u} [Quiver.{u} V]
+    (root v : V) : DiscreteTopology (graphCoverVertexOver root v) := by
+  exact discreteTopology_bot _
+
+def graphCoverSymmetricFreeGroupoidMap {V : Type u} [Quiver.{u} V]
+    (root : V) :
+    (Quiver.Symmetrify (graphCoverVertex root)) ⥤q
+      Quiver.FreeGroupoid V :=
+  Quiver.Symmetrify.lift
+    ((graphCoverProjection root) ⋙q (Quiver.FreeGroupoid.of V))
+
+theorem graphCoverSymmetricFreeGroupoidMap_map_pos
+    {V : Type u} [Quiver.{u} V] (root : V) {x y : graphCoverVertex root}
+    (e : x ⟶ y) :
+    (graphCoverSymmetricFreeGroupoidMap root).map (Sum.inl e) =
+      (Quiver.FreeGroupoid.of V).map e.1 := by
+  rfl
+
+theorem graphCoverVertexOver_nonempty {V : Type u} [Quiver.{u} V]
+    [WeaklyConnected V] (root v : V) :
+    Nonempty (graphCoverVertexOver root v) := by
+  rcases WeaklyConnected.path root v with ⟨p⟩
+  let φ := (graphCoverProjection root).symmetrify
+  obtain ⟨q, hq⟩ :=
+    ((graphCoverProjection_isCovering root).symmetrify.pathStar_bijective
+      (graphCoverRootVertex root)).2 ⟨v, p⟩
+  refine ⟨⟨q.1, ?_⟩⟩
+  have hq' := congrArg Sigma.fst hq
+  change q.1.1 = v at hq'
+  exact hq'
+
+theorem graphCoverPreMap_vertexStar_preimage {V : Type u} [Quiver.{u} V]
+    {root v : V} :
+    graphRealizationPreMap (graphCoverProjection root) ⁻¹'
+        graphVertexStarPre v =
+      ⋃ x : graphCoverVertexOver root v, graphVertexStarPre x.1 := by
+  ext z
+  cases z with
+  | inl z =>
+      constructor
+      · intro hz
+        have hz' : (graphVertexUnderlying z).1 = v := by
+          simpa [graphRealizationPreMap, graphVertexStarPre,
+            graphCoverProjection, graphVertexUnderlying,
+            graphDiscreteVertex] using hz
+        refine Set.mem_iUnion.mpr ?_
+        refine ⟨⟨graphVertexUnderlying z, hz'⟩, ?_⟩
+        simp [graphVertexStarPre]
+      · intro hz
+        rcases Set.mem_iUnion.mp hz with ⟨x, hx⟩
+        have hx' : graphVertexUnderlying z = x.1 := by
+          simpa [graphVertexStarPre] using hx
+        simpa [graphRealizationPreMap, graphVertexStarPre,
+          graphCoverProjection, graphVertexUnderlying,
+          graphDiscreteVertex, hx', x.2]
+  | inr z =>
+      rcases z with ⟨z, t⟩
+      let e : Quiver.Total (graphCoverVertex root) := graphEdgeUnderlying z
+      constructor
+      · intro hz
+        change ((e.left.1 = v ∧ t < graphHalf) ∨
+          (e.right.1 = v ∧ graphHalf < t)) at hz
+        rcases hz with hz | hz
+        · have he : e.left.1 = v := hz.1
+          refine Set.mem_iUnion.mpr ⟨⟨e.left, hz.1⟩, ?_⟩
+          simp only [graphVertexStarPre]
+          exact Or.inl ⟨rfl, hz.2⟩
+        · have he : e.right.1 = v := hz.1
+          refine Set.mem_iUnion.mpr ⟨⟨e.right, hz.1⟩, ?_⟩
+          simp only [graphVertexStarPre]
+          exact Or.inr ⟨rfl, hz.2⟩
+      · intro hz
+        rcases Set.mem_iUnion.mp hz with ⟨x, hx⟩
+        change ((e.left.1 = v ∧ t < graphHalf) ∨
+          (e.right.1 = v ∧ graphHalf < t))
+        change (e.left = x.1 ∧ t < graphHalf) ∨
+          (e.right = x.1 ∧ graphHalf < t) at hx
+        rcases hx with hx | hx
+        · exact Or.inl ⟨(by
+            calc
+              e.left.1 = x.1.1 := congrArg Sigma.fst hx.1
+              _ = v := x.2), hx.2⟩
+        · exact Or.inr ⟨(by
+            calc
+              e.right.1 = x.1.1 := congrArg Sigma.fst hx.1
+              _ = v := x.2), hx.2⟩
+
+theorem graphCoverVertexStarPre_union_saturated {V : Type u}
+    [Quiver.{u} V] {root v : V}
+    {x y : graphRealizationPre (graphCoverVertex root)}
+    (h : Relation.EqvGen
+      (graphRealizationGenerator (V := graphCoverVertex root)) x y) :
+    ((x ∈ ⋃ z : graphCoverVertexOver root v, graphVertexStarPre z.1) ↔
+      y ∈ ⋃ z : graphCoverVertexOver root v, graphVertexStarPre z.1) := by
+  constructor
+  · intro hx
+    rcases Set.mem_iUnion.mp hx with ⟨z, hz⟩
+    exact Set.mem_iUnion.mpr ⟨z, (graphVertexStarPre_saturated z.1 h).mp hz⟩
+  · intro hy
+    rcases Set.mem_iUnion.mp hy with ⟨z, hz⟩
+    exact Set.mem_iUnion.mpr ⟨z, (graphVertexStarPre_saturated z.1 h).mpr hz⟩
+
+theorem graphCoverRealizationProjection_vertexStar_preimage
+    {V : Type u} [Quiver.{u} V] {root v : V} :
+    graphCoverRealizationProjection root ⁻¹' graphVertexStar v =
+      ⋃ x : graphCoverVertexOver root v, graphVertexStar x.1 := by
+  ext z
+  refine Quotient.inductionOn z ?_
+  intro z
+  constructor
+  · intro hz
+    change graphRealizationMap (graphCoverProjection root)
+        (graphRealizationQuotient z) ∈ graphVertexStar v at hz
+    rw [graphRealizationMap_quotient] at hz
+    have hz' : graphRealizationQuotient
+        (graphRealizationPreMap (graphCoverProjection root) z) ∈
+        graphVertexStar v := hz
+    rcases hz' with ⟨y, hy, hzy⟩
+    have hrel := Quotient.exact hzy
+    have hpre : graphRealizationPreMap (graphCoverProjection root) z ∈
+        graphVertexStarPre v := (graphVertexStarPre_saturated v hrel).mp hy
+    have hzunion : z ∈
+        ⋃ x : graphCoverVertexOver root v, graphVertexStarPre x.1 := by
+      rw [← graphCoverPreMap_vertexStar_preimage]
+      exact hpre
+    rcases Set.mem_iUnion.mp hzunion with ⟨x, hx⟩
+    exact Set.mem_iUnion.mpr ⟨x, ⟨z, hx, rfl⟩⟩
+  · intro hz
+    rcases Set.mem_iUnion.mp hz with ⟨x, hx⟩
+    rcases hx with ⟨y, hy, hzy⟩
+    have hrel := Quotient.exact hzy
+    have hyunion : y ∈
+        ⋃ x : graphCoverVertexOver root v, graphVertexStarPre x.1 :=
+      Set.mem_iUnion.mpr ⟨x, hy⟩
+    have hzunion : z ∈
+      ⋃ x : graphCoverVertexOver root v, graphVertexStarPre x.1 :=
+      (graphCoverVertexStarPre_union_saturated hrel).mp hyunion
+    have hpre : graphRealizationPreMap (graphCoverProjection root) z ∈
+        graphVertexStarPre v := by
+      have heq := (graphCoverPreMap_vertexStar_preimage (root := root) (v := v))
+      change z ∈ graphRealizationPreMap (graphCoverProjection root) ⁻¹'
+        graphVertexStarPre v
+      rw [heq]
+      exact hzunion
+    change graphRealizationMap (graphCoverProjection root)
+        (graphRealizationQuotient z) ∈ graphVertexStar v
+    rw [graphRealizationMap_quotient]
+    exact ⟨graphRealizationPreMap (graphCoverProjection root) z, hpre, rfl⟩
+
+@[simp]
+theorem graphCoverPreMap_vertex {V : Type u} [Quiver.{u} V]
+    (root : V) (x : graphCoverVertex root) :
+    graphRealizationPreMap (graphCoverProjection root)
+        (Sum.inl (graphDiscreteVertex x)) =
+      Sum.inl (graphDiscreteVertex x.1) := rfl
+
+@[simp]
+theorem graphCoverPreMap_edge {V : Type u} [Quiver.{u} V]
+    (root : V) (e : Quiver.Total (graphCoverVertex root)) (t : I) :
+    graphRealizationPreMap (graphCoverProjection root)
+        (Sum.inr ⟨graphDiscreteEdge e, t⟩) =
+      Sum.inr ⟨graphDiscreteEdge
+        ⟨e.left.1, e.right.1, e.hom.1⟩, t⟩ := rfl
+
+theorem graphVertexStar_disjoint {V : Type u} [Quiver.{u} V]
+    {v w : V} (hvw : v ≠ w) :
+    Disjoint (graphVertexStar v) (graphVertexStar w) := by
+  rw [Set.disjoint_left]
+  rintro z ⟨a, ha, haz⟩ ⟨b, hb, hbz⟩
+  have hrel : Relation.EqvGen
+      (graphRealizationGenerator (V := V)) b a :=
+    Quotient.exact (hbz.trans haz.symm)
+  have hba : b ∈ graphVertexStarPre v :=
+    (graphVertexStarPre_saturated v hrel).mpr ha
+  exact (Set.disjoint_left.mp
+    (graphVertexStarPre_disjoint (v := w) (w := v) hvw.symm)) hb hba
+
+theorem graphStar_total_injective {V : Type u} [Quiver.{u} V]
+    {x : V} : Function.Injective (fun s : Quiver.Star x =>
+      (⟨x, s.1, s.2⟩ : Quiver.Total V)) := by
+  rintro ⟨y, e⟩ ⟨z, f⟩ h
+  cases h
+  rfl
+
+theorem graphCostar_total_injective {V : Type u} [Quiver.{u} V]
+    {x : V} : Function.Injective (fun s : Quiver.Costar x =>
+      (⟨s.1, x, s.2⟩ : Quiver.Total V)) := by
+  rintro ⟨y, e⟩ ⟨z, f⟩ h
+  cases h
+  rfl
+
+theorem graphCoverStarEquiv_map_eq_of_total_eq
+    {V : Type u} [Quiver.{u} V] {root : V}
+    (x : graphCoverVertex root)
+    (e f : Quiver.Total (graphCoverVertex root))
+    (he : e.left = x) (hf : f.left = x)
+    (htot : (⟨e.left.1, e.right.1, e.hom.1⟩ : Quiver.Total V) =
+      ⟨f.left.1, f.right.1, f.hom.1⟩) :
+    (graphCoverStarEquiv root x) ⟨e.right, he ▸ e.hom⟩ =
+      (graphCoverStarEquiv root x) ⟨f.right, hf ▸ f.hom⟩ := by
+  change (graphCoverProjection root).star x
+      ⟨e.right, he ▸ e.hom⟩ =
+    (graphCoverProjection root).star x
+      ⟨f.right, hf ▸ f.hom⟩
+  apply Sigma.ext
+  · exact (Quiver.Total.ext_iff.mp htot).2.1
+  · change (he ▸ e.hom).1 ≍ (hf ▸ f.hom).1
+    have hecast : (he ▸ e.hom).1 ≍ e.hom.1 := by
+      cases he
+      exact HEq.rfl
+    have hfcast : (hf ▸ f.hom).1 ≍ f.hom.1 := by
+      cases hf
+      exact HEq.rfl
+    have hh := (Quiver.Total.ext_iff.mp htot).2.2
+    exact hecast.trans (hh.trans hfcast.symm)
+
+theorem graphCoverCostarEquiv_map_eq_of_total_eq
+    {V : Type u} [Quiver.{u} V] {root : V}
+    (x : graphCoverVertex root)
+    (e f : Quiver.Total (graphCoverVertex root))
+    (he : e.right = x) (hf : f.right = x)
+    (htot : (⟨e.left.1, e.right.1, e.hom.1⟩ : Quiver.Total V) =
+      ⟨f.left.1, f.right.1, f.hom.1⟩) :
+    (graphCoverCostarEquiv root x) ⟨e.left, he ▸ e.hom⟩ =
+      (graphCoverCostarEquiv root x) ⟨f.left, hf ▸ f.hom⟩ := by
+  change (graphCoverProjection root).costar x
+      ⟨e.left, he ▸ e.hom⟩ =
+    (graphCoverProjection root).costar x
+      ⟨f.left, hf ▸ f.hom⟩
+  apply Sigma.ext
+  · exact (Quiver.Total.ext_iff.mp htot).1
+  · change (he ▸ e.hom).1 ≍ (hf ▸ f.hom).1
+    have hecast : (he ▸ e.hom).1 ≍ e.hom.1 := by
+      cases he
+      exact HEq.rfl
+    have hfcast : (hf ▸ f.hom).1 ≍ f.hom.1 := by
+      cases hf
+      exact HEq.rfl
+    have hh := (Quiver.Total.ext_iff.mp htot).2.2
+    exact hecast.trans (hh.trans hfcast.symm)
+
+theorem graphCover_total_eq_of_star_eq
+    {V : Type u} [Quiver.{u} V] {root : V}
+    (x : graphCoverVertex root)
+    (e f : Quiver.Total (graphCoverVertex root))
+    (he : e.left = x) (hf : f.left = x)
+    (hstar : (⟨e.right, he ▸ e.hom⟩ : Quiver.Star x) =
+      ⟨f.right, hf ▸ f.hom⟩) : e = f := by
+  have hright : e.right = f.right := congrArg Sigma.fst hstar
+  have hhom := (Sigma.ext_iff.mp hstar).2
+  change (he ▸ e.hom) ≍ (hf ▸ f.hom) at hhom
+  have hecast : he ▸ e.hom ≍ e.hom := by
+    exact eqRec_heq (φ := fun z : graphCoverVertex root => z ⟶ e.right)
+      he e.hom
+  have hfcast : hf ▸ f.hom ≍ f.hom := by
+    exact eqRec_heq (φ := fun z : graphCoverVertex root => z ⟶ f.right)
+      hf f.hom
+  exact Quiver.Total.ext (he.trans hf.symm) hright
+    (hecast.symm.trans (hhom.trans hfcast))
+
+theorem graphCover_total_eq_of_costar_eq
+    {V : Type u} [Quiver.{u} V] {root : V}
+    (x : graphCoverVertex root)
+    (e f : Quiver.Total (graphCoverVertex root))
+    (he : e.right = x) (hf : f.right = x)
+    (hcostar : (⟨e.left, he ▸ e.hom⟩ : Quiver.Costar x) =
+      ⟨f.left, hf ▸ f.hom⟩) : e = f := by
+  have hleft : e.left = f.left := congrArg Sigma.fst hcostar
+  have hhom := (Sigma.ext_iff.mp hcostar).2
+  change (he ▸ e.hom) ≍ (hf ▸ f.hom) at hhom
+  have hecast : he ▸ e.hom ≍ e.hom := by
+    exact eqRec_heq (φ := fun z : graphCoverVertex root => e.left ⟶ z)
+      he e.hom
+  have hfcast : hf ▸ f.hom ≍ f.hom := by
+    exact eqRec_heq (φ := fun z : graphCoverVertex root => f.left ⟶ z)
+      hf f.hom
+  exact Quiver.Total.ext hleft (he.trans hf.symm)
+    (hecast.symm.trans (hhom.trans hfcast))
+
+theorem graphCover_source_lift
+    {V : Type u} [Quiver.{u} V] {root : V}
+    (x : graphCoverVertex root) (e : Quiver.Total V)
+    (h : x.1 = e.left) :
+    ∃ d : Quiver.Total (graphCoverVertex root),
+      d.left = x ∧
+        (⟨d.left.1, d.right.1, d.hom.1⟩ : Quiver.Total V) = e := by
+  let s : Quiver.Star x.1 := ⟨e.right, h.symm ▸ e.hom⟩
+  let l : Quiver.Star x := (graphCoverStarEquiv root x).symm s
+  let d : Quiver.Total (graphCoverVertex root) := ⟨x, l.1, l.2⟩
+  refine ⟨d, rfl, ?_⟩
+  have hl := (graphCoverStarEquiv root x).apply_symm_apply s
+  change (⟨l.1.1, l.2.1⟩ : Quiver.Star x.1) = s at hl
+  have hl' := (Sigma.ext_iff.mp hl).2
+  have hright : l.1.1 = e.right := congrArg Sigma.fst hl
+  have hhom : l.2.1 ≍ h.symm ▸ e.hom := hl'
+  change (⟨x.1, l.1.1, l.2.1⟩ : Quiver.Total V) = e
+  refine Quiver.Total.ext h hright ?_
+  exact hhom.trans (by
+    exact eqRec_heq (φ := fun z : V => z ⟶ e.right) h.symm e.hom)
+
+theorem graphCover_target_lift
+    {V : Type u} [Quiver.{u} V] {root : V}
+    (x : graphCoverVertex root) (e : Quiver.Total V)
+    (h : e.right = x.1) :
+    ∃ d : Quiver.Total (graphCoverVertex root),
+      d.right = x ∧
+        (⟨d.left.1, d.right.1, d.hom.1⟩ : Quiver.Total V) = e := by
+  let s : Quiver.Costar x.1 := ⟨e.left, h ▸ e.hom⟩
+  let l : Quiver.Costar x := (graphCoverCostarEquiv root x).symm s
+  let d : Quiver.Total (graphCoverVertex root) := ⟨l.1, x, l.2⟩
+  refine ⟨d, rfl, ?_⟩
+  have hl := (graphCoverCostarEquiv root x).apply_symm_apply s
+  change (⟨l.1.1, l.2.1⟩ : Quiver.Costar x.1) = s at hl
+  have hl' := (Sigma.ext_iff.mp hl).2
+  have hleft : l.1.1 = e.left := congrArg Sigma.fst hl
+  have hhom : l.2.1 ≍ h ▸ e.hom := hl'
+  change (⟨l.1.1, x.1, l.2.1⟩ : Quiver.Total V) = e
+  refine Quiver.Total.ext hleft h.symm ?_
+  exact hhom.trans (by
+    exact eqRec_heq h e.hom)
+
+theorem graphCoverRealizationProjection_vertexStar_injective
+    {V : Type u} [Quiver.{u} V] {root v : V}
+    (x : graphCoverVertexOver root v) :
+    Set.InjOn (graphCoverRealizationProjection root)
+      (graphVertexStar x.1) := by
+  intro a ha b hb hab
+  rcases ha with ⟨a₀, ha₀, rfl⟩
+  rcases hb with ⟨b₀, hb₀, rfl⟩
+  have hbase :
+      graphRealizationQuotient
+          (graphRealizationPreMap (graphCoverProjection root) a₀) =
+        graphRealizationQuotient
+          (graphRealizationPreMap (graphCoverProjection root) b₀) := by
+    change graphCoverRealizationProjection root
+        (graphRealizationQuotient a₀) =
+      graphCoverRealizationProjection root (graphRealizationQuotient b₀) at hab
+    simpa only [graphRealizationMap_quotient,
+      graphCoverRealizationProjection] using hab
+  cases a₀ with
+  | inl av =>
+      have hav : graphVertexUnderlying av = x.1 := by
+        simpa [graphVertexStarPre] using ha₀
+      cases b₀ with
+      | inl bv =>
+          have hbv : graphVertexUnderlying bv = x.1 := by
+            simpa [graphVertexStarPre] using hb₀
+          have hv : graphVertexUnderlying av = graphVertexUnderlying bv :=
+            hav.trans hbv.symm
+          exact congrArg graphVertex hv
+      | inr bz =>
+          rcases bz with ⟨bz, t⟩
+          let e : Quiver.Total (graphCoverVertex root) := graphEdgeUnderlying bz
+          change ((e.left = x.1 ∧ t < graphHalf) ∨
+            (e.right = x.1 ∧ graphHalf < t)) at hb₀
+          have hbase' :
+              graphRealizationQuotient
+                  (Sum.inl (graphDiscreteVertex (graphVertexUnderlying av).1)) =
+                graphRealizationQuotient
+                  (Sum.inr ⟨graphDiscreteEdge
+                    ⟨e.left.1, e.right.1, e.hom.1⟩, t⟩) := by
+            simpa [graphRealizationPreMap, graphCoverProjection,
+              graphVertexUnderlying, graphDiscreteVertex,
+              graphEdgeUnderlying, graphDiscreteEdge, e] using hbase
+          have ezero :
+              graphRealizationQuotient
+                  (Sum.inr ⟨graphDiscreteEdge e, 0⟩) =
+                graphRealizationQuotient
+                  (Sum.inl (graphDiscreteVertex e.left)) := by
+            exact graphEdgePath_zero e
+          have eone :
+              graphRealizationQuotient
+                  (Sum.inr ⟨graphDiscreteEdge e, 1⟩) =
+                graphRealizationQuotient
+                  (Sum.inl (graphDiscreteVertex e.right)) := by
+            exact graphEdgePath_one e
+          have hbz : bz = graphDiscreteEdge e := by
+            simpa [e, graphDiscreteEdge, graphEdgeUnderlying] using
+              (WithTopology.toTopology_ofTopology bz).symm
+          rw [hbz]
+          rcases graphRealization_vertex_edge_endpoint hbase' with ht | ht
+          · have hes : e.left = x.1 := by
+              rcases hb₀ with hb₀ | hb₀
+              · exact hb₀.1
+              · exfalso
+                exact (not_lt_of_ge (le_of_lt graphHalf_pos))
+                  (ht ▸ hb₀.2)
+            calc
+              graphRealizationQuotient (Sum.inl (graphDiscreteVertex
+                  (graphVertexUnderlying av))) =
+                  graphRealizationQuotient (Sum.inl (graphDiscreteVertex e.left)) := by
+                    exact congrArg (fun z : graphCoverVertex root =>
+                      graphRealizationQuotient
+                        (Sum.inl (graphDiscreteVertex z)))
+                      (hav.trans hes.symm)
+              _ = graphRealizationQuotient (Sum.inr
+                  ⟨graphDiscreteEdge e, 0⟩) := ezero.symm
+              _ = graphRealizationQuotient (Sum.inr
+                  ⟨graphDiscreteEdge e, t⟩) := by rw [ht]
+          · have het : e.right = x.1 := by
+              rcases hb₀ with hb₀ | hb₀
+              · exfalso
+                exact (not_lt_of_ge (le_of_lt graphHalf_lt_one))
+                  (ht ▸ hb₀.2)
+              · exact hb₀.1
+            calc
+              graphRealizationQuotient (Sum.inl (graphDiscreteVertex
+                  (graphVertexUnderlying av))) =
+                  graphRealizationQuotient (Sum.inl (graphDiscreteVertex e.right)) := by
+                    exact congrArg (fun z : graphCoverVertex root =>
+                      graphRealizationQuotient
+                        (Sum.inl (graphDiscreteVertex z)))
+                      (hav.trans het.symm)
+              _ = graphRealizationQuotient (Sum.inr
+                  ⟨graphDiscreteEdge e, 1⟩) := eone.symm
+              _ = graphRealizationQuotient (Sum.inr
+                  ⟨graphDiscreteEdge e, t⟩) := by rw [ht]
+  | inr az =>
+      rcases az with ⟨az, t⟩
+      let e : Quiver.Total (graphCoverVertex root) := graphEdgeUnderlying az
+      change ((e.left = x.1 ∧ t < graphHalf) ∨
+        (e.right = x.1 ∧ graphHalf < t)) at ha₀
+      cases b₀ with
+      | inl bv =>
+          have hbv : graphVertexUnderlying bv = x.1 := by
+            simpa [graphVertexStarPre] using hb₀
+          have hbase' :
+              graphRealizationQuotient
+                  (Sum.inl (graphDiscreteVertex (graphVertexUnderlying bv).1)) =
+                graphRealizationQuotient
+                  (Sum.inr ⟨graphDiscreteEdge
+                    ⟨e.left.1, e.right.1, e.hom.1⟩, t⟩) := by
+            simpa [graphRealizationPreMap, graphCoverProjection,
+              graphVertexUnderlying, graphDiscreteVertex,
+              graphEdgeUnderlying, graphDiscreteEdge, e] using hbase.symm
+          have ezero :
+              graphRealizationQuotient
+                  (Sum.inr ⟨graphDiscreteEdge e, 0⟩) =
+                graphRealizationQuotient
+                  (Sum.inl (graphDiscreteVertex e.left)) := by
+            exact graphEdgePath_zero e
+          have eone :
+              graphRealizationQuotient
+                  (Sum.inr ⟨graphDiscreteEdge e, 1⟩) =
+                graphRealizationQuotient
+                  (Sum.inl (graphDiscreteVertex e.right)) := by
+            exact graphEdgePath_one e
+          have haz : az = graphDiscreteEdge e := by
+            simpa [e, graphDiscreteEdge, graphEdgeUnderlying] using
+              (WithTopology.toTopology_ofTopology az).symm
+          rw [haz]
+          rcases graphRealization_vertex_edge_endpoint hbase' with ht | ht
+          · have hes : e.left = x.1 := by
+              rcases ha₀ with ha₀ | ha₀
+              · exact ha₀.1
+              · exfalso
+                exact (not_lt_of_ge (le_of_lt graphHalf_pos))
+                  (ht ▸ ha₀.2)
+            calc
+              graphRealizationQuotient (Sum.inr
+                  ⟨graphDiscreteEdge e, t⟩) =
+                  graphRealizationQuotient (Sum.inr
+                  ⟨graphDiscreteEdge e, 0⟩) := by rw [ht]
+              _ = graphRealizationQuotient (Sum.inl (graphDiscreteVertex e.left)) :=
+                ezero
+              _ = graphRealizationQuotient (Sum.inl (graphDiscreteVertex
+                  (graphVertexUnderlying bv))) := by
+                    exact congrArg (fun z : graphCoverVertex root =>
+                      graphRealizationQuotient
+                        (Sum.inl (graphDiscreteVertex z)))
+                      (hes.trans hbv.symm)
+          · have het : e.right = x.1 := by
+              rcases ha₀ with ha₀ | ha₀
+              · exfalso
+                exact (not_lt_of_ge (le_of_lt graphHalf_lt_one))
+                  (ht ▸ ha₀.2)
+              · exact ha₀.1
+            calc
+              graphRealizationQuotient (Sum.inr
+                  ⟨graphDiscreteEdge e, t⟩) =
+                  graphRealizationQuotient (Sum.inr
+                  ⟨graphDiscreteEdge e, 1⟩) := by rw [ht]
+              _ = graphRealizationQuotient (Sum.inl (graphDiscreteVertex e.right)) :=
+                eone
+              _ = graphRealizationQuotient (Sum.inl (graphDiscreteVertex
+                  (graphVertexUnderlying bv))) := by
+                    exact congrArg (fun z : graphCoverVertex root =>
+                      graphRealizationQuotient
+                        (Sum.inl (graphDiscreteVertex z)))
+                      (het.trans hbv.symm)
+      | inr bz =>
+          rcases bz with ⟨bz, t'⟩
+          let f : Quiver.Total (graphCoverVertex root) := graphEdgeUnderlying bz
+          change ((f.left = x.1 ∧ t' < graphHalf) ∨
+            (f.right = x.1 ∧ graphHalf < t')) at hb₀
+          have hbase' :
+              graphRealizationQuotient
+                  (Sum.inr ⟨graphDiscreteEdge
+                    ⟨e.left.1, e.right.1, e.hom.1⟩, t⟩) =
+                graphRealizationQuotient
+                  (Sum.inr ⟨graphDiscreteEdge
+                    ⟨f.left.1, f.right.1, f.hom.1⟩, t'⟩) := by
+            simpa [graphRealizationPreMap, graphCoverProjection,
+              graphEdgeUnderlying, graphDiscreteEdge, e, f] using hbase
+          have ezero (d : Quiver.Total (graphCoverVertex root)) :
+              graphRealizationQuotient
+                  (Sum.inr ⟨graphDiscreteEdge d, 0⟩) =
+                graphRealizationQuotient
+                  (Sum.inl (graphDiscreteVertex d.left)) := by
+            exact graphEdgePath_zero d
+          have eone (d : Quiver.Total (graphCoverVertex root)) :
+              graphRealizationQuotient
+                  (Sum.inr ⟨graphDiscreteEdge d, 1⟩) =
+                graphRealizationQuotient
+                  (Sum.inl (graphDiscreteVertex d.right)) := by
+            exact graphEdgePath_one d
+          have bezero (d : Quiver.Total V) :
+              graphRealizationQuotient
+                  (Sum.inr ⟨graphDiscreteEdge d, 0⟩) =
+                graphRealizationQuotient
+                  (Sum.inl (graphDiscreteVertex d.left)) := by
+            exact graphEdgePath_zero d
+          have beone (d : Quiver.Total V) :
+              graphRealizationQuotient
+                  (Sum.inr ⟨graphDiscreteEdge d, 1⟩) =
+                graphRealizationQuotient
+                  (Sum.inl (graphDiscreteVertex d.right)) := by
+            exact graphEdgePath_one d
+          let eb : Quiver.Total V :=
+            ⟨e.left.1, e.right.1, e.hom.1⟩
+          let fb : Quiver.Total V :=
+            ⟨f.left.1, f.right.1, f.hom.1⟩
+          have hbase'' :
+              graphRealizationQuotient
+                  (Sum.inr ⟨graphDiscreteEdge eb, t⟩) =
+                graphRealizationQuotient
+                  (Sum.inr ⟨graphDiscreteEdge fb, t'⟩) := by
+            simpa [eb, fb] using hbase'
+          have haz : az = graphDiscreteEdge e := by
+            simpa [e, graphDiscreteEdge, graphEdgeUnderlying] using
+              (WithTopology.toTopology_ofTopology az).symm
+          have hbz : bz = graphDiscreteEdge f := by
+            simpa [f, graphDiscreteEdge, graphEdgeUnderlying] using
+              (WithTopology.toTopology_ofTopology bz).symm
+          rw [haz, hbz]
+          by_cases ht0 : t = 0
+          · have hvertex :
+                graphRealizationQuotient (Sum.inl (graphDiscreteVertex eb.left)) =
+                  graphRealizationQuotient (Sum.inr ⟨graphDiscreteEdge
+                    fb, t'⟩) := by
+                have hbase0 :
+                    graphRealizationQuotient
+                        (Sum.inr ⟨graphDiscreteEdge eb, 0⟩) =
+                      graphRealizationQuotient
+                        (Sum.inr ⟨graphDiscreteEdge fb, t'⟩) := by
+                  simpa [ht0] using hbase''
+                exact (bezero eb).symm.trans hbase0
+            rcases graphRealization_vertex_edge_endpoint hvertex with ht'0 | ht'1
+            · have he : e.left = x.1 := by
+                rcases ha₀ with ha₀ | ha₀
+                · exact ha₀.1
+                · exfalso
+                  exact (not_lt_of_ge (le_of_lt graphHalf_pos)) (ht0 ▸ ha₀.2)
+              have hf : f.left = x.1 := by
+                rcases hb₀ with hb₀ | hb₀
+                · exact hb₀.1
+                · exfalso
+                  exact (not_lt_of_ge (le_of_lt graphHalf_pos)) (ht'0 ▸ hb₀.2)
+              calc
+                graphRealizationQuotient (Sum.inr ⟨graphDiscreteEdge e, t⟩) =
+                    graphRealizationQuotient (Sum.inl (graphDiscreteVertex x.1)) := by
+                      rw [ht0]
+                      exact (ezero e).trans (congrArg graphVertex he)
+                _ = graphRealizationQuotient (Sum.inr
+                    ⟨graphDiscreteEdge f, t'⟩) := by
+                      rw [ht'0]
+                      exact (congrArg graphVertex hf.symm).trans (ezero f).symm
+            · have he : e.left = x.1 := by
+                rcases ha₀ with ha₀ | ha₀
+                · exact ha₀.1
+                · exfalso
+                  exact (not_lt_of_ge (le_of_lt graphHalf_pos)) (ht0 ▸ ha₀.2)
+              have hf : f.right = x.1 := by
+                rcases hb₀ with hb₀ | hb₀
+                · exfalso
+                  exact (not_lt_of_ge (le_of_lt graphHalf_lt_one)) (ht'1 ▸ hb₀.2)
+                · exact hb₀.1
+              calc
+                graphRealizationQuotient (Sum.inr ⟨graphDiscreteEdge e, t⟩) =
+                    graphRealizationQuotient (Sum.inl (graphDiscreteVertex x.1)) := by
+                      rw [ht0]
+                      exact (ezero e).trans (congrArg graphVertex he)
+                _ = graphRealizationQuotient (Sum.inr
+                    ⟨graphDiscreteEdge f, t'⟩) := by
+                      rw [ht'1]
+                      exact (congrArg graphVertex hf.symm).trans (eone f).symm
+          · by_cases ht1 : t = 1
+            · have hvertex :
+                  graphRealizationQuotient (Sum.inl (graphDiscreteVertex eb.right)) =
+                    graphRealizationQuotient (Sum.inr ⟨graphDiscreteEdge
+                      fb, t'⟩) := by
+                  have hbase1 :
+                      graphRealizationQuotient
+                          (Sum.inr ⟨graphDiscreteEdge eb, 1⟩) =
+                        graphRealizationQuotient
+                          (Sum.inr ⟨graphDiscreteEdge fb, t'⟩) := by
+                    simpa [ht1] using hbase''
+                  exact (beone eb).symm.trans hbase1
+              rcases graphRealization_vertex_edge_endpoint hvertex with ht'0 | ht'1
+              · have he : e.right = x.1 := by
+                  rcases ha₀ with ha₀ | ha₀
+                  · exfalso
+                    exact (not_lt_of_ge (le_of_lt graphHalf_lt_one)) (ht1 ▸ ha₀.2)
+                  · exact ha₀.1
+                have hf : f.left = x.1 := by
+                  rcases hb₀ with hb₀ | hb₀
+                  · exact hb₀.1
+                  · exfalso
+                    exact (not_lt_of_ge (le_of_lt graphHalf_pos)) (ht'0 ▸ hb₀.2)
+                calc
+                  graphRealizationQuotient (Sum.inr ⟨graphDiscreteEdge e, t⟩) =
+                      graphRealizationQuotient (Sum.inl (graphDiscreteVertex x.1)) := by
+                        rw [ht1]
+                        exact (eone e).trans (congrArg graphVertex he)
+                  _ = graphRealizationQuotient (Sum.inr
+                      ⟨graphDiscreteEdge f, t'⟩) := by
+                        rw [ht'0]
+                        exact (congrArg graphVertex hf.symm).trans (ezero f).symm
+              · have he : e.right = x.1 := by
+                  rcases ha₀ with ha₀ | ha₀
+                  · exfalso
+                    exact (not_lt_of_ge (le_of_lt graphHalf_lt_one)) (ht1 ▸ ha₀.2)
+                  · exact ha₀.1
+                have hf : f.right = x.1 := by
+                  rcases hb₀ with hb₀ | hb₀
+                  · exfalso
+                    exact (not_lt_of_ge (le_of_lt graphHalf_lt_one)) (ht'1 ▸ hb₀.2)
+                  · exact hb₀.1
+                calc
+                  graphRealizationQuotient (Sum.inr ⟨graphDiscreteEdge e, t⟩) =
+                      graphRealizationQuotient (Sum.inl (graphDiscreteVertex x.1)) := by
+                        rw [ht1]
+                        exact (eone e).trans (congrArg graphVertex he)
+                  _ = graphRealizationQuotient (Sum.inr
+                      ⟨graphDiscreteEdge f, t'⟩) := by
+                        rw [ht'1]
+                        exact (congrArg graphVertex hf.symm).trans (eone f).symm
+            · have ht0' : 0 < t := lt_of_le_of_ne t.2.1 (Ne.symm ht0)
+              have ht1' : t < 1 := lt_of_le_of_ne t.2.2 ht1
+              have ht0ne : t' ≠ 0 := by
+                intro ht'
+                have hl := graphRealization_eqvGen_interiorLabel
+                  (Quotient.exact hbase'')
+                simp [graphRealizationInteriorLabel, ht0, ht1, ht'] at hl
+              have ht1ne : t' ≠ 1 := by
+                intro ht'
+                have hl := graphRealization_eqvGen_interiorLabel
+                  (Quotient.exact hbase'')
+                simp [graphRealizationInteriorLabel, ht0, ht1, ht'] at hl
+              have heq := graphRealization_interior_eqvGen_eq
+                ht0' ht1' (by
+                  exact lt_of_le_of_ne t'.2.1 (Ne.symm ht0ne))
+                (by
+                  exact lt_of_le_of_ne t'.2.2 ht1ne)
+                (Quotient.exact hbase'')
+              have hteq : t = t' := heq.2
+              have hside : t < graphHalf ∨ graphHalf < t := by
+                rcases ha₀ with ha₀ | ha₀
+                · exact Or.inl ha₀.2
+                · exact Or.inr ha₀.2
+              rcases hside with hside | hside
+              · have he : e.left = x.1 := by
+                  rcases ha₀ with ha₀ | ha₀
+                  · exact ha₀.1
+                  · exfalso
+                    exact (not_lt_of_ge (le_of_lt hside)) ha₀.2
+                have hf : f.left = x.1 := by
+                  rcases hb₀ with hb₀ | hb₀
+                  · exact hb₀.1
+                  · exfalso
+                    exact (not_lt_of_ge (le_of_lt hside))
+                      (hteq ▸ hb₀.2)
+                let se : Quiver.Star x.1 := ⟨e.right, he ▸ e.hom⟩
+                let sf : Quiver.Star x.1 := ⟨f.right, hf ▸ f.hom⟩
+                have hstar :
+                    se = sf := by
+                  apply (graphCoverStarEquiv root x.1).injective
+                  simpa [se, sf] using
+                    (graphCoverStarEquiv_map_eq_of_total_eq x.1 e f he hf heq.1)
+                have hedge : e = f := by
+                  exact graphCover_total_eq_of_star_eq x.1 e f he hf (by
+                    simpa [se, sf, he, hf] using hstar)
+                simpa [hedge, hteq]
+              · have he : e.right = x.1 := by
+                  rcases ha₀ with ha₀ | ha₀
+                  · exfalso
+                    exact (not_lt_of_ge (le_of_lt hside)) ha₀.2
+                  · exact ha₀.1
+                have hf : f.right = x.1 := by
+                  rcases hb₀ with hb₀ | hb₀
+                  · exfalso
+                    exact (not_lt_of_ge (le_of_lt hside))
+                      (hteq ▸ hb₀.2)
+                  · exact hb₀.1
+                let ce : Quiver.Costar x.1 := ⟨e.left, he ▸ e.hom⟩
+                let cf : Quiver.Costar x.1 := ⟨f.left, hf ▸ f.hom⟩
+                have hcostar :
+                    ce = cf := by
+                  apply (graphCoverCostarEquiv root x.1).injective
+                  simpa [ce, cf] using
+                    (graphCoverCostarEquiv_map_eq_of_total_eq x.1 e f he hf heq.1)
+                have hedge : e = f := by
+                  exact graphCover_total_eq_of_costar_eq x.1 e f he hf (by
+                    simpa [ce, cf, he, hf] using hcostar)
+                simpa [hedge, hteq]
+
+theorem graphCoverRealizationProjection_vertexStar_surjective
+    {V : Type u} [Quiver.{u} V] [WeaklyConnected V]
+    {root v : V} (x : graphCoverVertexOver root v) :
+    Set.SurjOn (graphCoverRealizationProjection root)
+      (graphVertexStar x.1) (graphVertexStar v) := by
+  intro y hy
+  rcases hy with ⟨z, hz, hzy⟩
+  cases z with
+  | inl zv =>
+      have hzv : graphVertexUnderlying zv = v := by
+        simpa [graphVertexStarPre] using hz
+      have hp :
+          graphCoverRealizationProjection root (graphVertex (x.1)) =
+            graphRealizationQuotient
+              (Sum.inl (graphDiscreteVertex (graphVertexUnderlying zv))) := by
+        change graphRealizationMap (graphCoverProjection root)
+          (graphVertex (x.1)) = _
+        rw [graphRealizationMap_vertex]
+        exact congrArg graphVertex (x.2.trans hzv.symm)
+      refine ⟨graphVertex (x.1), graphVertex_mem_graphVertexStar x.1, ?_⟩
+      exact hp.trans hzy
+  | inr z =>
+      rcases z with ⟨ze, t⟩
+      let e : Quiver.Total V := graphEdgeUnderlying ze
+      have hze : ze = graphDiscreteEdge e := by
+        simpa [e, graphDiscreteEdge, graphEdgeUnderlying] using
+          (WithTopology.toTopology_ofTopology ze).symm
+      rw [hze] at hzy
+      change ((e.left = v ∧ t < graphHalf) ∨
+        (e.right = v ∧ graphHalf < t)) at hz
+      rcases hz with hz | hz
+      · obtain ⟨d, hdl, hde⟩ := graphCover_source_lift x.1 e
+          (x.2.trans hz.1.symm)
+        refine ⟨graphEdgePath d t, ?_, ?_⟩
+        · refine ⟨Sum.inr ⟨graphDiscreteEdge d, t⟩, ?_, rfl⟩
+          simp [graphVertexStarPre, graphEdgeUnderlying, graphDiscreteEdge,
+            hdl, hz.2]
+        · calc
+            graphCoverRealizationProjection root (graphEdgePath d t) =
+                graphEdgePath
+                  (⟨d.left.1, d.right.1, d.hom.1⟩ : Quiver.Total V) t := by
+              exact graphRealizationMap_edgePath
+                (graphCoverProjection root) d t
+            _ = graphEdgePath e t := by rw [hde]
+            _ = y := hzy
+      · obtain ⟨d, hdr, hde⟩ := graphCover_target_lift x.1 e
+          (hz.1.trans x.2.symm)
+        refine ⟨graphEdgePath d t, ?_, ?_⟩
+        · refine ⟨Sum.inr ⟨graphDiscreteEdge d, t⟩, ?_, rfl⟩
+          simp [graphVertexStarPre, graphEdgeUnderlying, graphDiscreteEdge,
+            hdr, hz.2]
+        · calc
+            graphCoverRealizationProjection root (graphEdgePath d t) =
+                graphEdgePath
+                  (⟨d.left.1, d.right.1, d.hom.1⟩ : Quiver.Total V) t := by
+              exact graphRealizationMap_edgePath
+                (graphCoverProjection root) d t
+            _ = graphEdgePath e t := by rw [hde]
+            _ = y := hzy
+
+theorem graphCoverRealizationProjection_vertexStar_open_iff
+    {V : Type u} [Quiver.{u} V] [WeaklyConnected V]
+    {root v : V} (x : graphCoverVertexOver root v)
+    {W : Set (graphRealization V)} (hW : W ⊆ graphVertexStar v) :
+    IsOpen W ↔ IsOpen
+      (graphCoverRealizationProjection root ⁻¹' W ∩ graphVertexStar x.1) := by
+  constructor
+  · intro hopen
+    exact (hopen.preimage
+      (continuous_graphCoverRealizationProjection root)).inter
+      (graphVertexStar_isOpen x.1)
+  · intro hopen
+    have hopen_cover : IsOpen
+        (graphRealizationQuotient ⁻¹'
+          (graphCoverRealizationProjection root ⁻¹' W ∩
+            graphVertexStar x.1)) :=
+      (graphRealization_isOpen_iff.mp hopen)
+    have hbase_pre : IsOpen (graphRealizationQuotient ⁻¹' W) := by
+      rw [isOpen_sum_iff]
+      constructor
+      · exact isOpen_discrete _
+      · rw [isOpen_sigma_iff]
+        intro eb
+        change IsOpen {t : I | graphEdgePath
+          (graphEdgeUnderlying eb) t ∈ W}
+        let e : Quiver.Total V := graphEdgeUnderlying eb
+        have hdecomp :
+            {t : I | graphEdgePath e t ∈ W} =
+              {t : I | e.left = v ∧ t < graphHalf ∧
+                graphEdgePath e t ∈ W} ∪
+              {t : I | e.right = v ∧ graphHalf < t ∧
+                graphEdgePath e t ∈ W} := by
+          ext t
+          constructor
+          · intro ht
+            have hstar :
+                Sum.inr ⟨graphDiscreteEdge e, t⟩ ∈
+                  graphVertexStarPre v := by
+              rw [← graphVertexStar_preimage]
+              exact hW ht
+            change ((e.left = v ∧ t < graphHalf) ∨
+              (e.right = v ∧ graphHalf < t)) at hstar
+            rcases hstar with hstar | hstar
+            · exact Or.inl ⟨hstar.1, hstar.2, ht⟩
+            · exact Or.inr ⟨hstar.1, hstar.2, ht⟩
+          · intro ht
+            rcases ht with ht | ht
+            · exact ht.2.2
+            · exact ht.2.2
+        have hsource_open :
+            IsOpen {t : I | t < graphHalf ∧ graphEdgePath e t ∈ W} := by
+          by_cases hev : e.left = v
+          · obtain ⟨d, hdl, hde⟩ := graphCover_source_lift x.1 e
+              (x.2.trans hev.symm)
+            have hopen_d : IsOpen
+                ((graphEdgePath d) ⁻¹'
+                  (graphCoverRealizationProjection root ⁻¹' W ∩
+                    graphVertexStar x.1)) :=
+              hopen.preimage (graphEdgePath d).continuous
+            have hset :
+                {t : I | t < graphHalf ∧ graphEdgePath e t ∈ W} =
+                  (graphEdgePath d) ⁻¹'
+                    (graphCoverRealizationProjection root ⁻¹' W ∩
+                      graphVertexStar x.1) ∩
+                    {t : I | t < graphHalf} := by
+              ext t
+              constructor
+              · rintro ⟨ht, htW⟩
+                have hmap :
+                    graphCoverRealizationProjection root (graphEdgePath d t) =
+                      graphEdgePath e t := by
+                  calc
+                    graphCoverRealizationProjection root (graphEdgePath d t) =
+                        graphEdgePath
+                          (⟨d.left.1, d.right.1, d.hom.1⟩ : Quiver.Total V) t := by
+                      exact graphRealizationMap_edgePath
+                        (graphCoverProjection root) d t
+                    _ = graphEdgePath e t := by rw [hde]
+                have hmem : graphEdgePath d t ∈ graphVertexStar x.1 := by
+                  refine ⟨Sum.inr ⟨graphDiscreteEdge d, t⟩, ?_, rfl⟩
+                  simp [graphVertexStarPre, graphEdgeUnderlying,
+                    graphDiscreteEdge, hdl, ht]
+                have hmapW :
+                    graphCoverRealizationProjection root (graphEdgePath d t) ∈ W :=
+                  hmap.symm ▸ htW
+                exact ⟨⟨hmapW, hmem⟩, ht⟩
+              · rintro ⟨htA, ht⟩
+                have hmap :
+                    graphCoverRealizationProjection root (graphEdgePath d t) =
+                      graphEdgePath e t := by
+                  calc
+                    graphCoverRealizationProjection root (graphEdgePath d t) =
+                        graphEdgePath
+                          (⟨d.left.1, d.right.1, d.hom.1⟩ : Quiver.Total V) t := by
+                      exact graphRealizationMap_edgePath
+                        (graphCoverProjection root) d t
+                    _ = graphEdgePath e t := by rw [hde]
+                exact ⟨ht, hmap ▸ htA.1⟩
+            rw [hset]
+            exact hopen_d.inter isOpen_Iio
+          · have hempty : {t : I |
+                t < graphHalf ∧ graphEdgePath e t ∈ W} = ∅ := by
+              ext t
+              constructor
+              · rintro ⟨ht, htW⟩
+                have hstar :
+                    Sum.inr ⟨graphDiscreteEdge e, t⟩ ∈
+                      graphVertexStarPre v := by
+                  rw [← graphVertexStar_preimage]
+                  exact hW htW
+                change ((e.left = v ∧ t < graphHalf) ∨
+                  (e.right = v ∧ graphHalf < t)) at hstar
+                rcases hstar with hstar | hstar
+                · exact (hev hstar.1).elim
+                · exact (not_lt_of_ge (le_of_lt hstar.2)) ht
+              · intro ht
+                exact False.elim (by simpa using ht)
+            rw [hempty]
+            exact isOpen_empty
+        have htarget_open :
+            IsOpen {t : I | graphHalf < t ∧ graphEdgePath e t ∈ W} := by
+          by_cases hev : e.right = v
+          · obtain ⟨d, hdr, hde⟩ := graphCover_target_lift x.1 e
+              (hev.trans x.2.symm)
+            have hopen_d : IsOpen
+                ((graphEdgePath d) ⁻¹'
+                  (graphCoverRealizationProjection root ⁻¹' W ∩
+                    graphVertexStar x.1)) :=
+              hopen.preimage (graphEdgePath d).continuous
+            have hset :
+                {t : I | graphHalf < t ∧ graphEdgePath e t ∈ W} =
+                  (graphEdgePath d) ⁻¹'
+                    (graphCoverRealizationProjection root ⁻¹' W ∩
+                      graphVertexStar x.1) ∩
+                    {t : I | graphHalf < t} := by
+              ext t
+              constructor
+              · rintro ⟨ht, htW⟩
+                have hmap :
+                    graphCoverRealizationProjection root (graphEdgePath d t) =
+                      graphEdgePath e t := by
+                  calc
+                    graphCoverRealizationProjection root (graphEdgePath d t) =
+                        graphEdgePath
+                          (⟨d.left.1, d.right.1, d.hom.1⟩ : Quiver.Total V) t := by
+                      exact graphRealizationMap_edgePath
+                        (graphCoverProjection root) d t
+                    _ = graphEdgePath e t := by rw [hde]
+                have hmem : graphEdgePath d t ∈ graphVertexStar x.1 := by
+                  refine ⟨Sum.inr ⟨graphDiscreteEdge d, t⟩, ?_, rfl⟩
+                  simp [graphVertexStarPre, graphEdgeUnderlying,
+                    graphDiscreteEdge, hdr, ht]
+                have hmapW :
+                    graphCoverRealizationProjection root (graphEdgePath d t) ∈ W :=
+                  hmap.symm ▸ htW
+                exact ⟨⟨hmapW, hmem⟩, ht⟩
+              · rintro ⟨htA, ht⟩
+                have hmap :
+                    graphCoverRealizationProjection root (graphEdgePath d t) =
+                      graphEdgePath e t := by
+                  calc
+                    graphCoverRealizationProjection root (graphEdgePath d t) =
+                        graphEdgePath
+                          (⟨d.left.1, d.right.1, d.hom.1⟩ : Quiver.Total V) t := by
+                      exact graphRealizationMap_edgePath
+                        (graphCoverProjection root) d t
+                    _ = graphEdgePath e t := by rw [hde]
+                exact ⟨ht, hmap ▸ htA.1⟩
+            rw [hset]
+            exact hopen_d.inter isOpen_Ioi
+          · have hempty : {t : I |
+                graphHalf < t ∧ graphEdgePath e t ∈ W} = ∅ := by
+              ext t
+              constructor
+              · rintro ⟨ht, htW⟩
+                have hstar :
+                    Sum.inr ⟨graphDiscreteEdge e, t⟩ ∈
+                      graphVertexStarPre v := by
+                  rw [← graphVertexStar_preimage]
+                  exact hW htW
+                change ((e.left = v ∧ t < graphHalf) ∨
+                  (e.right = v ∧ graphHalf < t)) at hstar
+                rcases hstar with hstar | hstar
+                · exact (not_lt_of_ge (le_of_lt hstar.2)) ht
+                · exact (hev hstar.1).elim
+              · intro ht
+                exact False.elim (by simpa using ht)
+            rw [hempty]
+            exact isOpen_empty
+        have hsource' : IsOpen {t : I |
+            e.left = v ∧ t < graphHalf ∧ graphEdgePath e t ∈ W} := by
+          by_cases hev : e.left = v
+          · simpa [hev] using hsource_open
+          · simp [hev]
+        have htarget' : IsOpen {t : I |
+            e.right = v ∧ graphHalf < t ∧ graphEdgePath e t ∈ W} := by
+          by_cases hev : e.right = v
+          · simpa [hev] using htarget_open
+          · simp [hev]
+        rw [hdecomp]
+        exact hsource'.union htarget'
+    exact graphRealization_isOpen_iff.mpr hbase_pre
+
+def graphCoverEdgeProjection {V : Type u} [Quiver.{u} V] (root : V)
+    (d : Quiver.Total (graphCoverVertex root)) : Quiver.Total V :=
+  ⟨d.left.1, d.right.1, d.hom.1⟩
+
+def graphCoverEdgeOver {V : Type u} [Quiver.{u} V] (root : V)
+    (e : Quiver.Total V) :=
+  {d : Quiver.Total (graphCoverVertex root) //
+    graphCoverEdgeProjection root d = e}
+
+instance graphCoverEdgeOver_topology {V : Type u} [Quiver.{u} V]
+    (root : V) (e : Quiver.Total V) :
+    TopologicalSpace (graphCoverEdgeOver root e) := ⊥
+
+instance graphCoverEdgeOver_discrete {V : Type u} [Quiver.{u} V]
+    (root : V) (e : Quiver.Total V) :
+    DiscreteTopology (graphCoverEdgeOver root e) := by
+  exact discreteTopology_bot _
+
+theorem graphEdgeInterior_disjoint {V : Type u} [Quiver.{u} V]
+    {e f : Quiver.Total V} (hef : e ≠ f) :
+    Disjoint (graphEdgeInterior e) (graphEdgeInterior f) := by
+  rw [Set.disjoint_left]
+  rintro z ⟨a, ha, haz⟩ ⟨b, hb, hbz⟩
+  have hrel : Relation.EqvGen
+      (graphRealizationGenerator (V := V)) b a :=
+    Quotient.exact (hbz.trans haz.symm)
+  have hba : b ∈ graphEdgeInteriorPre e :=
+    (graphEdgeInteriorPre_saturated e hrel).mpr ha
+  cases b with
+  | inl bv =>
+      simp [graphEdgeInteriorPre] at hba
+  | inr bz =>
+      rcases bz with ⟨bz, t⟩
+      have hbe' : bz = graphDiscreteEdge e ∧ t ∈ Ioo (0 : I) 1 := by
+        simpa [graphEdgeInteriorPre] using hba
+      have hbe : bz = graphDiscreteEdge e := hbe'.1
+      have hbf : bz = graphDiscreteEdge f := by
+        have hbf'' : bz = graphDiscreteEdge f ∧ t ∈ Ioo (0 : I) 1 := by
+          simpa [graphEdgeInteriorPre] using hb
+        exact hbf''.1
+      apply hef
+      have h := congrArg graphEdgeUnderlying (hbe.symm.trans hbf)
+      simpa [graphEdgeUnderlying, graphDiscreteEdge] using h
+
+theorem graphCoverEdgeOver_nonempty {V : Type u} [Quiver.{u} V]
+    [WeaklyConnected V] {root : V} (e : Quiver.Total V) :
+    Nonempty (graphCoverEdgeOver root e) := by
+  rcases graphCoverVertexOver_nonempty root e.left with ⟨x⟩
+  obtain ⟨d, _, hd⟩ := graphCover_source_lift x.1 e x.2
+  exact ⟨⟨d, by simpa [graphCoverEdgeProjection] using hd⟩⟩
+
+theorem graphCoverRealizationProjection_edgeInterior_injective
+    {V : Type u} [Quiver.{u} V] {root : V}
+    (d : Quiver.Total (graphCoverVertex root)) :
+    Set.InjOn (graphCoverRealizationProjection root)
+      (graphEdgeInterior d) := by
+  intro a ha b hb hab
+  rcases ha with ⟨a₀, ha₀, rfl⟩
+  rcases hb with ⟨b₀, hb₀, rfl⟩
+  cases a₀ with
+  | inl av =>
+      simp [graphEdgeInteriorPre] at ha₀
+  | inr az =>
+      rcases az with ⟨az, t⟩
+      change az = graphDiscreteEdge d ∧ t ∈ Ioo (0 : I) 1 at ha₀
+      rcases ha₀ with ⟨rfl, hta⟩
+      cases b₀ with
+      | inl bv =>
+          simp [graphEdgeInteriorPre] at hb₀
+      | inr bz =>
+          rcases bz with ⟨bz, t'⟩
+          change bz = graphDiscreteEdge d ∧ t' ∈ Ioo (0 : I) 1 at hb₀
+          rcases hb₀ with ⟨rfl, htb⟩
+          have hbase :
+              graphRealizationQuotient
+                  (Sum.inr ⟨graphDiscreteEdge (graphCoverEdgeProjection root d), t⟩) =
+                graphRealizationQuotient
+                  (Sum.inr ⟨graphDiscreteEdge (graphCoverEdgeProjection root d), t'⟩) := by
+            change graphCoverRealizationProjection root
+                (graphRealizationQuotient
+                  (Sum.inr ⟨graphDiscreteEdge d, t⟩)) =
+              graphCoverRealizationProjection root
+                (graphRealizationQuotient
+                  (Sum.inr ⟨graphDiscreteEdge d, t'⟩)) at hab
+            simpa [graphRealizationMap_quotient,
+              graphCoverRealizationProjection, graphCoverPreMap_edge,
+              graphCoverEdgeProjection] using hab
+          have hteq := graphRealization_interior_eqvGen_eq
+            hta.1 hta.2 htb.1 htb.2 (Quotient.exact hbase)
+          simpa [hteq.2]
+
+theorem graphCoverRealizationProjection_edgeInterior_surjective
+    {V : Type u} [Quiver.{u} V] [WeaklyConnected V]
+    {root : V} {e : Quiver.Total V}
+    (d : graphCoverEdgeOver root e) :
+    Set.SurjOn (graphCoverRealizationProjection root)
+      (graphEdgeInterior d.1) (graphEdgeInterior e) := by
+  intro y hy
+  rcases hy with ⟨z, hz, hzy⟩
+  cases z with
+  | inl zv =>
+      simp [graphEdgeInteriorPre] at hz
+  | inr z =>
+      rcases z with ⟨ze, t⟩
+      change ze = graphDiscreteEdge e ∧ t ∈ Ioo (0 : I) 1 at hz
+      rcases hz with ⟨rfl, ht⟩
+      refine ⟨graphEdgePath d.1 t, ?_, ?_⟩
+      · exact graphEdgePath_mem_graphEdgeInterior d.1 ht.1 ht.2
+      · calc
+          graphCoverRealizationProjection root (graphEdgePath d.1 t) =
+              graphEdgePath (graphCoverEdgeProjection root d.1) t := by
+            exact graphRealizationMap_edgePath
+              (graphCoverProjection root) d.1 t
+          _ = graphEdgePath e t := by rw [d.2]
+          _ = y := hzy
+
+theorem graphCoverRealizationProjection_edgeInterior_open_iff
+    {V : Type u} [Quiver.{u} V] [WeaklyConnected V]
+    {root : V} {e : Quiver.Total V}
+    (d : graphCoverEdgeOver root e)
+    {W : Set (graphRealization V)} (hW : W ⊆ graphEdgeInterior e) :
+    IsOpen W ↔ IsOpen
+      (graphCoverRealizationProjection root ⁻¹' W ∩
+        graphEdgeInterior d.1) := by
+  constructor
+  · intro hopen
+    exact (hopen.preimage
+      (continuous_graphCoverRealizationProjection root)).inter
+      (graphEdgeInterior_isOpen d.1)
+  · intro hopen
+    have hbase_pre : IsOpen (graphRealizationQuotient ⁻¹' W) := by
+      rw [isOpen_sum_iff]
+      constructor
+      · change IsOpen {z : WithDiscreteTopology V |
+          graphVertex (graphVertexUnderlying z) ∈ W}
+        have hempty : {z : WithDiscreteTopology V |
+            graphVertex (graphVertexUnderlying z) ∈ W} = ∅ := by
+          ext z
+          constructor
+          · intro hz
+            have hi : graphVertex (graphVertexUnderlying z) ∈
+                graphEdgeInterior e := hW hz
+            have hipre :
+                Sum.inl (graphDiscreteVertex (graphVertexUnderlying z)) ∈
+                  graphEdgeInteriorPre e := by
+              rw [← graphEdgeInterior_preimage]
+              exact hi
+            simp [graphEdgeInteriorPre] at hipre
+          · intro hz
+            exact False.elim (by simpa using hz)
+        rw [hempty]
+        exact isOpen_empty
+      · rw [isOpen_sigma_iff]
+        intro eb
+        let e' : Quiver.Total V := graphEdgeUnderlying eb
+        change IsOpen {t : I | graphEdgePath e' t ∈ W}
+        by_cases he' : e' = e
+        · have hde : graphCoverEdgeProjection root d.1 = e := d.2
+          have hopen_d : IsOpen
+              ((graphEdgePath d.1) ⁻¹'
+                (graphCoverRealizationProjection root ⁻¹' W ∩
+                  graphEdgeInterior d.1)) :=
+            hopen.preimage (graphEdgePath d.1).continuous
+          have hset :
+              {t : I | graphEdgePath e' t ∈ W} =
+                (graphEdgePath d.1) ⁻¹'
+                  (graphCoverRealizationProjection root ⁻¹' W ∩
+                    graphEdgeInterior d.1) := by
+            ext t
+            constructor
+            · intro htW
+              have htint : t ∈ Ioo (0 : I) 1 := by
+                have hi :
+                    Sum.inr ⟨graphDiscreteEdge e, t⟩ ∈
+                      graphEdgeInteriorPre e := by
+                  rw [← graphEdgeInterior_preimage]
+                  exact hW (he' ▸ htW)
+                simpa [graphEdgeInteriorPre] using hi
+              have hmap :
+                  graphCoverRealizationProjection root
+                      (graphEdgePath d.1 t) = graphEdgePath e t := by
+                calc
+                  graphCoverRealizationProjection root
+                      (graphEdgePath d.1 t) =
+                      graphEdgePath (graphCoverEdgeProjection root d.1) t := by
+                    exact graphRealizationMap_edgePath
+                      (graphCoverProjection root) d.1 t
+                  _ = graphEdgePath e t := by rw [hde]
+              have hmem : graphEdgePath d.1 t ∈ graphEdgeInterior d.1 :=
+                graphEdgePath_mem_graphEdgeInterior d.1 htint.1 htint.2
+              have hmapW :
+                  graphCoverRealizationProjection root
+                      (graphEdgePath d.1 t) ∈ W :=
+                hmap.symm ▸ (he' ▸ htW)
+              exact ⟨hmapW, hmem⟩
+            · rintro ⟨htA, _⟩
+              have hmap :
+                  graphCoverRealizationProjection root
+                      (graphEdgePath d.1 t) = graphEdgePath e t := by
+                calc
+                  graphCoverRealizationProjection root
+                      (graphEdgePath d.1 t) =
+                      graphEdgePath (graphCoverEdgeProjection root d.1) t := by
+                    exact graphRealizationMap_edgePath
+                      (graphCoverProjection root) d.1 t
+                  _ = graphEdgePath e t := by rw [hde]
+              have htAW :
+                  graphCoverRealizationProjection root
+                      (graphEdgePath d.1 t) ∈ W := htA
+              have htW : graphEdgePath e t ∈ W := hmap ▸ htAW
+              exact he'.symm ▸ htW
+          rw [hset]
+          exact hopen_d
+        · have hempty : {t : I | graphEdgePath e' t ∈ W} = ∅ := by
+            ext t
+            constructor
+            · intro htW
+              have hi :
+                  Sum.inr ⟨graphDiscreteEdge e', t⟩ ∈
+                    graphEdgeInteriorPre e := by
+                rw [← graphEdgeInterior_preimage]
+                exact hW htW
+              have hieq : e' = e := by
+                have hi' : e' = e ∧ t ∈ Ioo (0 : I) 1 := by
+                  simpa [graphEdgeInteriorPre] using hi
+                exact hi'.1
+              exact (he' hieq).elim
+            · intro ht
+              exact False.elim (by simpa using ht)
+          rw [hempty]
+          exact isOpen_empty
+    exact graphRealization_isOpen_iff.mpr hbase_pre
+
+theorem graphCoverRealizationProjection_edgeInterior_preimage
+    {V : Type u} [Quiver.{u} V] [WeaklyConnected V]
+    {root : V} (e : Quiver.Total V) :
+    graphCoverRealizationProjection root ⁻¹' graphEdgeInterior e =
+      ⋃ d : graphCoverEdgeOver root e, graphEdgeInterior d.1 := by
+  ext z
+  refine Quotient.inductionOn z ?_
+  intro z
+  constructor
+  · intro hz
+    change graphRealizationMap (graphCoverProjection root)
+        (graphRealizationQuotient z) ∈ graphEdgeInterior e at hz
+    rw [graphRealizationMap_quotient] at hz
+    have hpre : graphRealizationPreMap (graphCoverProjection root) z ∈
+        graphEdgeInteriorPre e := by
+      rw [← graphEdgeInterior_preimage]
+      exact hz
+    cases z with
+    | inl zv =>
+        have hfalse : False := by
+          simpa [graphRealizationPreMap, graphCoverProjection,
+            graphEdgeInteriorPre] using hpre
+        exact hfalse.elim
+    | inr z =>
+        rcases z with ⟨ze, t⟩
+        let d : Quiver.Total (graphCoverVertex root) := graphEdgeUnderlying ze
+        have hpre' : graphCoverEdgeProjection root d = e ∧
+            t ∈ Ioo (0 : I) 1 := by
+          simpa [graphRealizationPreMap, graphCoverProjection,
+            graphEdgeInteriorPre, graphEdgeUnderlying, graphDiscreteEdge,
+            graphCoverEdgeProjection, d] using hpre
+        refine Set.mem_iUnion.mpr ⟨⟨d, hpre'.1⟩, ?_⟩
+        refine ⟨Sum.inr ⟨graphDiscreteEdge d, t⟩, ?_, ?_⟩
+        · have hmem :
+              graphDiscreteEdge (d : Quiver.Total (graphCoverVertex root)) =
+                graphDiscreteEdge (d : Quiver.Total (graphCoverVertex root)) ∧
+                  t ∈ Ioo (0 : I) 1 :=
+            ⟨rfl, hpre'.2⟩
+          simpa [graphEdgeInteriorPre] using hmem
+        · rfl
+  · intro hz
+    rcases Set.mem_iUnion.mp hz with ⟨d, hd⟩
+    rcases hd with ⟨w, hw, hwz⟩
+    have hpw :
+        graphCoverRealizationProjection root
+            (graphRealizationQuotient w) ∈ graphEdgeInterior e := by
+      cases w with
+      | inl wv =>
+          simp [graphEdgeInteriorPre] at hw
+      | inr w =>
+          rcases w with ⟨we, t⟩
+          change we = graphDiscreteEdge d.1 ∧ t ∈ Ioo (0 : I) 1 at hw
+          rcases hw with ⟨rfl, ht⟩
+          have hmap :
+              graphCoverRealizationProjection root
+                  (graphEdgePath d.1 t) = graphEdgePath e t := by
+            calc
+              graphCoverRealizationProjection root (graphEdgePath d.1 t) =
+                  graphEdgePath (graphCoverEdgeProjection root d.1) t := by
+                exact graphRealizationMap_edgePath
+                  (graphCoverProjection root) d.1 t
+              _ = graphEdgePath e t := by rw [d.2]
+          change graphCoverRealizationProjection root
+              (graphEdgePath d.1 t) ∈ graphEdgeInterior e
+          exact hmap.symm ▸ graphEdgePath_mem_graphEdgeInterior e ht.1 ht.2
+    change graphCoverRealizationProjection root
+        (graphRealizationQuotient z) ∈ graphEdgeInterior e
+    exact (congrArg (graphCoverRealizationProjection root) hwz) ▸ hpw
+
+/-! The local charts above assemble into an honest covering map.  Vertices use
+the lifted stars, while the open interval cells use their lifted interiors. -/
+
+theorem graphCoverRealizationProjection_isCovering
+    {V : Type u} [Quiver.{u} V] [WeaklyConnected V]
+    (root : V) :
+    IsCoveringMap (graphCoverRealizationProjection root) := by
+  have hvertex : ∀ v : V,
+      IsEvenlyCovered (graphCoverRealizationProjection root)
+        (graphVertex v) (graphCoverVertexOver root v) := by
+    intro v
+    letI : Nonempty (graphCoverVertexOver root v) :=
+      graphCoverVertexOver_nonempty root v
+    letI : Nonempty (graphCoverRealization root) := by
+      rcases (inferInstance : Nonempty (graphCoverVertexOver root v)) with ⟨x⟩
+      exact ⟨graphVertex x.1⟩
+    let t := (graphVertexStar_isOpen (v := v)).trivializationDiscrete
+      (fun x : graphCoverVertexOver root v => graphVertexStar x.1)
+      (graphVertexStar v)
+      (fun x {W} hW =>
+        graphCoverRealizationProjection_vertexStar_open_iff x hW)
+      (fun x => graphCoverRealizationProjection_vertexStar_injective x)
+      (fun x => graphCoverRealizationProjection_vertexStar_surjective x)
+      (by
+        intro x y hxy
+        have hxy' : x.1 ≠ y.1 := by
+          intro h
+          apply hxy
+          exact Subtype.ext h
+        exact graphVertexStar_disjoint hxy')
+      (by
+        rw [graphCoverRealizationProjection_vertexStar_preimage])
+    exact IsEvenlyCovered.of_trivialization
+      (t := t) (graphVertex_mem_graphVertexStar v)
+  have hedge : ∀ (e : Quiver.Total V) {y : graphRealization V},
+      y ∈ graphEdgeInterior e →
+        IsEvenlyCovered (graphCoverRealizationProjection root) y
+          (graphCoverEdgeOver root e) := by
+    intro e y hy
+    letI : Nonempty (graphCoverEdgeOver root e) :=
+      graphCoverEdgeOver_nonempty e
+    letI : Nonempty (graphCoverRealization root) := by
+      rcases (inferInstance : Nonempty (graphCoverEdgeOver root e)) with ⟨d⟩
+      exact ⟨graphEdgePath d.1 graphHalf⟩
+    let t := (graphEdgeInterior_isOpen e).trivializationDiscrete
+      (fun d : graphCoverEdgeOver root e => graphEdgeInterior d.1)
+      (graphEdgeInterior e)
+      (fun d {W} hW =>
+        graphCoverRealizationProjection_edgeInterior_open_iff d hW)
+      (fun d => graphCoverRealizationProjection_edgeInterior_injective d.1)
+      (fun d => graphCoverRealizationProjection_edgeInterior_surjective d)
+      (by
+        intro d₁ d₂ hd
+        have hval : d₁.1 ≠ d₂.1 := by
+          intro h
+          apply hd
+          exact Subtype.ext h
+        exact graphEdgeInterior_disjoint hval)
+      (by
+        rw [graphCoverRealizationProjection_edgeInterior_preimage])
+    exact IsEvenlyCovered.of_trivialization (t := t) hy
+  intro y
+  refine Quotient.inductionOn y ?_
+  intro z
+  cases z with
+  | inl v =>
+      have hv : graphRealizationQuotient (Sum.inl v) =
+          graphVertex (graphVertexUnderlying v) := by
+        have hv' : v = graphDiscreteVertex (graphVertexUnderlying v) := by
+          simpa [graphDiscreteVertex, graphVertexUnderlying] using
+            (WithTopology.toTopology_ofTopology v).symm
+        calc
+          graphRealizationQuotient (Sum.inl v) =
+              graphRealizationQuotient (Sum.inl
+                (graphDiscreteVertex (graphVertexUnderlying v))) := by rw [hv']
+          _ = graphVertex (graphVertexUnderlying v) := rfl
+      change IsEvenlyCovered (graphCoverRealizationProjection root)
+        (graphRealizationQuotient (Sum.inl v))
+        (graphCoverRealizationProjection root ⁻¹'
+          {graphRealizationQuotient (Sum.inl v)})
+      rw [hv]
+      exact (hvertex (graphVertexUnderlying v)).to_isEvenlyCovered_preimage
+  | inr z =>
+      rcases z with ⟨ze, t⟩
+      let e : Quiver.Total V := graphEdgeUnderlying ze
+      have hze : ze = graphDiscreteEdge e := by
+        simpa [e, graphDiscreteEdge, graphEdgeUnderlying] using
+          (WithTopology.toTopology_ofTopology ze).symm
+      by_cases ht0 : t = 0
+      · subst t
+        have hp : graphRealizationQuotient (Sum.inr
+            ⟨ze, (0 : I)⟩) = graphVertex e.left := by
+          calc
+            graphRealizationQuotient (Sum.inr ⟨ze, (0 : I)⟩) =
+                graphRealizationQuotient (Sum.inr
+                  ⟨graphDiscreteEdge e, (0 : I)⟩) := by rw [hze]
+            _ = graphEdgePath e 0 := rfl
+            _ = graphVertex e.left := graphEdgePath_zero e
+        change IsEvenlyCovered (graphCoverRealizationProjection root)
+          (graphRealizationQuotient (Sum.inr ⟨ze, (0 : I)⟩))
+          (graphCoverRealizationProjection root ⁻¹'
+            {graphRealizationQuotient (Sum.inr ⟨ze, (0 : I)⟩)})
+        rw [hp]
+        exact (hvertex e.left).to_isEvenlyCovered_preimage
+      · by_cases ht1 : t = 1
+        · subst t
+          have hp : graphRealizationQuotient (Sum.inr
+              ⟨ze, (1 : I)⟩) = graphVertex e.right := by
+            calc
+              graphRealizationQuotient (Sum.inr ⟨ze, (1 : I)⟩) =
+                  graphRealizationQuotient (Sum.inr
+                    ⟨graphDiscreteEdge e, (1 : I)⟩) := by rw [hze]
+              _ = graphEdgePath e 1 := rfl
+              _ = graphVertex e.right := graphEdgePath_one e
+          change IsEvenlyCovered (graphCoverRealizationProjection root)
+            (graphRealizationQuotient (Sum.inr ⟨ze, (1 : I)⟩))
+            (graphCoverRealizationProjection root ⁻¹'
+              {graphRealizationQuotient (Sum.inr ⟨ze, (1 : I)⟩)})
+          rw [hp]
+          exact (hvertex e.right).to_isEvenlyCovered_preimage
+        · have ht0' : 0 < t := lt_of_le_of_ne t.2.1 (Ne.symm ht0)
+          have ht1' : t < 1 := lt_of_le_of_ne t.2.2 ht1
+          have hy : graphRealizationQuotient (Sum.inr ⟨ze, t⟩) ∈
+              graphEdgeInterior e := by
+            rw [hze]
+            exact graphEdgePath_mem_graphEdgeInterior e ht0' ht1'
+          exact (hedge e hy).to_isEvenlyCovered_preimage
+
+end FiniteGraphFreeGroup
+end
+end Standalone_FiniteGraphFreeGroup_TopologicalCover
+
+/-! Source module: FiniteGraphFreeGroup.TreeContraction -/
+section Standalone_FiniteGraphFreeGroup_TreeContraction
+
+
+
+open Set Function
+open CategoryTheory CategoryTheory.SingleObj Quiver
+open unitInterval
+
+noncomputable section
+
+universe u
+
+namespace FiniteGraphFreeGroup
+
+/-!
+# Contraction data for a directed tree realization
+
+This file isolates the geometric part of the eventual graph comparison theorem.
+For an arborescence, every vertex has a unique directed path from the root.  The
+cellwise formula below contracts each edge along that root path.  The formula is
+the usual square filling of a concatenated path:
+
+`(t, s) ↦ p ((1 - s) * (1 + t) / 2)`.
+
+The horizontal boundary is the edge, while the two vertical boundaries are the
+contractions of its endpoints.
+-/
+
+section
+
+variable {V : Type u} [Quiver.{u} V] [Quiver.Arborescence V]
+
+/-- The path in the realization associated to a directed quiver path. -/
+def graphRealizationDirectedPath {a b : V} (p : Quiver.Path a b) :
+    Path (graphVertex a) (graphVertex b) := by
+  induction p with
+  | nil => exact Path.refl _
+  | cons p e ih => exact ih.trans (graphRealizationForwardPath e)
+
+/-- The unique root path in the realization of an arborescence. -/
+noncomputable def graphTreeRootPath (b : V) :
+    Path (graphVertex (Quiver.root V)) (graphVertex b) :=
+  graphRealizationDirectedPath
+    (default : Quiver.Path (Quiver.root V) b)
+
+theorem graphTreeRootPath_cons {a b : V} (e : a ⟶ b) :
+    graphTreeRootPath b =
+      (graphTreeRootPath a).trans (graphRealizationForwardPath e) := by
+  have h :
+      (default : Quiver.Path (Quiver.root V) b) =
+        (default : Quiver.Path (Quiver.root V) a).cons e :=
+    Subsingleton.elim _ _
+  unfold graphTreeRootPath
+  rw [h]
+  rfl
+
+def treeContractionCoordinate (t s : I) : I :=
+  ⟨(1 - (s : ℝ)) * ((1 + (t : ℝ)) / 2), by
+    have hs : 0 ≤ 1 - (s : ℝ) := by linarith [s.2.2]
+    have hs' : 1 - (s : ℝ) ≤ 1 := by linarith [s.2.1]
+    have ht : 0 ≤ (1 + (t : ℝ)) / 2 := by linarith [t.2.1]
+    have ht' : (1 + (t : ℝ)) / 2 ≤ 1 := by linarith [t.2.2]
+    constructor
+    · exact mul_nonneg hs ht
+    · calc
+        (1 - (s : ℝ)) * ((1 + (t : ℝ)) / 2) ≤
+            1 * ((1 + (t : ℝ)) / 2) := mul_le_mul_of_nonneg_right hs' ht
+        _ ≤ 1 * 1 := mul_le_mul_of_nonneg_left ht' (by norm_num)
+        _ = 1 := by norm_num
+  ⟩
+
+@[simp]
+theorem treeContractionCoordinate_zero_right (t : I) :
+    treeContractionCoordinate t 0 = ⟨(1 + (t : ℝ)) / 2, by
+      constructor <;> nlinarith [t.2.1, t.2.2]⟩ := by
+  apply Subtype.ext
+  simp [treeContractionCoordinate]
+
+@[simp]
+theorem treeContractionCoordinate_zero_left (s : I) :
+    treeContractionCoordinate 0 s = ⟨(1 - (s : ℝ)) / 2, by
+      constructor <;> nlinarith [s.2.1, s.2.2]⟩ := by
+  apply Subtype.ext
+  simp [treeContractionCoordinate]
+  ring
+
+@[simp]
+theorem treeContractionCoordinate_one_left (s : I) :
+    treeContractionCoordinate 1 s = ⟨1 - (s : ℝ), by
+      constructor <;> nlinarith [s.2.1, s.2.2]⟩ := by
+  apply Subtype.ext
+  simp [treeContractionCoordinate]
+
+@[simp]
+theorem treeContractionCoordinate_one_right (t : I) :
+    treeContractionCoordinate t 1 = 0 := by
+  apply Subtype.ext
+  simp [treeContractionCoordinate]
+
+/-- The square which contracts the cell of an edge towards the root. -/
+def graphTreeEdgeContraction (e : Quiver.Total V) : C(I × I, graphRealization V) where
+  toFun p := graphTreeRootPath e.right (treeContractionCoordinate p.1 p.2)
+  continuous_toFun := by
+    apply (graphTreeRootPath e.right).continuous.comp
+    let prop : ∀ p : I × I,
+        (1 - (p.2 : ℝ)) * ((1 + (p.1 : ℝ)) / 2) ∈ I := fun p => by
+      have hs : 0 ≤ 1 - (p.2 : ℝ) := by linarith [p.2.2.2]
+      have hs' : 1 - (p.2 : ℝ) ≤ 1 := by linarith [p.2.2.1]
+      have ht : 0 ≤ (1 + (p.1 : ℝ)) / 2 := by linarith [p.1.2.1]
+      have ht' : (1 + (p.1 : ℝ)) / 2 ≤ 1 := by linarith [p.1.2.2]
+      constructor
+      · exact mul_nonneg hs ht
+      · calc
+          (1 - (p.2 : ℝ)) * ((1 + (p.1 : ℝ)) / 2) ≤
+              1 * ((1 + (p.1 : ℝ)) / 2) := mul_le_mul_of_nonneg_right hs' ht
+          _ ≤ 1 * 1 := mul_le_mul_of_nonneg_left ht' (by norm_num)
+          _ = 1 := by norm_num
+    have hcont : Continuous (fun p : I × I =>
+        (⟨(1 - (p.2 : ℝ)) * ((1 + (p.1 : ℝ)) / 2), prop p⟩ : I)) :=
+      Continuous.subtype_mk (by fun_prop) prop
+    have heq : (fun p : I × I =>
+        (⟨(1 - (p.2 : ℝ)) * ((1 + (p.1 : ℝ)) / 2), prop p⟩ : I)) =
+        (fun p => treeContractionCoordinate p.1 p.2) := by
+      funext p
+      apply Subtype.ext
+      rfl
+    rw [heq] at hcont
+    exact hcont
+
+/-- The path which contracts a vertex of the tree to the root. -/
+def graphTreeVertexContraction (v : V) : C(I, graphRealization V) :=
+  (graphTreeRootPath v).symm.toContinuousMap
+
+@[simp]
+theorem graphTreeVertexContraction_apply (v : V) (s : I) :
+    graphTreeVertexContraction v s = graphTreeRootPath v (σ s) := by
+  rfl
+
+@[simp]
+theorem graphTreeEdgeContraction_zero_right (e : Quiver.Total V) (t : I) :
+    graphTreeEdgeContraction e (t, 0) = graphEdgePath e t := by
+  change graphTreeRootPath e.right (treeContractionCoordinate t 0) = graphEdgePath e t
+  rw [graphTreeRootPath_cons e.hom, Path.trans_apply]
+  by_cases ht : t = 0
+  · subst t
+    simp [treeContractionCoordinate]
+  · have h : ¬(treeContractionCoordinate t 0 : ℝ) ≤ 1 / 2 := by
+      rw [treeContractionCoordinate_zero_right]
+      norm_num
+      have ht_ne : (t : ℝ) ≠ 0 := by
+        intro hzero
+        apply ht
+        apply Subtype.ext
+        exact hzero
+      have ht_pos : 0 < (t : ℝ) := lt_of_le_of_ne t.2.1 (Ne.symm ht_ne)
+      linarith
+    rw [dif_neg h]
+    change graphEdgePath e _ = graphEdgePath e t
+    apply congrArg (graphEdgePath e)
+    apply Subtype.ext
+    change 2 * (treeContractionCoordinate t 0 : ℝ) - 1 = (t : ℝ)
+    rw [treeContractionCoordinate_zero_right]
+    ring
+
+@[simp]
+theorem graphTreeEdgeContraction_zero_left (e : Quiver.Total V) (s : I) :
+    graphTreeEdgeContraction e (0, s) = graphTreeVertexContraction e.left s := by
+  change graphTreeRootPath e.right (treeContractionCoordinate 0 s) =
+    graphTreeRootPath e.left (σ s)
+  rw [graphTreeRootPath_cons e.hom, Path.trans_apply]
+  have h : (treeContractionCoordinate 0 s : ℝ) ≤ 1 / 2 := by
+    rw [treeContractionCoordinate_zero_left]
+    norm_num
+    linarith [s.2.1]
+  simp only [dif_pos h]
+  apply congrArg (graphTreeRootPath e.left)
+  apply Subtype.ext
+  change 2 * (treeContractionCoordinate 0 s : ℝ) = (σ s : ℝ)
+  rw [treeContractionCoordinate_zero_left]
+  norm_num [unitInterval.coe_symm_eq]
+  ring
+
+@[simp]
+theorem graphTreeEdgeContraction_one_left (e : Quiver.Total V) (s : I) :
+    graphTreeEdgeContraction e (1, s) = graphTreeVertexContraction e.right s := by
+  change graphTreeRootPath e.right (treeContractionCoordinate 1 s) =
+    graphTreeRootPath e.right (σ s)
+  rw [treeContractionCoordinate_one_left]
+  congr 1
+
+@[simp]
+theorem graphTreeEdgeContraction_one_right (e : Quiver.Total V) (t : I) :
+    graphTreeEdgeContraction e (t, 1) = graphVertex (Quiver.root V) := by
+  change graphTreeRootPath e.right (treeContractionCoordinate t 1) =
+    graphVertex (Quiver.root V)
+  rw [treeContractionCoordinate_one_right]
+  exact (graphTreeRootPath e.right).source
+
+section QuotientContraction
+
+/-! The cellwise squares agree on the endpoint generators, so the quotient
+    universal property turns them into a global homotopy. -/
+
+def graphTreeVertexFamily :
+    C(WithDiscreteTopology V, C(I, graphRealization V)) where
+  toFun v := graphTreeVertexContraction (graphVertexUnderlying v)
+  continuous_toFun := continuous_of_discreteTopology
+
+def graphTreeEdgeFamily :
+    C((Σ _e : WithDiscreteTopology (Quiver.Total V), I),
+      C(I, graphRealization V)) where
+  toFun e := ContinuousMap.curry
+    (graphTreeEdgeContraction (graphEdgeUnderlying e.1)) e.2
+  continuous_toFun := by
+    apply continuous_sigma
+    intro e
+    exact (ContinuousMap.curry
+      (graphTreeEdgeContraction (graphEdgeUnderlying e))).continuous
+
+def graphTreeVertexFamilyUncurry :
+    C(WithDiscreteTopology V × I, graphRealization V) :=
+  ContinuousMap.uncurry graphTreeVertexFamily
+
+def graphTreeEdgeFamilyUncurry :
+    C((Σ _e : WithDiscreteTopology (Quiver.Total V), I) × I,
+      graphRealization V) :=
+  ContinuousMap.uncurry graphTreeEdgeFamily
+
+def graphTreeContractionPieces :
+    C((WithDiscreteTopology V × I) ⊕
+      ((Σ _e : WithDiscreteTopology (Quiver.Total V), I) × I),
+      graphRealization V) where
+  toFun := Sum.elim graphTreeVertexFamilyUncurry graphTreeEdgeFamilyUncurry
+  continuous_toFun := continuous_sumElim.2 ⟨
+    graphTreeVertexFamilyUncurry.continuous,
+    graphTreeEdgeFamilyUncurry.continuous⟩
+
+/-- The cellwise contraction before descending to the endpoint quotient. -/
+def graphTreeContractionPre :
+    C(graphRealizationPre V × I, graphRealization V) := by
+  let pieces := graphTreeContractionPieces (V := V)
+  let distribute := Homeomorph.sumProdDistrib
+    (X := WithDiscreteTopology V)
+    (Y := Σ _e : WithDiscreteTopology (Quiver.Total V), I)
+    (Z := I)
+  exact pieces.comp ⟨distribute, distribute.continuous⟩
+
+@[simp]
+theorem graphTreeContractionPre_vertex
+    (v : WithDiscreteTopology V) (s : I) :
+    graphTreeContractionPre (Sum.inl v, s) =
+      graphTreeVertexContraction (graphVertexUnderlying v) s := by
+  simp [graphTreeContractionPre, graphTreeContractionPieces,
+    graphTreeVertexFamilyUncurry, graphTreeVertexFamily]
+
+@[simp]
+theorem graphTreeContractionPre_edge
+    (e : WithDiscreteTopology (Quiver.Total V)) (t s : I) :
+    graphTreeContractionPre (Sum.inr ⟨e, t⟩, s) =
+      graphTreeEdgeContraction (graphEdgeUnderlying e) (t, s) := by
+  simp [graphTreeContractionPre, graphTreeContractionPieces,
+    graphTreeEdgeFamilyUncurry, graphTreeEdgeFamily]
+
+theorem graphTreeContractionPre_respects
+    {x y : graphRealizationPre V}
+    (h : Relation.EqvGen (graphRealizationGenerator (V := V)) x y) (s : I) :
+    graphTreeContractionPre (x, s) = graphTreeContractionPre (y, s) := by
+  induction h with
+  | rel x y h =>
+      cases h with
+      | source e =>
+          simp [graphTreeContractionPre_edge, graphTreeContractionPre_vertex,
+            graphTreeEdgeContraction_zero_left]
+      | target e =>
+          simp [graphTreeContractionPre_edge, graphTreeContractionPre_vertex,
+            graphTreeEdgeContraction_one_left]
+  | refl x => rfl
+  | symm x y h ih => exact ih.symm
+  | trans x y z hxy hyz ihxy ihyz => exact ihxy.trans ihyz
+
+/-- The cellwise contraction descended through the endpoint quotient. -/
+def graphTreeContraction :
+    C(graphRealization V × I, graphRealization V) := by
+  let f : graphRealization V × I → graphRealization V := fun z =>
+    Quotient.lift (fun x => graphTreeContractionPre (x, z.2))
+      (fun x y h => graphTreeContractionPre_respects h z.2) z.1
+  refine { toFun := f, continuous_toFun := ?_ }
+  apply isQuotientMap_quotient_mk'.continuous_lift_prod_left
+  have hcomp : (fun p : graphRealizationPre V × I =>
+      f (graphRealizationQuotient p.1, p.2)) =
+      (graphTreeContractionPre (V := V) : graphRealizationPre V × I →
+        graphRealization V) := by
+    funext p
+    rfl
+  rw [hcomp]
+  exact (graphTreeContractionPre (V := V)).continuous
+
+@[simp]
+theorem graphTreeContraction_quotient
+    (x : graphRealizationPre V) (s : I) :
+    graphTreeContraction (graphRealizationQuotient x, s) =
+      graphTreeContractionPre (x, s) := by
+  change Quotient.lift (fun y => graphTreeContractionPre (y, s))
+      (fun y z h => graphTreeContractionPre_respects h s) (Quotient.mk' x) =
+    graphTreeContractionPre (x, s)
+  exact Quotient.lift_mk _ _ _
+
+@[simp]
+theorem graphTreeContraction_vertex
+    (v : WithDiscreteTopology V) (s : I) :
+    graphTreeContraction (graphVertex (graphVertexUnderlying v), s) =
+      graphTreeVertexContraction (graphVertexUnderlying v) s := by
+  change graphTreeContraction (graphRealizationQuotient (Sum.inl v), s) = _
+  rw [graphTreeContraction_quotient]
+  exact graphTreeContractionPre_vertex v s
+
+@[simp]
+theorem graphTreeContraction_edge
+    (e : WithDiscreteTopology (Quiver.Total V)) (t s : I) :
+    graphTreeContraction
+        (graphRealizationQuotient (Sum.inr ⟨e, t⟩), s) =
+      graphTreeEdgeContraction (graphEdgeUnderlying e) (t, s) := by
+  rw [graphTreeContraction_quotient]
+  exact graphTreeContractionPre_edge e t s
+
+theorem graphTreeContraction_zero (x : graphRealization V) :
+    graphTreeContraction (x, 0) = x := by
+  refine Quotient.inductionOn x ?_
+  intro x
+  cases x with
+  | inl v =>
+      change graphTreeContraction
+          (graphRealizationQuotient (Sum.inl v), 0) =
+        graphRealizationQuotient (Sum.inl v)
+      rw [graphTreeContraction_quotient, graphTreeContractionPre_vertex]
+      change graphTreeRootPath (graphVertexUnderlying v) (σ 0) =
+        graphRealizationQuotient (Sum.inl v)
+      rw [show σ (0 : I) = 1 by simp]
+      exact (graphTreeRootPath (graphVertexUnderlying v)).target.trans rfl
+  | inr z =>
+      rcases z with ⟨e, t⟩
+      change graphTreeContraction
+          (graphRealizationQuotient (Sum.inr ⟨e, t⟩), 0) =
+        graphRealizationQuotient (Sum.inr ⟨e, t⟩)
+      rw [graphTreeContraction_quotient, graphTreeContractionPre_edge,
+        graphTreeEdgeContraction_zero_right]
+      rfl
+
+theorem graphTreeContraction_one (x : graphRealization V) :
+    graphTreeContraction (x, 1) = graphVertex (Quiver.root V) := by
+  refine Quotient.inductionOn x ?_
+  intro x
+  cases x with
+  | inl v =>
+      change graphTreeContraction
+          (graphRealizationQuotient (Sum.inl v), 1) =
+        graphVertex (Quiver.root V)
+      rw [graphTreeContraction_quotient, graphTreeContractionPre_vertex]
+      change graphTreeRootPath (graphVertexUnderlying v) (σ 1) =
+        graphVertex (Quiver.root V)
+      rw [show σ (1 : I) = 0 by simp]
+      exact (graphTreeRootPath (graphVertexUnderlying v)).source
+  | inr z =>
+      rcases z with ⟨e, t⟩
+      change graphTreeContraction
+          (graphRealizationQuotient (Sum.inr ⟨e, t⟩), 1) =
+        graphVertex (Quiver.root V)
+      rw [graphTreeContraction_quotient, graphTreeContractionPre_edge,
+        graphTreeEdgeContraction_one_right]
+
+/-- An arborescence realization is contractible. -/
+noncomputable instance graphRealization_contractible :
+    ContractibleSpace (graphRealization V) where
+  hequiv_unit' := by
+    let rootPoint : graphRealization V := graphVertex (Quiver.root V)
+    let reverseContraction : C(I × graphRealization V, graphRealization V) := {
+      toFun p := graphTreeContraction (p.2, σ p.1)
+      continuous_toFun := by
+        exact (graphTreeContraction (V := V)).continuous.comp (by fun_prop) }
+    refine ⟨{
+      toFun := ContinuousMap.const _ (),
+      invFun := ContinuousMap.const _ rootPoint,
+      left_inv := ?_,
+      right_inv := ?_ }⟩
+    · exact ⟨{
+        toFun := reverseContraction,
+        map_zero_left := by
+          intro x
+          simpa [reverseContraction, rootPoint] using graphTreeContraction_one x,
+        map_one_left := by
+          intro x
+          simpa [reverseContraction] using graphTreeContraction_zero x }⟩
+    · have hcomp :
+          (ContinuousMap.const (graphRealization V) ()).comp
+              (ContinuousMap.const Unit rootPoint) =
+            ContinuousMap.id Unit := by
+        ext x
+      rw [hcomp]
+
+end QuotientContraction
+
+theorem graphRealization_tree_simplyConnected :
+    SimplyConnectedSpace (graphRealization V) := by
+  infer_instance
+
+end
+
+end FiniteGraphFreeGroup
+end
+end Standalone_FiniteGraphFreeGroup_TreeContraction
+
+/-! Source module: FiniteGraphFreeGroup.TopologicalComparison -/
+section Standalone_FiniteGraphFreeGroup_TopologicalComparison
+
+
+
+open Set Function
+open CategoryTheory CategoryTheory.SingleObj Quiver
+open unitInterval
+open ContinuousMap
+
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+
+noncomputable section
+
+universe u
+
+namespace FiniteGraphFreeGroup
+
+variable {V : Type u} [Quiver.{u} V]
+
+def symEdgeLetter {a b : Symmetrify V}
+    (e : @Quiver.Hom (Symmetrify V) (Quiver.symmetrifyQuiver V) a b) :
+    Quiver.Total V × Bool := by
+  cases e using Sum.casesOn with
+  | inl e => exact (⟨a, b, e⟩, true)
+  | inr e => exact (⟨b, a, e⟩, false)
+
+def symPathWord {a b : Symmetrify V}
+    (p : @Quiver.Path (Symmetrify V) (Quiver.symmetrifyQuiver V) a b) :
+    List (Quiver.Total V × Bool) := by
+  induction p with
+  | nil => exact []
+  | cons p e ih => exact symEdgeLetter e :: ih
+
+def coverSymPathValue {root : V}
+    {a b : Symmetrify (graphCoverVertex root)}
+    (p : @Quiver.Path (Symmetrify (graphCoverVertex root))
+      (Quiver.symmetrifyQuiver (graphCoverVertex root)) a b) :
+    (graphCoverSymmetricFreeGroupoidMap root).obj a ⟶
+      (graphCoverSymmetricFreeGroupoidMap root).obj b :=
+  (CategoryTheory.Paths.lift (graphCoverSymmetricFreeGroupoidMap root)).map p
+
+theorem coverSymPathValue_cons {root : V}
+    {a b c : Symmetrify (graphCoverVertex root)}
+    (p : @Quiver.Path (Symmetrify (graphCoverVertex root))
+      (Quiver.symmetrifyQuiver (graphCoverVertex root)) a b)
+    (e : @Quiver.Hom (Symmetrify (graphCoverVertex root))
+      (Quiver.symmetrifyQuiver (graphCoverVertex root)) b c) :
+    coverSymPathValue (@Quiver.Path.cons (Symmetrify (graphCoverVertex root))
+      (Quiver.symmetrifyQuiver (graphCoverVertex root)) _ _ _ p e) =
+      coverSymPathValue p ≫ (graphCoverSymmetricFreeGroupoidMap root).map e := by
+  exact CategoryTheory.Paths.lift_cons (graphCoverSymmetricFreeGroupoidMap root) p e
+
+theorem graphCoverSymmetricFreeGroupoidMap_endpoint {root : V}
+    {y z : Symmetrify (graphCoverVertex root)}
+    (e : @Quiver.Hom (Symmetrify (graphCoverVertex root))
+      (Quiver.symmetrifyQuiver (graphCoverVertex root)) y z) :
+    (z : graphCoverVertex root).2 =
+      (y : graphCoverVertex root).2 ≫
+        (graphCoverSymmetricFreeGroupoidMap root).map e := by
+  change graphCoverVertex root at y z
+  cases e using Sum.casesOn with
+  | inl e =>
+      exact e.property.symm
+  | inr e =>
+      calc
+        z.2 = (z.2 ≫ (Quiver.FreeGroupoid.of V).map e.1) ≫
+            Groupoid.inv ((Quiver.FreeGroupoid.of V).map e.1) := by
+          simp [Category.assoc]
+        _ = y.2 ≫ Groupoid.inv ((Quiver.FreeGroupoid.of V).map e.1) := by
+          rw [e.property]
+        _ = y.2 ≫ (graphCoverSymmetricFreeGroupoidMap root).map (Sum.inr e) := by
+          rfl
+
+theorem coverSymPathValue_endpoint {root : V} (x : graphCoverVertex root)
+    (p : @Quiver.Path (Symmetrify (graphCoverVertex root))
+      (Quiver.symmetrifyQuiver (graphCoverVertex root))
+      (graphCoverRootVertex root) x) :
+    x.2 = coverSymPathValue p := by
+  induction p using
+      (@Quiver.Path.rec (Symmetrify (graphCoverVertex root))
+        (Quiver.symmetrifyQuiver (graphCoverVertex root))) with
+  | nil =>
+      rfl
+  | @cons y z p e ih =>
+      change graphCoverVertex root at y z
+      rw [coverSymPathValue_cons]
+      exact (graphCoverSymmetricFreeGroupoidMap_endpoint e).trans
+        (congrArg (fun q => q ≫ (graphCoverSymmetricFreeGroupoidMap root).map e) ih)
+
+abbrev baseSymPathValue {a b : Symmetrify V}
+    (p : @Quiver.Path (Symmetrify V) (Quiver.symmetrifyQuiver V) a b) :
+    (Quiver.FreeGroupoid.of V).obj a ⟶ (Quiver.FreeGroupoid.of V).obj b :=
+  Quot.mk _ p
+
+theorem coverSymPathValue_eq_baseSymPathValue {root : V}
+    {a b : Symmetrify (graphCoverVertex root)}
+    (p : @Quiver.Path (Symmetrify (graphCoverVertex root))
+      (Quiver.symmetrifyQuiver (graphCoverVertex root)) a b) :
+    coverSymPathValue p =
+      baseSymPathValue ((graphCoverProjection root).symmetrify.mapPath p) := by
+  induction p with
+  | nil => rfl
+  | cons p e ih =>
+      rw [coverSymPathValue_cons, ih]
+      cases e using Sum.casesOn <;> rfl
+def graphFreeGroupPrefunctor {V : Type u} [Quiver.{u} V] :
+    V ⥤q CategoryTheory.SingleObj (FreeGroup (Quiver.Total V)) where
+  obj _ := ()
+  map e := FreeGroup.of ⟨_, _, e⟩
+
+abbrev singleObjHomValue {M : Type u} [Monoid M]
+    {x y : CategoryTheory.SingleObj M} (f : x ⟶ y) : M := f
+
+abbrev graphFreeGroupoidToFreeGroup {V : Type u} [Quiver.{u} V] :
+    Quiver.FreeGroupoid V ⥤ CategoryTheory.SingleObj (FreeGroup (Quiver.Total V)) :=
+  Quiver.FreeGroupoid.lift (graphFreeGroupPrefunctor (V := V))
+
+def coverSymEdgeLetter {root : V}
+    {a b : Symmetrify (graphCoverVertex root)}
+    (e : @Quiver.Hom (Symmetrify (graphCoverVertex root))
+      (Quiver.symmetrifyQuiver (graphCoverVertex root)) a b) :
+    Quiver.Total V × Bool := by
+  cases e using Sum.casesOn with
+  | inl e => exact (⟨_, _, e.1⟩, true)
+  | inr e => exact (⟨_, _, e.1⟩, false)
+
+def coverSymPathWord {root : V}
+    {a b : Symmetrify (graphCoverVertex root)}
+    (p : @Quiver.Path (Symmetrify (graphCoverVertex root))
+      (Quiver.symmetrifyQuiver (graphCoverVertex root)) a b) :
+    List (Quiver.Total V × Bool) := by
+  induction p with
+  | nil => exact []
+  | cons p e ih => exact coverSymEdgeLetter e :: ih
+
+theorem coverSymPathWord_cons {root : V}
+    {a b c : Symmetrify (graphCoverVertex root)}
+    (p : @Quiver.Path (Symmetrify (graphCoverVertex root))
+      (Quiver.symmetrifyQuiver (graphCoverVertex root)) a b)
+    (e : @Quiver.Hom (Symmetrify (graphCoverVertex root))
+      (Quiver.symmetrifyQuiver (graphCoverVertex root)) b c) :
+    coverSymPathWord
+      (@Quiver.Path.cons (Symmetrify (graphCoverVertex root))
+        (Quiver.symmetrifyQuiver (graphCoverVertex root)) _ _ _ p e) =
+      coverSymEdgeLetter e :: coverSymPathWord p := by
+  rfl
+
+inductive symPathNoBacktrack {W : Type u} [Quiver.{u} W]
+    {a : Symmetrify W} : ∀ {b : Symmetrify W},
+      @Quiver.Path (Symmetrify W) (Quiver.symmetrifyQuiver W) a b → Prop
+  | nil : symPathNoBacktrack
+      (@Quiver.Path.nil (Symmetrify W) (Quiver.symmetrifyQuiver W) a)
+  | cons {b c : Symmetrify W}
+      (p : @Quiver.Path (Symmetrify W) (Quiver.symmetrifyQuiver W) a b)
+      (e : @Quiver.Hom (Symmetrify W) (Quiver.symmetrifyQuiver W) b c) :
+      symPathNoBacktrack p →
+      (∀ {d : Symmetrify W}
+        (q : @Quiver.Path (Symmetrify W) (Quiver.symmetrifyQuiver W) a d)
+        (f : @Quiver.Hom (Symmetrify W) (Quiver.symmetrifyQuiver W) d b),
+        p = @Quiver.Path.cons (Symmetrify W) (Quiver.symmetrifyQuiver W)
+          _ _ _ q f →
+          (⟨b, c, e⟩ : Quiver.Total (Symmetrify W)) ≠
+            ⟨b, d, Quiver.reverse f⟩) →
+      symPathNoBacktrack
+        (@Quiver.Path.cons (Symmetrify W) (Quiver.symmetrifyQuiver W)
+          _ _ _ p e)
+
+theorem symPathNoBacktrack_of_shortest {W : Type u} [Quiver.{u} W]
+    {r a : Symmetrify W}
+    (p : @Quiver.Path (Symmetrify W) (Quiver.symmetrifyQuiver W) r a)
+    (hshort : ∀ q : @Quiver.Path (Symmetrify W)
+      (Quiver.symmetrifyQuiver W) r a, p.length ≤ q.length) :
+    symPathNoBacktrack p := by
+  induction p using
+      (@Quiver.Path.rec (Symmetrify W) (Quiver.symmetrifyQuiver W)) with
+  | nil =>
+      exact symPathNoBacktrack.nil
+  | @cons b c p e ih =>
+      apply symPathNoBacktrack.cons p e
+      · apply ih
+        intro q
+        have h := hshort
+          (@Quiver.Path.cons (Symmetrify W) (Quiver.symmetrifyQuiver W)
+            _ _ _ q e)
+        simp only [Quiver.Path.length_cons] at h ⊢
+        omega
+      · intro d q f hpq hcancel
+        have hc : c = d := congrArg Quiver.Total.right hcancel
+        cases hc
+        have h := hshort q
+        rw [hpq] at h
+        simp only [Quiver.Path.length_cons] at h
+        omega
+
+theorem coverSymEdgeLetter_cancel {root : V}
+    {a b c : Symmetrify (graphCoverVertex root)}
+    (f : @Quiver.Hom (Symmetrify (graphCoverVertex root))
+      (Quiver.symmetrifyQuiver (graphCoverVertex root)) a b)
+    (e : @Quiver.Hom (Symmetrify (graphCoverVertex root))
+      (Quiver.symmetrifyQuiver (graphCoverVertex root)) b c)
+    (hbase : (coverSymEdgeLetter e).1 = (coverSymEdgeLetter f).1)
+    (hbool : (coverSymEdgeLetter e).2 = !(coverSymEdgeLetter f).2) :
+    (⟨b, c, e⟩ : Quiver.Total (Symmetrify (graphCoverVertex root))) =
+      ⟨b, a, Quiver.reverse f⟩ := by
+  change graphCoverVertex root at a b c
+  cases e using Sum.casesOn with
+  | inl e =>
+      cases f using Sum.casesOn with
+      | inl f => simp [coverSymEdgeLetter] at hbool
+      | inr f =>
+          have htot :
+              (⟨b.1, c.1, e.1⟩ : Quiver.Total V) =
+                ⟨b.1, a.1, f.1⟩ := by
+            simpa [coverSymEdgeLetter] using hbase
+          have hstar := graphCoverStarEquiv_map_eq_of_total_eq
+            b ⟨b, c, e⟩ ⟨b, a, f⟩ rfl rfl htot
+          have hstar' := (graphCoverStarEquiv root b).injective hstar
+          have htotal := graphCover_total_eq_of_star_eq
+            b ⟨b, c, e⟩ ⟨b, a, f⟩ rfl rfl hstar'
+          cases htotal
+          rfl
+  | inr e =>
+      cases f using Sum.casesOn with
+      | inr f => simp [coverSymEdgeLetter] at hbool
+      | inl f =>
+          have htot :
+              (⟨c.1, b.1, e.1⟩ : Quiver.Total V) =
+                ⟨a.1, b.1, f.1⟩ := by
+            simpa [coverSymEdgeLetter] using hbase
+          have hcostar := graphCoverCostarEquiv_map_eq_of_total_eq
+            b ⟨c, b, e⟩ ⟨a, b, f⟩ rfl rfl htot
+          have hcostar' := (graphCoverCostarEquiv root b).injective hcostar
+          have htotal := graphCover_total_eq_of_costar_eq
+            b ⟨c, b, e⟩ ⟨a, b, f⟩ rfl rfl hcostar'
+          cases htotal
+          rfl
+
+theorem coverSymEdge_eq_of_letter_eq {root : V}
+    {a b c : Symmetrify (graphCoverVertex root)}
+    (e : @Quiver.Hom (Symmetrify (graphCoverVertex root))
+      (Quiver.symmetrifyQuiver (graphCoverVertex root)) a b)
+    (f : @Quiver.Hom (Symmetrify (graphCoverVertex root))
+      (Quiver.symmetrifyQuiver (graphCoverVertex root)) a c)
+    (h : coverSymEdgeLetter e = coverSymEdgeLetter f) : HEq e f := by
+  change graphCoverVertex root at a b c
+  cases e using Sum.casesOn with
+  | inl e =>
+      cases f using Sum.casesOn with
+      | inl f =>
+          have htot :
+              (⟨a.1, b.1, e.1⟩ : Quiver.Total V) =
+                ⟨a.1, c.1, f.1⟩ := by
+            simpa [coverSymEdgeLetter] using congrArg Prod.fst h
+          have hstar := graphCoverStarEquiv_map_eq_of_total_eq
+            a ⟨a, b, e⟩ ⟨a, c, f⟩ rfl rfl htot
+          have hstar' := (graphCoverStarEquiv root a).injective hstar
+          cases hstar'
+          exact HEq.rfl
+      | inr f =>
+          simp [coverSymEdgeLetter] at h
+  | inr e =>
+      cases f using Sum.casesOn with
+      | inl f =>
+          simp [coverSymEdgeLetter] at h
+      | inr f =>
+          have htot :
+              (⟨b.1, a.1, e.1⟩ : Quiver.Total V) =
+                ⟨c.1, a.1, f.1⟩ := by
+            simpa [coverSymEdgeLetter] using congrArg Prod.fst h
+          have hcostar := graphCoverCostarEquiv_map_eq_of_total_eq
+            a ⟨b, a, e⟩ ⟨c, a, f⟩ rfl rfl htot
+          have hcostar' := (graphCoverCostarEquiv root a).injective hcostar
+          cases hcostar'
+          exact HEq.rfl
+
+theorem coverSymPathWord_isReduced {root : V}
+    {a : Symmetrify (graphCoverVertex root)}
+    (p : @Quiver.Path (Symmetrify (graphCoverVertex root))
+      (Quiver.symmetrifyQuiver (graphCoverVertex root))
+      (graphCoverRootVertex root) a)
+    (hp : symPathNoBacktrack p) :
+    FreeGroup.IsReduced (coverSymPathWord p) := by
+  induction hp with
+  | nil =>
+      exact FreeGroup.IsReduced.nil
+  | @cons b c p e hp hlast ih =>
+      rw [coverSymPathWord_cons]
+      cases p with
+      | nil =>
+          exact FreeGroup.IsReduced.singleton
+      | @cons d b q f =>
+          rw [coverSymPathWord_cons]
+          rw [FreeGroup.isReduced_cons_cons]
+          constructor
+          · intro hbase
+            by_contra hbool
+            have hopp : (coverSymEdgeLetter e).2 =
+                !(coverSymEdgeLetter f).2 := by
+              cases he : (coverSymEdgeLetter e).2 <;>
+                cases hf : (coverSymEdgeLetter f).2 <;> simp_all
+            have htotal := coverSymEdgeLetter_cancel f e hbase hopp
+            exact hlast q f rfl htotal
+          · exact ih
+
+abbrev coverFreeGroupValue {root : V}
+    {a b : Symmetrify (graphCoverVertex root)}
+    (p : @Quiver.Path (Symmetrify (graphCoverVertex root))
+      (Quiver.symmetrifyQuiver (graphCoverVertex root)) a b) :
+    FreeGroup (Quiver.Total V) :=
+  singleObjHomValue ((graphFreeGroupoidToFreeGroup (V := V)).map
+    (coverSymPathValue p))
+
+theorem coverFreeGroupValue_nil {root : V} (x : graphCoverVertex root) :
+    coverFreeGroupValue
+      (Quiver.Path.nil : @Quiver.Path (Symmetrify (graphCoverVertex root))
+        (Quiver.symmetrifyQuiver (graphCoverVertex root)) x x) = 1 := by
+  simp [coverFreeGroupValue, coverSymPathValue, CategoryTheory.Paths.lift_nil]
+  change (1 : FreeGroup (Quiver.Total V)) = 1
+  rfl
+
+theorem coverFreeGroupValue_cons {root : V}
+    {a b c : Symmetrify (graphCoverVertex root)}
+    (p : @Quiver.Path (Symmetrify (graphCoverVertex root))
+      (Quiver.symmetrifyQuiver (graphCoverVertex root)) a b)
+    (e : @Quiver.Hom (Symmetrify (graphCoverVertex root))
+      (Quiver.symmetrifyQuiver (graphCoverVertex root)) b c) :
+    coverFreeGroupValue (@Quiver.Path.cons (Symmetrify (graphCoverVertex root))
+      (Quiver.symmetrifyQuiver (graphCoverVertex root)) _ _ _ p e) =
+      singleObjHomValue ((graphFreeGroupoidToFreeGroup (V := V)).map
+          ((graphCoverSymmetricFreeGroupoidMap root).map e)) *
+        coverFreeGroupValue p := by
+  unfold coverFreeGroupValue
+  rw [coverSymPathValue_cons, Functor.map_comp, SingleObj.comp_as_mul]
+
+theorem graphFreeGroupoidToFreeGroup_map_pos {V : Type u} [Quiver.{u} V]
+    (e : Quiver.Total V) :
+    singleObjHomValue ((graphFreeGroupoidToFreeGroup (V := V)).map
+      ((Quiver.FreeGroupoid.of V).map e.hom)) =
+      FreeGroup.of e := by
+  change (Quiver.FreeGroupoid.lift (graphFreeGroupPrefunctor (V := V))).map
+      ((Quiver.FreeGroupoid.of V).map e.hom) =
+      (graphFreeGroupPrefunctor (V := V)).map e.hom
+  have h := Quiver.FreeGroupoid.lift_spec (graphFreeGroupPrefunctor (V := V))
+  have hm := congrArg (fun ψ => ψ.map e.hom) h
+  have hm' : singleObjHomValue
+        ((Quiver.FreeGroupoid.lift (graphFreeGroupPrefunctor (V := V))).map
+          ((Quiver.FreeGroupoid.of V).map e.hom)) =
+      singleObjHomValue ((graphFreeGroupPrefunctor (V := V)).map e.hom) := by
+    exact hm
+  simpa [graphFreeGroupPrefunctor] using hm'
+
+theorem coverFreeGroupMap_letter {root : V}
+    {a b : Symmetrify (graphCoverVertex root)}
+    (e : @Quiver.Hom (Symmetrify (graphCoverVertex root))
+      (Quiver.symmetrifyQuiver (graphCoverVertex root)) a b) :
+    singleObjHomValue ((graphFreeGroupoidToFreeGroup (V := V)).map
+      ((graphCoverSymmetricFreeGroupoidMap root).map e)) =
+      FreeGroup.mk [coverSymEdgeLetter e] := by
+  cases e using Sum.casesOn with
+  | inl e =>
+      rw [graphCoverSymmetricFreeGroupoidMap_map_pos]
+      have h := graphFreeGroupoidToFreeGroup_map_pos
+        (V := V) (⟨_, _, e.1⟩ : Quiver.Total V)
+      exact h
+  | inr e =>
+      change singleObjHomValue ((graphFreeGroupoidToFreeGroup (V := V)).map
+        (Groupoid.inv ((Quiver.FreeGroupoid.of V).map e.1))) = _
+      rw [Groupoid.inv_eq_inv, Functor.map_inv, SingleObj.inv_as_inv]
+      have h := graphFreeGroupoidToFreeGroup_map_pos
+        (V := V) (⟨_, _, e.1⟩ : Quiver.Total V)
+      exact congrArg (fun q => q⁻¹) h
+
+theorem coverFreeGroupValue_cons_letter {root : V}
+    {a b : Symmetrify (graphCoverVertex root)}
+    (p : @Quiver.Path (Symmetrify (graphCoverVertex root))
+      (Quiver.symmetrifyQuiver (graphCoverVertex root))
+      (graphCoverRootVertex root) a)
+    (e : @Quiver.Hom (Symmetrify (graphCoverVertex root))
+      (Quiver.symmetrifyQuiver (graphCoverVertex root)) a b) :
+    coverFreeGroupValue
+      (@Quiver.Path.cons (Symmetrify (graphCoverVertex root))
+      (Quiver.symmetrifyQuiver (graphCoverVertex root)) _ _ _ p e) =
+      FreeGroup.mk [coverSymEdgeLetter e] * coverFreeGroupValue p := by
+  rw [coverFreeGroupValue_cons, coverFreeGroupMap_letter]
+
+theorem coverFreeGroupValue_eq_word {root : V}
+    {a : Symmetrify (graphCoverVertex root)}
+    (p : @Quiver.Path (Symmetrify (graphCoverVertex root))
+      (Quiver.symmetrifyQuiver (graphCoverVertex root))
+      (graphCoverRootVertex root) a) :
+    coverFreeGroupValue p = FreeGroup.mk (coverSymPathWord p) := by
+  induction p using
+      (@Quiver.Path.rec (Symmetrify (graphCoverVertex root))
+        (Quiver.symmetrifyQuiver (graphCoverVertex root))) with
+  | nil =>
+      simp [coverFreeGroupValue_nil, coverSymPathWord]
+      exact FreeGroup.one_eq_mk
+  | @cons y z p e ih =>
+      rw [coverFreeGroupValue_cons_letter, ih, FreeGroup.mul_mk]
+      rfl
+
+theorem coverSymPathWord_length {root : V}
+    {a b : Symmetrify (graphCoverVertex root)}
+    (p : @Quiver.Path (Symmetrify (graphCoverVertex root))
+      (Quiver.symmetrifyQuiver (graphCoverVertex root)) a b) :
+    (coverSymPathWord p).length = p.length := by
+  induction p with
+  | nil => rfl
+  | cons p e ih =>
+      rw [coverSymPathWord_cons, List.length_cons, Quiver.Path.length_cons]
+      simp [ih]
+
+theorem coverFreeGroupValue_eq_of_endpoint {root : V}
+    {a : Symmetrify (graphCoverVertex root)}
+    (p q : @Quiver.Path (Symmetrify (graphCoverVertex root))
+      (Quiver.symmetrifyQuiver (graphCoverVertex root))
+      (graphCoverRootVertex root) a) :
+    coverFreeGroupValue p = coverFreeGroupValue q := by
+  have hvalue : coverSymPathValue p = coverSymPathValue q :=
+    (coverSymPathValue_endpoint a p).symm.trans
+      (coverSymPathValue_endpoint a q)
+  exact congrArg (fun h => singleObjHomValue
+    ((graphFreeGroupoidToFreeGroup (V := V)).map h)) hvalue
+
+theorem coverSymEdge_star_eq_of_letter_eq {root : V}
+    {a b c : Symmetrify (graphCoverVertex root)}
+    (e : @Quiver.Hom (Symmetrify (graphCoverVertex root))
+      (Quiver.symmetrifyQuiver (graphCoverVertex root)) a b)
+    (f : @Quiver.Hom (Symmetrify (graphCoverVertex root))
+      (Quiver.symmetrifyQuiver (graphCoverVertex root)) a c)
+    (h : coverSymEdgeLetter e = coverSymEdgeLetter f) :
+    (⟨b, e⟩ : Quiver.Star a) = ⟨c, f⟩ := by
+  change graphCoverVertex root at a b c
+  cases e using Sum.casesOn with
+  | inl e =>
+      cases f using Sum.casesOn with
+      | inl f =>
+          have htot :
+              (⟨a.1, b.1, e.1⟩ : Quiver.Total V) =
+                ⟨a.1, c.1, f.1⟩ := by
+            simpa [coverSymEdgeLetter] using congrArg Prod.fst h
+          have hstar := graphCoverStarEquiv_map_eq_of_total_eq
+            a ⟨a, b, e⟩ ⟨a, c, f⟩ rfl rfl htot
+          have hstar' := (graphCoverStarEquiv root a).injective hstar
+          cases hstar'
+          rfl
+      | inr f => simp [coverSymEdgeLetter] at h
+  | inr e =>
+      cases f using Sum.casesOn with
+      | inl f => simp [coverSymEdgeLetter] at h
+      | inr f =>
+          have htot :
+              (⟨b.1, a.1, e.1⟩ : Quiver.Total V) =
+                ⟨c.1, a.1, f.1⟩ := by
+            simpa [coverSymEdgeLetter] using congrArg Prod.fst h
+          have hcostar := graphCoverCostarEquiv_map_eq_of_total_eq
+            a ⟨b, a, e⟩ ⟨c, a, f⟩ rfl rfl htot
+          have hcostar' := (graphCoverCostarEquiv root a).injective hcostar
+          cases hcostar'
+          rfl
+
+theorem coverSymPathStar_eq_of_word_eq {root : V}
+    {a b : Symmetrify (graphCoverVertex root)}
+    (p : @Quiver.Path (Symmetrify (graphCoverVertex root))
+      (Quiver.symmetrifyQuiver (graphCoverVertex root))
+      (graphCoverRootVertex root) a)
+    (q : @Quiver.Path (Symmetrify (graphCoverVertex root))
+      (Quiver.symmetrifyQuiver (graphCoverVertex root))
+      (graphCoverRootVertex root) b)
+    (h : coverSymPathWord p = coverSymPathWord q) :
+    (⟨a, p⟩ : Σ c : Symmetrify (graphCoverVertex root),
+      @Quiver.Path (Symmetrify (graphCoverVertex root))
+        (Quiver.symmetrifyQuiver (graphCoverVertex root))
+        (graphCoverRootVertex root) c) =
+      ⟨b, q⟩ := by
+  induction p using
+      (@Quiver.Path.rec (Symmetrify (graphCoverVertex root))
+        (Quiver.symmetrifyQuiver (graphCoverVertex root))) generalizing b with
+  | nil =>
+      cases q with
+      | nil => rfl
+      | cons q f => cases h
+  | @cons c d p e ih =>
+      cases q with
+      | nil => cases h
+      | @cons c' d' q f =>
+          have h' : coverSymEdgeLetter e :: coverSymPathWord p =
+              coverSymEdgeLetter f :: coverSymPathWord q := by
+            simpa [coverSymPathWord] using h
+          injection h' with hhead htail
+          have hpq := ih q htail
+          cases hpq
+          have hstar := coverSymEdge_star_eq_of_letter_eq e f hhead
+          cases hstar
+          rfl
+
+theorem coverSymPath_eq_of_same_endpoint_of_noBacktrack {root : V}
+    {a : Symmetrify (graphCoverVertex root)}
+    (p q : @Quiver.Path (Symmetrify (graphCoverVertex root))
+      (Quiver.symmetrifyQuiver (graphCoverVertex root))
+      (graphCoverRootVertex root) a)
+    (hp : symPathNoBacktrack p) (hq : symPathNoBacktrack q) : p = q := by
+  classical
+  have hgroup := coverFreeGroupValue_eq_of_endpoint p q
+  rw [coverFreeGroupValue_eq_word p, coverFreeGroupValue_eq_word q] at hgroup
+  have hword : coverSymPathWord p = coverSymPathWord q := by
+    have hred := FreeGroup.reduce.sound hgroup
+    simpa [(coverSymPathWord_isReduced p hp).reduce_eq,
+      (coverSymPathWord_isReduced q hq).reduce_eq] using hred
+  have hstar := coverSymPathStar_eq_of_word_eq p q hword
+  exact eq_of_heq (Sigma.ext_iff.mp hstar).2
+
+theorem graphCoverSymmetric_rootedConnected {V : Type u} [Quiver.{u} V]
+    [WeaklyConnected V] (root : V) :
+    @RootedConnected (Symmetrify (graphCoverVertex root))
+      (Quiver.symmetrifyQuiver (graphCoverVertex root))
+      (graphCoverRootVertex root) := by
+  refine ⟨?_⟩
+  intro x
+  rcases x with ⟨v, p⟩
+  refine Quot.inductionOn p ?_
+  intro p
+  let φ := (graphCoverProjection root).symmetrify
+  obtain ⟨⟨x, q⟩, hq⟩ :=
+    ((graphCoverProjection_isCovering root).symmetrify.pathStar_bijective
+      (graphCoverRootVertex root)).2 ⟨v, p⟩
+  have hqparts := Sigma.mk.inj_iff.mp hq
+  obtain ⟨hq', hq''⟩ := hqparts
+  change x.1 = v at hq'
+  cases hq'
+  have hmap : φ.mapPath q = p := eq_of_heq hq''
+  have hx2 : x.2 = baseSymPathValue p := by
+    have hx2' := (coverSymPathValue_endpoint x q).trans
+      (coverSymPathValue_eq_baseSymPathValue q)
+    rw [hmap] at hx2'
+    exact hx2'
+  have hx : x = ⟨x.1, Quot.mk _ p⟩ := by
+    refine Sigma.ext (x := x) (y := ⟨x.1, Quot.mk _ p⟩) rfl ?_
+    exact heq_of_eq hx2
+  rw [← hx]
+  exact ⟨q⟩
+
+noncomputable def graphCoverSymmetricTree {V : Type u} [Quiver.{u} V]
+    [WeaklyConnected V] (root : V) :
+    WideSubquiver (Symmetrify (graphCoverVertex root)) := by
+  letI : @RootedConnected (Symmetrify (graphCoverVertex root))
+      (Quiver.symmetrifyQuiver (graphCoverVertex root))
+      (graphCoverRootVertex root) := graphCoverSymmetric_rootedConnected root
+  exact geodesicSubtree (graphCoverRootVertex root)
+
+theorem graphCoverSymmetric_edge_or_reverse_mem_tree {V : Type u} [Quiver.{u} V]
+    [WeaklyConnected V] (root : V)
+    {a b : Symmetrify (graphCoverVertex root)}
+    (e : @Quiver.Hom (Symmetrify (graphCoverVertex root))
+      (Quiver.symmetrifyQuiver (graphCoverVertex root)) a b) :
+    e ∈ graphCoverSymmetricTree root a b ∨
+      Quiver.reverse e ∈ graphCoverSymmetricTree root b a := by
+  classical
+  letI : @RootedConnected (Symmetrify (graphCoverVertex root))
+      (Quiver.symmetrifyQuiver (graphCoverVertex root))
+      (graphCoverRootVertex root) := graphCoverSymmetric_rootedConnected root
+  change e ∈ @geodesicSubtree (Symmetrify (graphCoverVertex root))
+      (Quiver.symmetrifyQuiver (graphCoverVertex root))
+      (graphCoverRootVertex root) _ a b ∨
+    Quiver.reverse e ∈ @geodesicSubtree (Symmetrify (graphCoverVertex root))
+      (Quiver.symmetrifyQuiver (graphCoverVertex root))
+      (graphCoverRootVertex root) _ b a
+  generalize hP : @shortestPath (Symmetrify (graphCoverVertex root))
+    (Quiver.symmetrifyQuiver (graphCoverVertex root))
+    (graphCoverRootVertex root) _ a = p
+  have hp : symPathNoBacktrack p := by
+    apply symPathNoBacktrack_of_shortest p
+    intro q
+    rw [← hP]
+    exact @shortest_path_spec (Symmetrify (graphCoverVertex root))
+      (Quiver.symmetrifyQuiver (graphCoverVertex root))
+      (graphCoverRootVertex root) _ a q
+  by_cases hnb : symPathNoBacktrack (p.cons e)
+  · left
+    change ∃ q : @Quiver.Path (Symmetrify (graphCoverVertex root))
+      (Quiver.symmetrifyQuiver (graphCoverVertex root))
+      (graphCoverRootVertex root) a,
+      @shortestPath (Symmetrify (graphCoverVertex root))
+        (Quiver.symmetrifyQuiver (graphCoverVertex root))
+        (graphCoverRootVertex root) _ b = q.cons e
+    refine ⟨p, ?_⟩
+    have hq : symPathNoBacktrack (@shortestPath
+        (Symmetrify (graphCoverVertex root))
+        (Quiver.symmetrifyQuiver (graphCoverVertex root))
+        (graphCoverRootVertex root) _ b) := by
+      apply symPathNoBacktrack_of_shortest
+      intro q
+      exact @shortest_path_spec (Symmetrify (graphCoverVertex root))
+        (Quiver.symmetrifyQuiver (graphCoverVertex root))
+        (graphCoverRootVertex root) _ b q
+    exact (coverSymPath_eq_of_same_endpoint_of_noBacktrack
+      (p.cons e) (@shortestPath (Symmetrify (graphCoverVertex root))
+        (Quiver.symmetrifyQuiver (graphCoverVertex root))
+        (graphCoverRootVertex root) _ b) hnb hq).symm
+  · cases p with
+    | nil =>
+        exfalso
+        apply hnb
+        apply symPathNoBacktrack.cons (Quiver.Path.nil) e
+          symPathNoBacktrack.nil
+        intro d q f hpq hcancel
+        exact (Quiver.Path.nil_ne_cons q f) hpq
+    | @cons d a q f =>
+        have hnot : ¬ ((⟨a, b, e⟩ : Quiver.Total
+            (Symmetrify (graphCoverVertex root))) ≠
+            ⟨a, d, Quiver.reverse f⟩) := by
+          intro hne
+          apply hnb
+          apply symPathNoBacktrack.cons (q.cons f) e hp
+          intro d' q' f' hpq' hcancel'
+          have hdd : d = d' :=
+            Quiver.Path.obj_eq_of_cons_eq_cons hpq'
+          cases hdd
+          have hff : HEq f f' :=
+            Quiver.Path.hom_heq_of_cons_eq_cons hpq'
+          have hff' : f = f' := eq_of_heq hff
+          cases hff'
+          exact hne hcancel'
+        have htotal : (⟨a, b, e⟩ : Quiver.Total
+            (Symmetrify (graphCoverVertex root))) =
+            ⟨a, d, Quiver.reverse f⟩ := Classical.not_not.mp hnot
+        right
+        have hbd : b = d := (Quiver.Total.ext_iff.mp htotal).2.1
+        cases hbd
+        have hef : e = Quiver.reverse f :=
+          eq_of_heq (Quiver.Total.ext_iff.mp htotal).2.2
+        change ∃ r : @Quiver.Path (Symmetrify (graphCoverVertex root))
+          (Quiver.symmetrifyQuiver (graphCoverVertex root))
+          (graphCoverRootVertex root) b,
+          @shortestPath (Symmetrify (graphCoverVertex root))
+            (Quiver.symmetrifyQuiver (graphCoverVertex root))
+            (graphCoverRootVertex root) _ a =
+            r.cons (Quiver.reverse e)
+        have hfmem : f ∈ @geodesicSubtree (Symmetrify (graphCoverVertex root))
+            (Quiver.symmetrifyQuiver (graphCoverVertex root))
+            (graphCoverRootVertex root) _ b a := by
+          change ∃ r : @Quiver.Path (Symmetrify (graphCoverVertex root))
+            (Quiver.symmetrifyQuiver (graphCoverVertex root))
+            (graphCoverRootVertex root) b,
+            @shortestPath (Symmetrify (graphCoverVertex root))
+              (Quiver.symmetrifyQuiver (graphCoverVertex root))
+              (graphCoverRootVertex root) _ a = r.cons f
+          exact ⟨q, hP⟩
+        change ∃ r : @Quiver.Path (Symmetrify (graphCoverVertex root))
+          (Quiver.symmetrifyQuiver (graphCoverVertex root))
+          (graphCoverRootVertex root) b,
+          @shortestPath (Symmetrify (graphCoverVertex root))
+            (Quiver.symmetrifyQuiver (graphCoverVertex root))
+            (graphCoverRootVertex root) _ a = r.cons f at hfmem
+        simpa [hef] using hfmem
+
+def graphRealizationSignedPreMap {U W : Type u} [Quiver.{u} U] [Quiver.{u} W]
+    (f : U → W) (g : Quiver.Total U → Quiver.Total W)
+    (r : Quiver.Total U → C(I, I)) :
+    graphRealizationPre U → graphRealizationPre W :=
+  Sum.elim
+    (fun v => Sum.inl (graphDiscreteVertex (f (graphVertexUnderlying v))))
+    (fun z =>
+      let e := graphEdgeUnderlying z.1
+      Sum.inr ⟨graphDiscreteEdge (g e), r e z.2⟩)
+
+theorem graphRealizationSignedPreMap_continuous
+    {U W : Type u} [Quiver.{u} U] [Quiver.{u} W]
+    (f : U → W) (g : Quiver.Total U → Quiver.Total W)
+    (r : Quiver.Total U → C(I, I)) :
+    Continuous (graphRealizationSignedPreMap f g r) := by
+  apply continuous_sumElim.2
+  constructor
+  · exact continuous_inl.comp continuous_of_discreteTopology
+  · apply continuous_inr.comp
+    apply continuous_sigma
+    intro e
+    change Continuous (fun t : I =>
+      (⟨graphDiscreteEdge (g (graphEdgeUnderlying e)),
+        r (graphEdgeUnderlying e) t⟩ :
+        Σ _e : WithDiscreteTopology (Quiver.Total W), I))
+    exact (continuous_sigmaMk (i :=
+      graphDiscreteEdge (g (graphEdgeUnderlying e)))).comp
+      (r (graphEdgeUnderlying e)).continuous
+
+def graphRealizationSignedMap {U W : Type u} [Quiver.{u} U] [Quiver.{u} W]
+    (f : U → W) (g : Quiver.Total U → Quiver.Total W)
+    (r : Quiver.Total U → C(I, I))
+    (h0 : ∀ e : Quiver.Total U,
+      graphRealizationQuotient
+          (Sum.inr ⟨graphDiscreteEdge (g e), r e 0⟩) =
+        graphVertex (f e.left))
+    (h1 : ∀ e : Quiver.Total U,
+      graphRealizationQuotient
+          (Sum.inr ⟨graphDiscreteEdge (g e), r e 1⟩) =
+        graphVertex (f e.right)) :
+    graphRealization U → graphRealization W := by
+  let F : graphRealizationPre U → graphRealization W := fun x =>
+    graphRealizationQuotient (graphRealizationSignedPreMap f g r x)
+  refine Quotient.lift F ?_
+  intro x y h
+  induction h with
+  | rel x y h =>
+      cases h with
+      | source e => simpa [F, graphRealizationSignedPreMap] using h0 e
+      | target e => simpa [F, graphRealizationSignedPreMap] using h1 e
+  | refl x => rfl
+  | symm x y h ih => exact ih.symm
+  | trans x y z hxy hyz ihxy ihyz => exact ihxy.trans ihyz
+
+theorem continuous_graphRealizationSignedMap
+    {U W : Type u} [Quiver.{u} U] [Quiver.{u} W]
+    (f : U → W) (g : Quiver.Total U → Quiver.Total W)
+    (r : Quiver.Total U → C(I, I))
+    (h0 : ∀ e : Quiver.Total U,
+      graphRealizationQuotient
+          (Sum.inr ⟨graphDiscreteEdge (g e), r e 0⟩) =
+        graphVertex (f e.left))
+    (h1 : ∀ e : Quiver.Total U,
+      graphRealizationQuotient
+          (Sum.inr ⟨graphDiscreteEdge (g e), r e 1⟩) =
+        graphVertex (f e.right)) :
+    Continuous (graphRealizationSignedMap f g r h0 h1) := by
+  let F : graphRealizationPre U → graphRealization W := fun x =>
+    graphRealizationQuotient (graphRealizationSignedPreMap f g r x)
+  have hcont : Continuous F :=
+    continuous_quotient_mk'.comp (graphRealizationSignedPreMap_continuous f g r)
+  change Continuous (Quotient.lift F _)
+  exact hcont.quotient_lift _
+
+@[simp]
+theorem graphRealizationSignedMap_vertex
+    {U W : Type u} [Quiver.{u} U] [Quiver.{u} W]
+    (f : U → W) (g : Quiver.Total U → Quiver.Total W)
+    (r : Quiver.Total U → C(I, I))
+    (h0 : ∀ e : Quiver.Total U,
+      graphRealizationQuotient
+          (Sum.inr ⟨graphDiscreteEdge (g e), r e 0⟩) =
+        graphVertex (f e.left))
+    (h1 : ∀ e : Quiver.Total U,
+      graphRealizationQuotient
+          (Sum.inr ⟨graphDiscreteEdge (g e), r e 1⟩) =
+        graphVertex (f e.right))
+    (v : U) :
+    graphRealizationSignedMap f g r h0 h1 (graphVertex v) = graphVertex (f v) := rfl
+
+@[simp]
+theorem graphRealizationSignedMap_edgePath
+    {U W : Type u} [Quiver.{u} U] [Quiver.{u} W]
+    (f : U → W) (g : Quiver.Total U → Quiver.Total W)
+    (r : Quiver.Total U → C(I, I))
+    (h0 : ∀ e : Quiver.Total U,
+      graphRealizationQuotient
+          (Sum.inr ⟨graphDiscreteEdge (g e), r e 0⟩) =
+        graphVertex (f e.left))
+    (h1 : ∀ e : Quiver.Total U,
+      graphRealizationQuotient
+          (Sum.inr ⟨graphDiscreteEdge (g e), r e 1⟩) =
+        graphVertex (f e.right))
+    (e : Quiver.Total U) (t : I) :
+    graphRealizationSignedMap f g r h0 h1 (graphEdgePath e t) =
+      graphEdgePath (g e) (r e t) := rfl
+
+def graphCoverTreeEdgeBase {V : Type u} [Quiver.{u} V]
+    [WeaklyConnected V] (root : V)
+    (d : Quiver.Total (graphCoverSymmetricTree root)) :
+    Quiver.Total (graphCoverVertex root) := by
+  rcases d with ⟨a, b, ⟨f, hf⟩⟩
+  change graphCoverVertex root at a b
+  cases f using Sum.casesOn with
+  | inl e => exact ⟨a, b, e⟩
+  | inr e => exact ⟨b, a, e⟩
+
+def graphCoverTreeEdgeSign {V : Type u} [Quiver.{u} V]
+    [WeaklyConnected V] (root : V)
+    (d : Quiver.Total (graphCoverSymmetricTree root)) : Bool := by
+  cases d.hom.1 using Sum.casesOn with
+  | inl _ => exact true
+  | inr _ => exact false
+
+def graphCoverTreeEdgeChoiceProperty {V : Type u} [Quiver.{u} V]
+    [WeaklyConnected V] (root : V) (e : Quiver.Total (graphCoverVertex root))
+    (d : Quiver.Total (graphCoverSymmetricTree root)) : Prop :=
+  graphCoverTreeEdgeBase root d = e
+
+theorem graphCoverTreeEdgeChoice_exists {V : Type u} [Quiver.{u} V]
+    [WeaklyConnected V] (root : V) (e : Quiver.Total (graphCoverVertex root)) :
+    Nonempty {d : Quiver.Total (graphCoverSymmetricTree root) //
+      graphCoverTreeEdgeChoiceProperty root e d} := by
+  have hr := graphCoverSymmetric_edge_or_reverse_mem_tree root (Sum.inl e.hom)
+  rcases hr with hpos | hneg
+  · exact ⟨⟨⟨(show Symmetrify (graphCoverVertex root) from e.left),
+        (show Symmetrify (graphCoverVertex root) from e.right),
+        ⟨Sum.inl e.hom, hpos⟩⟩, by
+      change (⟨e.left, e.right, e.hom⟩ : Quiver.Total (graphCoverVertex root)) = e
+      rfl⟩⟩
+  · exact ⟨⟨⟨(show Symmetrify (graphCoverVertex root) from e.right),
+        (show Symmetrify (graphCoverVertex root) from e.left),
+        ⟨Sum.inr e.hom, hneg⟩⟩, by
+      change (⟨e.left, e.right, e.hom⟩ : Quiver.Total (graphCoverVertex root)) = e
+      rfl⟩⟩
+
+noncomputable def graphCoverTreeEdgeChoice {V : Type u} [Quiver.{u} V]
+    [WeaklyConnected V] (root : V) (e : Quiver.Total (graphCoverVertex root)) :
+    Quiver.Total (graphCoverSymmetricTree root) :=
+  (Classical.choice (graphCoverTreeEdgeChoice_exists root e)).1
+
+theorem graphCoverTreeEdgeChoice_base {V : Type u} [Quiver.{u} V]
+    [WeaklyConnected V] (root : V) (e : Quiver.Total (graphCoverVertex root)) :
+    graphCoverTreeEdgeBase root (graphCoverTreeEdgeChoice root e) = e :=
+  (Classical.choice (graphCoverTreeEdgeChoice_exists root e)).2
+
+def graphCoverTreeVertexForget {V : Type u} [Quiver.{u} V]
+    [WeaklyConnected V] (root : V)
+    (v : graphCoverSymmetricTree root) : graphCoverVertex root := by
+  change graphCoverVertex root at v
+  exact v
+
+def graphRealizationIntervalSymm : C(I, I) where
+  toFun := σ
+  continuous_toFun := by fun_prop
+
+@[simp]
+theorem graphRealizationIntervalSymm_apply (t : I) :
+    graphRealizationIntervalSymm t = σ t := rfl
+
+@[simp]
+theorem graphRealizationIntervalSymm_zero :
+    graphRealizationIntervalSymm 0 = 1 := by simp [graphRealizationIntervalSymm]
+
+@[simp]
+theorem graphRealizationIntervalSymm_one :
+    graphRealizationIntervalSymm 1 = 0 := by simp [graphRealizationIntervalSymm]
+
+@[simp]
+theorem graphRealizationIntervalSymm_symm (t : I) :
+    graphRealizationIntervalSymm (graphRealizationIntervalSymm t) = t := by
+  apply Subtype.ext
+  simp [graphRealizationIntervalSymm]
+
+def graphCoverTreeFoldCoordinate {V : Type u} [Quiver.{u} V]
+    [WeaklyConnected V] (root : V)
+    (d : Quiver.Total (graphCoverSymmetricTree root)) : C(I, I) := by
+  rcases d with ⟨a, b, ⟨f, hf⟩⟩
+  change graphCoverVertex root at a b
+  cases f using Sum.casesOn with
+  | inl _ => exact ContinuousMap.id I
+  | inr _ => exact graphRealizationIntervalSymm
+
+theorem graphCoverTreeFoldCoordinate_positive {V : Type u} [Quiver.{u} V]
+    [WeaklyConnected V] (root : V) {a b : graphCoverVertex root}
+    (e : a ⟶ b) (h : Sum.inl e ∈ graphCoverSymmetricTree root a b) :
+    graphCoverTreeFoldCoordinate root
+        ⟨a, b, ⟨Sum.inl e, h⟩⟩ = ContinuousMap.id I := by
+  rfl
+
+theorem graphCoverTreeFoldCoordinate_negative {V : Type u} [Quiver.{u} V]
+    [WeaklyConnected V] (root : V) {a b : graphCoverVertex root}
+    (e : a ⟶ b) (h : Sum.inr e ∈ graphCoverSymmetricTree root b a) :
+    graphCoverTreeFoldCoordinate root
+        ⟨b, a, ⟨Sum.inr e, h⟩⟩ = graphRealizationIntervalSymm := by
+  rfl
+
+theorem graphCoverTreeFold_h0 {V : Type u} [Quiver.{u} V]
+    [WeaklyConnected V] (root : V) (d : Quiver.Total (graphCoverSymmetricTree root)) :
+    graphRealizationQuotient
+          (Sum.inr ⟨graphDiscreteEdge (graphCoverTreeEdgeBase root d),
+            graphCoverTreeFoldCoordinate root d 0⟩) =
+        graphVertex (graphCoverTreeVertexForget root d.left) := by
+  rcases d with ⟨a, b, ⟨f, hf⟩⟩
+  change graphCoverVertex root at a b
+  cases f using Sum.casesOn with
+  | inl e =>
+      change graphEdgePath (⟨a, b, e⟩ : Quiver.Total (graphCoverVertex root)) 0 =
+        graphVertex (graphCoverTreeVertexForget root a)
+      rw [graphEdgePath_zero]
+      rfl
+  | inr e =>
+      dsimp [graphCoverTreeEdgeBase, graphCoverTreeFoldCoordinate,
+        graphRealizationIntervalSymm]
+      rw [show σ (0 : I) = 1 by simp]
+      change graphEdgePath (⟨b, a, e⟩ : Quiver.Total (graphCoverVertex root)) 1 =
+        graphVertex (graphCoverTreeVertexForget root a)
+      rw [graphEdgePath_one]
+      rfl
+
+theorem graphCoverTreeFold_h1 {V : Type u} [Quiver.{u} V]
+    [WeaklyConnected V] (root : V) (d : Quiver.Total (graphCoverSymmetricTree root)) :
+    graphRealizationQuotient
+          (Sum.inr ⟨graphDiscreteEdge (graphCoverTreeEdgeBase root d),
+            graphCoverTreeFoldCoordinate root d 1⟩) =
+        graphVertex (graphCoverTreeVertexForget root d.right) := by
+  rcases d with ⟨a, b, ⟨f, hf⟩⟩
+  change graphCoverVertex root at a b
+  cases f using Sum.casesOn with
+  | inl e =>
+      change graphEdgePath (⟨a, b, e⟩ : Quiver.Total (graphCoverVertex root)) 1 =
+        graphVertex (graphCoverTreeVertexForget root b)
+      rw [graphEdgePath_one]
+      rfl
+  | inr e =>
+      dsimp [graphCoverTreeEdgeBase, graphCoverTreeFoldCoordinate,
+        graphRealizationIntervalSymm]
+      rw [show σ (1 : I) = 0 by simp]
+      change graphEdgePath (⟨b, a, e⟩ : Quiver.Total (graphCoverVertex root)) 0 =
+        graphVertex (graphCoverTreeVertexForget root b)
+      rw [graphEdgePath_zero]
+      rfl
+
+noncomputable def graphCoverTreeToCover {V : Type u} [Quiver.{u} V]
+    [WeaklyConnected V] (root : V) :
+    graphRealization (graphCoverSymmetricTree root) →
+      graphRealization (graphCoverVertex root) :=
+  graphRealizationSignedMap
+    (graphCoverTreeVertexForget root)
+    (graphCoverTreeEdgeBase root)
+    (graphCoverTreeFoldCoordinate root)
+    (graphCoverTreeFold_h0 root)
+    (graphCoverTreeFold_h1 root)
+
+theorem continuous_graphCoverTreeToCover {V : Type u} [Quiver.{u} V]
+    [WeaklyConnected V] (root : V) :
+    Continuous (graphCoverTreeToCover root) :=
+  continuous_graphRealizationSignedMap _ _ _ _ _
+
+@[simp]
+theorem graphCoverTreeToCover_vertex {V : Type u} [Quiver.{u} V]
+    [WeaklyConnected V] (root : V) (v : graphCoverSymmetricTree root) :
+    graphCoverTreeToCover root (graphVertex v) =
+      graphVertex (graphCoverTreeVertexForget root v) := rfl
+
+@[simp]
+theorem graphCoverTreeToCover_edgePath {V : Type u} [Quiver.{u} V]
+    [WeaklyConnected V] (root : V)
+    (e : Quiver.Total (graphCoverSymmetricTree root)) (t : I) :
+    graphCoverTreeToCover root (graphEdgePath e t) =
+      graphEdgePath (graphCoverTreeEdgeBase root e)
+        (graphCoverTreeFoldCoordinate root e t) := rfl
+
+def graphCoverVertexEmbed {V : Type u} [Quiver.{u} V]
+    [WeaklyConnected V] (root : V) (v : graphCoverVertex root) :
+    graphCoverSymmetricTree root := by
+  change graphCoverVertex root at v
+  exact v
+
+noncomputable def graphCoverSectionCoordinate {V : Type u} [Quiver.{u} V]
+    [WeaklyConnected V] (root : V)
+    (e : Quiver.Total (graphCoverVertex root)) : C(I, I) :=
+  match graphCoverTreeEdgeSign root (graphCoverTreeEdgeChoice root e) with
+  | true => ContinuousMap.id I
+  | false => graphRealizationIntervalSymm
+
+theorem graphCoverSectionCoordinate_positive {V : Type u} [Quiver.{u} V]
+    [WeaklyConnected V] (root : V) (e : Quiver.Total (graphCoverVertex root))
+    (h : graphCoverTreeEdgeSign root (graphCoverTreeEdgeChoice root e) = true) :
+    graphCoverSectionCoordinate root e = ContinuousMap.id I := by
+  simp [graphCoverSectionCoordinate, h]
+
+theorem graphCoverSectionCoordinate_negative {V : Type u} [Quiver.{u} V]
+    [WeaklyConnected V] (root : V) (e : Quiver.Total (graphCoverVertex root))
+    (h : graphCoverTreeEdgeSign root (graphCoverTreeEdgeChoice root e) = false) :
+    graphCoverSectionCoordinate root e = graphRealizationIntervalSymm := by
+  simp [graphCoverSectionCoordinate, h]
+
+theorem graphCoverSection_h0 {V : Type u} [Quiver.{u} V]
+    [WeaklyConnected V] (root : V) (e : Quiver.Total (graphCoverVertex root)) :
+    graphRealizationQuotient
+          (Sum.inr ⟨graphDiscreteEdge (graphCoverTreeEdgeChoice root e),
+            graphCoverSectionCoordinate root e 0⟩) =
+        graphVertex (graphCoverVertexEmbed root e.left) := by
+  classical
+  let d := graphCoverTreeEdgeChoice root e
+  have hbase : graphCoverTreeEdgeBase root d = e :=
+    graphCoverTreeEdgeChoice_base root e
+  have hd : graphCoverTreeEdgeChoice root e = d := rfl
+  dsimp [graphCoverSectionCoordinate]
+  rw [hd]
+  rcases d with ⟨a, b, ⟨f, hf⟩⟩
+  change graphCoverVertex root at a b
+  cases f using Sum.casesOn with
+  | inl f =>
+      change graphEdgePath
+          (⟨a, b, ⟨Sum.inl f, hf⟩⟩ :
+            Quiver.Total (graphCoverSymmetricTree root)) 0 =
+        graphVertex (graphCoverVertexEmbed root e.left)
+      rw [graphEdgePath_zero]
+      have he : (⟨a, b, f⟩ : Quiver.Total (graphCoverVertex root)) = e := by
+        simpa [graphCoverTreeEdgeBase] using hbase
+      cases he
+      rfl
+  | inr f =>
+      have hs : graphCoverTreeEdgeSign root
+          ⟨(show Symmetrify (graphCoverVertex root) from a),
+            (show Symmetrify (graphCoverVertex root) from b),
+            ⟨Sum.inr f, hf⟩⟩ = false := rfl
+      rw [hs]
+      rw [show graphRealizationIntervalSymm 0 = 1 by simp]
+      change graphEdgePath
+          (⟨(show Symmetrify (graphCoverVertex root) from a),
+            (show Symmetrify (graphCoverVertex root) from b),
+            ⟨Sum.inr f, hf⟩⟩ :
+            Quiver.Total (graphCoverSymmetricTree root)) 1 =
+        graphVertex (graphCoverVertexEmbed root e.left)
+      rw [graphEdgePath_one]
+      have he : (⟨b, a, f⟩ : Quiver.Total (graphCoverVertex root)) = e := by
+        simpa [graphCoverTreeEdgeBase] using hbase
+      cases he
+      rfl
+
+theorem graphCoverSection_h1 {V : Type u} [Quiver.{u} V]
+    [WeaklyConnected V] (root : V) (e : Quiver.Total (graphCoverVertex root)) :
+    graphRealizationQuotient
+          (Sum.inr ⟨graphDiscreteEdge (graphCoverTreeEdgeChoice root e),
+            graphCoverSectionCoordinate root e 1⟩) =
+        graphVertex (graphCoverVertexEmbed root e.right) := by
+  classical
+  let d := graphCoverTreeEdgeChoice root e
+  have hbase : graphCoverTreeEdgeBase root d = e :=
+    graphCoverTreeEdgeChoice_base root e
+  have hd : graphCoverTreeEdgeChoice root e = d := rfl
+  dsimp [graphCoverSectionCoordinate]
+  rw [hd]
+  rcases d with ⟨a, b, ⟨f, hf⟩⟩
+  change graphCoverVertex root at a b
+  cases f using Sum.casesOn with
+  | inl f =>
+      change graphEdgePath
+          (⟨a, b, ⟨Sum.inl f, hf⟩⟩ :
+            Quiver.Total (graphCoverSymmetricTree root)) 1 =
+        graphVertex (graphCoverVertexEmbed root e.right)
+      rw [graphEdgePath_one]
+      have he : (⟨a, b, f⟩ : Quiver.Total (graphCoverVertex root)) = e := by
+        simpa [graphCoverTreeEdgeBase] using hbase
+      cases he
+      rfl
+  | inr f =>
+      have hs : graphCoverTreeEdgeSign root
+          ⟨(show Symmetrify (graphCoverVertex root) from a),
+            (show Symmetrify (graphCoverVertex root) from b),
+            ⟨Sum.inr f, hf⟩⟩ = false := rfl
+      rw [hs]
+      rw [show graphRealizationIntervalSymm 1 = 0 by simp]
+      change graphEdgePath
+          (⟨(show Symmetrify (graphCoverVertex root) from a),
+            (show Symmetrify (graphCoverVertex root) from b),
+            ⟨Sum.inr f, hf⟩⟩ :
+            Quiver.Total (graphCoverSymmetricTree root)) 0 =
+        graphVertex (graphCoverVertexEmbed root e.right)
+      rw [graphEdgePath_zero]
+      have he : (⟨b, a, f⟩ : Quiver.Total (graphCoverVertex root)) = e := by
+        simpa [graphCoverTreeEdgeBase] using hbase
+      cases he
+      rfl
+
+noncomputable def graphCoverToTree {V : Type u} [Quiver.{u} V]
+    [WeaklyConnected V] (root : V) :
+    graphRealization (graphCoverVertex root) →
+      graphRealization (graphCoverSymmetricTree root) :=
+  graphRealizationSignedMap
+    (graphCoverVertexEmbed root)
+    (graphCoverTreeEdgeChoice root)
+    (graphCoverSectionCoordinate root)
+    (graphCoverSection_h0 root)
+    (graphCoverSection_h1 root)
+
+theorem continuous_graphCoverToTree {V : Type u} [Quiver.{u} V]
+    [WeaklyConnected V] (root : V) :
+    Continuous (graphCoverToTree root) :=
+  continuous_graphRealizationSignedMap _ _ _ _ _
+
+@[simp]
+theorem graphCoverToTree_vertex {V : Type u} [Quiver.{u} V]
+    [WeaklyConnected V] (root : V) (v : graphCoverVertex root) :
+    graphCoverToTree root (graphVertex v) =
+      graphVertex (graphCoverVertexEmbed root v) := rfl
+
+@[simp]
+theorem graphCoverToTree_edgePath {V : Type u} [Quiver.{u} V]
+    [WeaklyConnected V] (root : V) (e : Quiver.Total (graphCoverVertex root))
+    (t : I) :
+    graphCoverToTree root (graphEdgePath e t) =
+      graphEdgePath (graphCoverTreeEdgeChoice root e)
+        (graphCoverSectionCoordinate root e t) := rfl
+
+theorem graphRealization_map_ext {U W : Type u} [Quiver.{u} U] [Quiver.{u} W]
+    (F G : graphRealization U → graphRealization W)
+    (hv : ∀ v : U, F (graphVertex v) = G (graphVertex v))
+    (he : ∀ (e : Quiver.Total U) (t : I),
+      F (graphEdgePath e t) = G (graphEdgePath e t)) :
+    F = G := by
+  funext x
+  refine Quotient.inductionOn x ?_
+  intro x
+  cases x with
+  | inl v => exact hv (graphVertexUnderlying v)
+  | inr z =>
+      rcases z with ⟨e, t⟩
+      exact he (graphEdgeUnderlying e) t
+
+theorem graphCoverTreeVertexForget_embed {V : Type u} [Quiver.{u} V]
+    [WeaklyConnected V] (root : V) (v : graphCoverVertex root) :
+    graphCoverTreeVertexForget root (graphCoverVertexEmbed root v) = v := by
+  rfl
+
+theorem graphCoverTreeToCover_comp_graphCoverToTree
+    {V : Type u} [Quiver.{u} V] [WeaklyConnected V] (root : V) :
+    (graphCoverTreeToCover root) ∘ (graphCoverToTree root) =
+      (id : graphRealization (graphCoverVertex root) →
+        graphRealization (graphCoverVertex root)) := by
+  apply graphRealization_map_ext
+  · intro v
+    change graphCoverTreeToCover root (graphCoverToTree root (graphVertex v)) =
+      graphVertex v
+    rw [graphCoverToTree_vertex, graphCoverTreeToCover_vertex,
+      graphCoverTreeVertexForget_embed]
+  · intro e t
+    change graphCoverTreeToCover root (graphCoverToTree root (graphEdgePath e t)) =
+      graphEdgePath e t
+    rw [graphCoverToTree_edgePath, graphCoverTreeToCover_edgePath]
+    let d := graphCoverTreeEdgeChoice root e
+    have hbase : graphCoverTreeEdgeBase root d = e :=
+      graphCoverTreeEdgeChoice_base root e
+    have hd : graphCoverTreeEdgeChoice root e = d := rfl
+    dsimp [graphCoverSectionCoordinate]
+    rw [hd]
+    rcases d with ⟨a, b, ⟨f, hf⟩⟩
+    change graphCoverVertex root at a b
+    cases f using Sum.casesOn with
+    | inl f =>
+        change graphEdgePath
+            (⟨a, b, f⟩ : Quiver.Total (graphCoverVertex root))
+            ((ContinuousMap.id I) ((ContinuousMap.id I) t)) =
+          graphEdgePath e t
+        rw [ContinuousMap.id_apply, ContinuousMap.id_apply]
+        have he : (⟨a, b, f⟩ : Quiver.Total (graphCoverVertex root)) = e := by
+          simpa [graphCoverTreeEdgeBase] using hbase
+        rw [he]
+
+    | inr f =>
+        have hs : graphCoverTreeEdgeSign root
+            ⟨(show Symmetrify (graphCoverVertex root) from a),
+              (show Symmetrify (graphCoverVertex root) from b),
+              ⟨Sum.inr f, hf⟩⟩ = false := rfl
+        rw [hs]
+        change graphEdgePath
+            (⟨b, a, f⟩ : Quiver.Total (graphCoverVertex root))
+            (graphRealizationIntervalSymm
+              (graphRealizationIntervalSymm t)) =
+          graphEdgePath e t
+        rw [graphRealizationIntervalSymm_symm]
+        have he : (⟨b, a, f⟩ : Quiver.Total (graphCoverVertex root)) = e := by
+          simpa [graphCoverTreeEdgeBase] using hbase
+        rw [he]
+
+theorem graphCoverTreeEdgeBase_injective
+    {V : Type u} [Quiver.{u} V] [WeaklyConnected V] (root : V)
+    (d₁ d₂ : Quiver.Total (graphCoverSymmetricTree root))
+    (h : graphCoverTreeEdgeBase root d₁ =
+      graphCoverTreeEdgeBase root d₂) : d₁ = d₂ := by
+  classical
+  letI : @RootedConnected (Symmetrify (graphCoverVertex root))
+      (Quiver.symmetrifyQuiver (graphCoverVertex root))
+      (graphCoverRootVertex root) := graphCoverSymmetric_rootedConnected root
+  letI : @Quiver.Arborescence (graphCoverSymmetricTree root)
+      (graphCoverSymmetricTree root).quiver := by
+    dsimp [graphCoverSymmetricTree]
+    exact @Quiver.geodesicArborescence
+      (Symmetrify (graphCoverVertex root))
+      (Quiver.symmetrifyQuiver (graphCoverVertex root))
+      (graphCoverRootVertex root)
+      (inferInstance : @RootedConnected (Symmetrify (graphCoverVertex root))
+        (Quiver.symmetrifyQuiver (graphCoverVertex root))
+        (graphCoverRootVertex root))
+  rcases d₁ with ⟨a, b, ⟨f, hf⟩⟩
+  rcases d₂ with ⟨c, d, ⟨g, hg⟩⟩
+  change graphCoverVertex root at a b c d
+  cases f using Sum.casesOn with
+  | inl f =>
+      cases g using Sum.casesOn with
+      | inl g =>
+          have htotal : (⟨a, b, f⟩ : Quiver.Total (graphCoverVertex root)) =
+              ⟨c, d, g⟩ := by
+            simpa [graphCoverTreeEdgeBase] using h
+          cases htotal
+          rfl
+
+      | inr g =>
+          have htotal : (⟨a, b, f⟩ : Quiver.Total (graphCoverVertex root)) =
+              ⟨d, c, g⟩ := by
+            simpa [graphCoverTreeEdgeBase] using h
+          have hsrc : a = d := congrArg Quiver.Total.left htotal
+          have htgt : b = c := congrArg Quiver.Total.right htotal
+          have hhom : HEq f g := (Quiver.Total.ext_iff.mp htotal).2.2
+          cases hsrc
+          cases htgt
+          have hhom' : f = g := eq_of_heq hhom
+          cases hhom'
+          exact False.elim (no_reverse_edges (graphCoverSymmetricTree root)
+            f hf hg)
+  | inr f =>
+      cases g using Sum.casesOn with
+      | inl g =>
+          have htotal : (⟨b, a, f⟩ : Quiver.Total (graphCoverVertex root)) =
+              ⟨c, d, g⟩ := by
+            simpa [graphCoverTreeEdgeBase] using h
+          have hsrc : b = c := congrArg Quiver.Total.left htotal
+          have htgt : a = d := congrArg Quiver.Total.right htotal
+          have hhom : HEq f g := (Quiver.Total.ext_iff.mp htotal).2.2
+          cases hsrc
+          cases htgt
+          have hhom' : f = g := eq_of_heq hhom
+          cases hhom'
+          exact False.elim (no_reverse_edges (graphCoverSymmetricTree root)
+            f hg hf)
+      | inr g =>
+          have htotal : (⟨b, a, f⟩ : Quiver.Total (graphCoverVertex root)) =
+              ⟨d, c, g⟩ := by
+            simpa [graphCoverTreeEdgeBase] using h
+          cases htotal
+          rfl
+
+theorem graphCoverToTree_comp_graphCoverTreeToCover
+    {V : Type u} [Quiver.{u} V] [WeaklyConnected V] (root : V) :
+    (graphCoverToTree root) ∘ (graphCoverTreeToCover root) =
+      (id : graphRealization (graphCoverSymmetricTree root) →
+        graphRealization (graphCoverSymmetricTree root)) := by
+  apply graphRealization_map_ext
+  · intro v
+    change graphCoverToTree root (graphCoverTreeToCover root (graphVertex v)) =
+      graphVertex v
+    rw [graphCoverTreeToCover_vertex, graphCoverToTree_vertex]
+    rfl
+  · intro d t
+    change graphCoverToTree root
+        (graphCoverTreeToCover root (graphEdgePath d t)) =
+      graphEdgePath d t
+    rw [graphCoverTreeToCover_edgePath, graphCoverToTree_edgePath]
+    have hchoice : graphCoverTreeEdgeChoice root
+          (graphCoverTreeEdgeBase root d) = d := by
+      apply graphCoverTreeEdgeBase_injective root
+      exact graphCoverTreeEdgeChoice_base root
+        (graphCoverTreeEdgeBase root d)
+    dsimp [graphCoverSectionCoordinate]
+    rw [hchoice]
+    rcases d with ⟨a, b, ⟨f, hf⟩⟩
+    change graphCoverVertex root at a b
+    cases f using Sum.casesOn with
+    | inl f =>
+        dsimp [graphCoverSectionCoordinate, graphCoverTreeFoldCoordinate]
+        change graphEdgePath
+            (⟨(show Symmetrify (graphCoverVertex root) from a),
+              (show Symmetrify (graphCoverVertex root) from b),
+              ⟨Sum.inl f, hf⟩⟩ :
+              Quiver.Total (graphCoverSymmetricTree root))
+            ((ContinuousMap.id I) ((ContinuousMap.id I) t)) =
+          graphEdgePath
+            (⟨a, b, ⟨Sum.inl f, hf⟩⟩ :
+              Quiver.Total (graphCoverSymmetricTree root)) t
+        rw [ContinuousMap.id_apply, ContinuousMap.id_apply]
+    | inr f =>
+        dsimp [graphCoverSectionCoordinate, graphCoverTreeFoldCoordinate]
+        have hs : graphCoverTreeEdgeSign root
+            ⟨(show Symmetrify (graphCoverVertex root) from a),
+              (show Symmetrify (graphCoverVertex root) from b),
+              ⟨Sum.inr f, hf⟩⟩ = false := rfl
+        rw [hs]
+        change graphEdgePath
+            (⟨(show Symmetrify (graphCoverVertex root) from a),
+              (show Symmetrify (graphCoverVertex root) from b),
+              ⟨Sum.inr f, hf⟩⟩ :
+              Quiver.Total (graphCoverSymmetricTree root))
+            (graphRealizationIntervalSymm
+              (graphRealizationIntervalSymm t)) =
+          graphEdgePath
+            (⟨(show Symmetrify (graphCoverVertex root) from a),
+              (show Symmetrify (graphCoverVertex root) from b),
+              ⟨Sum.inr f, hf⟩⟩ :
+              Quiver.Total (graphCoverSymmetricTree root)) t
+        rw [graphRealizationIntervalSymm_symm]
+
+noncomputable def graphCoverRealizationHomotopyEquiv
+    {V : Type u} [Quiver.{u} V] [WeaklyConnected V] (root : V) :
+    graphRealization (graphCoverVertex root) ≃ₕ
+      graphRealization (graphCoverSymmetricTree root) := by
+  letI : @RootedConnected (Symmetrify (graphCoverVertex root))
+      (Quiver.symmetrifyQuiver (graphCoverVertex root))
+      (graphCoverRootVertex root) := graphCoverSymmetric_rootedConnected root
+  letI : @Quiver.Arborescence (graphCoverSymmetricTree root)
+      (graphCoverSymmetricTree root).quiver := by
+    dsimp [graphCoverSymmetricTree]
+    exact @Quiver.geodesicArborescence
+      (Symmetrify (graphCoverVertex root))
+      (Quiver.symmetrifyQuiver (graphCoverVertex root))
+      (graphCoverRootVertex root)
+      (inferInstance : @RootedConnected (Symmetrify (graphCoverVertex root))
+        (Quiver.symmetrifyQuiver (graphCoverVertex root))
+        (graphCoverRootVertex root))
+  let f : C(graphRealization (graphCoverVertex root),
+      graphRealization (graphCoverSymmetricTree root)) :=
+    ⟨graphCoverToTree root, continuous_graphCoverToTree root⟩
+  let g : C(graphRealization (graphCoverSymmetricTree root),
+      graphRealization (graphCoverVertex root)) :=
+    ⟨graphCoverTreeToCover root, continuous_graphCoverTreeToCover root⟩
+  refine { toFun := f, invFun := g, left_inv := ?_, right_inv := ?_ }
+  · have hcomp : g.comp f = ContinuousMap.id _ := by
+      ext x
+      exact congrFun (graphCoverTreeToCover_comp_graphCoverToTree root) x
+    rw [hcomp]
+  · have hcomp : f.comp g = ContinuousMap.id _ := by
+      ext x
+      exact congrFun (graphCoverToTree_comp_graphCoverTreeToCover root) x
+    rw [hcomp]
+
+noncomputable instance graphCoverRealization_contractible
+    {V : Type u} [Quiver.{u} V] [WeaklyConnected V] (root : V) :
+    ContractibleSpace (graphRealization (graphCoverVertex root)) := by
+  letI : @RootedConnected (Symmetrify (graphCoverVertex root))
+      (Quiver.symmetrifyQuiver (graphCoverVertex root))
+      (graphCoverRootVertex root) := graphCoverSymmetric_rootedConnected root
+  letI : @Quiver.Arborescence (graphCoverSymmetricTree root)
+      (graphCoverSymmetricTree root).quiver := by
+    dsimp [graphCoverSymmetricTree]
+    exact @Quiver.geodesicArborescence
+      (Symmetrify (graphCoverVertex root))
+      (Quiver.symmetrifyQuiver (graphCoverVertex root))
+      (graphCoverRootVertex root)
+      (inferInstance : @RootedConnected (Symmetrify (graphCoverVertex root))
+        (Quiver.symmetrifyQuiver (graphCoverVertex root))
+        (graphCoverRootVertex root))
+  exact (graphCoverRealizationHomotopyEquiv root).contractibleSpace
+
+abbrev graphBaseSymPathValue {V : Type u} [Quiver.{u} V]
+    {a b : V}
+    (p : @Quiver.Path (Symmetrify V) (Quiver.symmetrifyQuiver V) a b) :
+    (Quiver.FreeGroupoid.of V).obj a ⟶ (Quiver.FreeGroupoid.of V).obj b :=
+  @baseSymPathValue V _ (show Symmetrify V from a)
+    (show Symmetrify V from b) p
+
+theorem graphFreeGroupoidToTopological_map_path {V : Type u} [Quiver.{u} V]
+    {a b : V}
+    (p : @Quiver.Path (Symmetrify V) (Quiver.symmetrifyQuiver V) a b) :
+    (graphFreeGroupoidToTopological (V := V)).map (graphBaseSymPathValue p) =
+      FundamentalGroupoid.fromPath
+        (Path.Homotopic.Quotient.mk
+          (@graphRealizationQuiverPath V _ a b p)) := by
+  induction p with
+  | nil =>
+      rfl
+  | cons p e ih =>
+      change (CategoryTheory.Paths.lift
+        (Quiver.Symmetrify.lift (graphRealizationQuiverMap (V := V)))).map
+          (@Quiver.Path.cons (Symmetrify V) (Quiver.symmetrifyQuiver V)
+            _ _ _ p e) = _
+      rw [CategoryTheory.Paths.lift_cons]
+      have ih' :
+          (CategoryTheory.Paths.lift
+            (Quiver.Symmetrify.lift (graphRealizationQuiverMap (V := V)))).map p =
+          FundamentalGroupoid.fromPath
+            (Path.Homotopic.Quotient.mk
+              (@graphRealizationQuiverPath V _ _ _ p)) := by
+        exact ih
+      rw [ih']
+      cases e using Sum.casesOn with
+      | inl e =>
+          rfl
+      | inr e =>
+          rfl
+variable {V : Type u} [Quiver.{u} V] [WeaklyConnected V]
+
+theorem graphCoverRealization_fiber_vertex
+    (root : V) {z : graphCoverRealization root}
+    (hz : graphCoverRealizationProjection root z = graphVertex root) :
+    ∃ x : graphCoverVertex root, z = graphVertex x ∧ x.1 = root := by
+  revert hz
+  refine Quotient.inductionOn z ?_
+  intro z hz
+  cases z with
+  | inl v =>
+      let x : graphCoverVertex root := graphVertexUnderlying v
+      have hzx : graphRealizationQuotient (Sum.inl v) = graphVertex x := by
+        rfl
+      have hproj : graphVertex x.1 = graphVertex root := by
+        dsimp [graphCoverRealizationProjection] at hz
+        change graphRealizationMap (graphCoverProjection root)
+            (graphRealizationQuotient (Sum.inl v)) = graphVertex root at hz
+        rw [hzx] at hz
+        rw [graphRealizationMap_vertex] at hz
+        exact hz
+      refine ⟨x, hzx, ?_⟩
+      exact graphVertex_injective hproj
+  | inr z =>
+      rcases z with ⟨ze, t⟩
+      let e : Quiver.Total (graphCoverVertex root) := graphEdgeUnderlying ze
+      have hze : ze = graphDiscreteEdge e := by
+        simpa [e, graphDiscreteEdge, graphEdgeUnderlying] using
+          (WithTopology.toTopology_ofTopology ze).symm
+      have hzedge : graphRealizationQuotient
+          (Sum.inr ⟨ze, t⟩) = graphEdgePath e t := by
+        rw [hze]
+        rfl
+      have hzproj : graphEdgePath
+          ⟨(graphCoverProjection root).obj e.left,
+            (graphCoverProjection root).obj e.right,
+            (graphCoverProjection root).map e.hom⟩ t =
+          graphVertex root := by
+        rw [← graphRealizationMap_edgePath (graphCoverProjection root) e t]
+        rw [← hzedge]
+        dsimp [graphCoverRealizationProjection] at hz
+        exact hz
+      have ht : t = 0 ∨ t = 1 := by
+        apply graphRealization_vertex_edge_endpoint (V := V)
+        change graphRealizationQuotient (Sum.inl (graphDiscreteVertex root)) =
+          graphRealizationQuotient (Sum.inr
+            ⟨graphDiscreteEdge
+              ⟨(graphCoverProjection root).obj e.left,
+                (graphCoverProjection root).obj e.right,
+                (graphCoverProjection root).map e.hom⟩, t⟩)
+        exact hzproj.symm
+      rcases ht with rfl | rfl
+      · refine ⟨e.left, ?_, ?_⟩
+        · exact hzedge.trans (graphEdgePath_zero e)
+        · exact graphVertex_injective (by
+            simpa [graphCoverProjection] using hzproj)
+      · refine ⟨e.right, ?_, ?_⟩
+        · exact hzedge.trans (graphEdgePath_one e)
+        · exact graphVertex_injective (by
+            simpa [graphCoverProjection] using hzproj)
+
+theorem graphCoverRealizationQuiverPath_map
+    (root : V) {a b : graphCoverVertex root}
+    (p : @Quiver.Path (Symmetrify (graphCoverVertex root))
+      (Quiver.symmetrifyQuiver (graphCoverVertex root)) a b) :
+    (@graphRealizationQuiverPath (graphCoverVertex root)
+      (graphCoverQuiver root) a b p).map
+        (continuous_graphCoverRealizationProjection root) =
+      @graphRealizationQuiverPath V (inferInstance : Quiver V) a.1 b.1
+        ((graphCoverProjection root).symmetrify.mapPath p) := by
+  induction p with
+  | nil =>
+      rfl
+  | cons p e ih =>
+      change ((@graphRealizationQuiverPath (graphCoverVertex root)
+          (graphCoverQuiver root) _ _ p).trans
+          (graphRealizationSymmetricEdgePath e)).map
+          (continuous_graphCoverRealizationProjection root) =
+        @graphRealizationQuiverPath V (inferInstance : Quiver V) _ _
+          ((graphCoverProjection root).symmetrify.mapPath
+            (@Quiver.Path.cons (Symmetrify (graphCoverVertex root))
+              (Quiver.symmetrifyQuiver (graphCoverVertex root)) _ _ _ p e))
+      rw [Prefunctor.mapPath_cons, Path.map_trans, ih]
+      cases e using Sum.casesOn with
+      | inl e =>
+          rfl
+      | inr e =>
+          rfl
+
+def graphCoverRootFiberPoint (root : V) :
+    (graphCoverRealizationProjection root) ⁻¹' {graphVertex root} :=
+  ⟨graphVertex (graphCoverRootVertex root), by
+    change graphVertex ((graphCoverProjection root).obj
+      (graphCoverRootVertex root)) = graphVertex root
+    rfl
+  ⟩
+
+theorem graphCoverRealizationQuiverPath_is_lift
+    (root : V) {a b : graphCoverVertex root}
+    (p : @Quiver.Path (Symmetrify (graphCoverVertex root))
+      (Quiver.symmetrifyQuiver (graphCoverVertex root)) a b) :
+    (@graphRealizationQuiverPath (graphCoverVertex root)
+      (graphCoverQuiver root) a b p).map
+        (continuous_graphCoverRealizationProjection root) =
+      @graphRealizationQuiverPath V (inferInstance : Quiver V) _ _
+        ((graphCoverProjection root).symmetrify.mapPath p) := by
+  exact graphCoverRealizationQuiverPath_map root p
+
+theorem graphRealizationQuiverPath_cast
+    {W : Type u} [Quiver.{u} W]
+    {a b a' b' : W} (ha : a = a') (hb : b = b')
+    (p : @Quiver.Path (Symmetrify W) (Quiver.symmetrifyQuiver W) a b) :
+    @graphRealizationQuiverPath W _ a' b' (Quiver.Path.cast ha hb p) =
+      (@graphRealizationQuiverPath W _ a b p).cast
+        (congrArg graphVertex ha).symm (congrArg graphVertex hb).symm := by
+  cases ha
+  cases hb
+  rfl
+
+theorem graphCombinatorialToTopological_surjective_of_path
+    (root : V) (γ : Path (graphVertex root) (graphVertex root)) :
+    ∃ p : @Quiver.Path (Symmetrify V) (Quiver.symmetrifyQuiver V)
+        (show Symmetrify V from root) root,
+      graphCombinatorialToTopological root (graphBaseSymPathValue p) =
+        FundamentalGroup.fromPath (Path.Homotopic.Quotient.mk γ) := by
+  let P := graphCoverRealizationProjection root
+  let cov := graphCoverRealizationProjection_isCovering root
+  let e₀ := graphCoverRootFiberPoint root
+  have h₀ : γ 0 = P (e₀ : graphCoverRealization root) := by
+    exact γ.source.trans e₀.2.symm
+  let L := cov.liftPath γ.toContinuousMap (e₀ : graphCoverRealization root) h₀
+  let z : graphCoverRealization root := L 1
+  have hz : P z = graphVertex root := by
+    have hL := congr_fun (cov.liftPath_lifts γ.toContinuousMap
+      (e₀ : graphCoverRealization root) h₀) 1
+    exact hL.trans γ.target
+  obtain ⟨x, hzx, hx⟩ := graphCoverRealization_fiber_vertex root hz
+  letI : @RootedConnected (Symmetrify (graphCoverVertex root))
+      (Quiver.symmetrifyQuiver (graphCoverVertex root))
+      (graphCoverRootVertex root) := graphCoverSymmetric_rootedConnected root
+  obtain ⟨q⟩ := (inferInstance : Nonempty
+    (@Quiver.Path (Symmetrify (graphCoverVertex root))
+      (Quiver.symmetrifyQuiver (graphCoverVertex root))
+      (show Symmetrify (graphCoverVertex root) from graphCoverRootVertex root) x))
+  have hpstart : (graphCoverProjection root).symmetrify.obj
+        (graphCoverRootVertex root) = (show Symmetrify V from root) := by
+    rfl
+  have hpend : (graphCoverProjection root).symmetrify.obj x =
+        (show Symmetrify V from root) := by
+    change x.1 = root
+    exact hx
+  let p : @Quiver.Path (Symmetrify V) (Quiver.symmetrifyQuiver V)
+      (show Symmetrify V from root) root :=
+    Quiver.Path.cast hpstart hpend
+      ((graphCoverProjection root).symmetrify.mapPath q)
+  let qtop : Path (graphVertex (graphCoverRootVertex root)) (graphVertex x) :=
+    @graphRealizationQuiverPath (graphCoverVertex root)
+      (graphCoverQuiver root) _ _ q
+  let Lpath : Path (graphVertex (graphCoverRootVertex root)) (graphVertex x) := {
+    toContinuousMap := L
+    source' := by
+      exact cov.liftPath_zero γ.toContinuousMap (e₀ : graphCoverRealization root) h₀
+    target' := hzx }
+  have hpaths : Lpath.Homotopic qtop :=
+    SimplyConnectedSpace.paths_homotopic Lpath qtop
+  have hclasses : Path.Homotopic.Quotient.mk Lpath =
+      Path.Homotopic.Quotient.mk qtop := Quotient.sound hpaths
+  have hstart : graphVertex root = P (graphVertex (graphCoverRootVertex root)) :=
+    e₀.2.symm
+  have hxP : P (graphVertex x) = graphVertex root := by
+    calc
+      P (graphVertex x) = P z := congrArg P hzx.symm
+      _ = graphVertex root := hz
+  have htarget : graphVertex root = P (graphVertex x) := hxP.symm
+  let qbase : Path (graphVertex root) (graphVertex root) :=
+    (qtop.map cov.continuous).cast hstart htarget
+  let Lbase : Path (graphVertex root) (graphVertex root) :=
+    (Lpath.map cov.continuous).cast hstart htarget
+  have hmap : Path.Homotopic.Quotient.mk γ =
+      Path.Homotopic.Quotient.mk qbase := by
+    have hmap' := congrArg (fun r => r.map ⟨P, cov.continuous⟩) hclasses
+    rw [← Path.Homotopic.Quotient.mk_map] at hmap'
+    have hcast := congrArg
+      (fun r : Path.Homotopic.Quotient
+          (P (graphVertex (graphCoverRootVertex root))) (P (graphVertex x)) =>
+        r.cast hstart htarget) hmap'
+    rw [← Path.Homotopic.Quotient.mk_map,
+      ← Path.Homotopic.Quotient.mk_cast] at hcast
+    have hLmap : Lbase = γ := by
+      ext t
+      exact congr_fun (cov.liftPath_lifts γ.toContinuousMap
+        (e₀ : graphCoverRealization root) h₀) t
+    rw [← hLmap]
+    exact hcast
+  refine ⟨p, ?_⟩
+  change (graphFreeGroupoidToTopological (V := V)).map
+      (graphBaseSymPathValue p) = _
+  rw [graphFreeGroupoidToTopological_map_path]
+  apply congrArg FundamentalGroup.fromPath
+  have hqmap₀ := graphCoverRealizationQuiverPath_map root q
+  have hqcast := graphRealizationQuiverPath_cast (W := V) hpstart hpend
+    ((graphCoverProjection root).symmetrify.mapPath q)
+  have hqmap : qbase =
+      @graphRealizationQuiverPath V (inferInstance : Quiver V) root root p := by
+    ext t
+    calc
+      qbase t = (qtop.map cov.continuous) t := rfl
+      _ = (@graphRealizationQuiverPath V (inferInstance : Quiver V)
+          ((graphCoverProjection root).symmetrify.obj
+            (graphCoverRootVertex root))
+          ((graphCoverProjection root).symmetrify.obj x)
+          ((graphCoverProjection root).symmetrify.mapPath q)) t := by
+        exact congrArg (fun r => r t) hqmap₀
+      _ = (@graphRealizationQuiverPath V (inferInstance : Quiver V) root root p) t :=
+        (congrArg (fun r => r t) hqcast).symm
+  rw [← hqmap, ← hmap]
+
+theorem graphCombinatorialToTopological_surjective
+    (root : V) :
+    Function.Surjective (graphCombinatorialToTopological root) := by
+  intro g
+  refine Quotient.inductionOn g ?_
+  intro γ
+  obtain ⟨p, hp⟩ := graphCombinatorialToTopological_surjective_of_path root γ
+  refine ⟨graphBaseSymPathValue p, ?_⟩
+  simpa [graphCombinatorialToTopological, graphFreeGroupoidToTopological] using hp
+
+theorem baseSymPathValue_cast_heq
+    {V : Type u} [Quiver.{u} V]
+    {a b a' b' : Symmetrify V} (ha : a = a') (hb : b = b')
+    (p : @Quiver.Path (Symmetrify V) (Quiver.symmetrifyQuiver V) a b) :
+    HEq (baseSymPathValue (Quiver.Path.cast ha hb p))
+      (baseSymPathValue p) := by
+  cases ha
+  cases hb
+  rfl
+
+theorem graphCombinatorialToTopological_injective
+    (root : V) :
+    Function.Injective (graphCombinatorialToTopological root) := by
+  intro g h heq
+  revert h
+  refine Quot.inductionOn g ?_
+  intro p h heq
+  revert heq
+  refine Quot.inductionOn h ?_
+  intro q heq
+  have htop : Path.Homotopic.Quotient.mk
+      (@graphRealizationQuiverPath V _ _ _ p) =
+      Path.Homotopic.Quotient.mk
+        (@graphRealizationQuiverPath V _ _ _ q) := by
+    change (graphFreeGroupoidToTopological (V := V)).map
+        (Quot.mk _ p) =
+      (graphFreeGroupoidToTopological (V := V)).map (Quot.mk _ q) at heq
+    rw [graphFreeGroupoidToTopological_map_path,
+      graphFreeGroupoidToTopological_map_path] at heq
+    exact heq
+  have hpstart : (graphCoverProjection root).symmetrify.obj
+        (graphCoverRootVertex root) = (show Symmetrify V from root) := by
+    rfl
+  let p' := Quiver.Path.cast hpstart.symm (rfl : root = root) p
+  let q' := Quiver.Path.cast hpstart.symm (rfl : root = root) q
+  obtain ⟨⟨xp, rp⟩, hpstar⟩ :=
+    ((graphCoverProjection_isCovering root).symmetrify.pathStar_bijective
+      (graphCoverRootVertex root)).2 ⟨root, p'⟩
+  obtain ⟨⟨xq, rq⟩, hqstar⟩ :=
+    ((graphCoverProjection_isCovering root).symmetrify.pathStar_bijective
+      (graphCoverRootVertex root)).2 ⟨root, q'⟩
+  have hp_parts := Sigma.mk.inj_iff.mp hpstar
+  have hq_parts := Sigma.mk.inj_iff.mp hqstar
+  obtain ⟨hxp, hrp⟩ := hp_parts
+  obtain ⟨hxq, hrq⟩ := hq_parts
+  change xp.1 = root at hxp
+  change xq.1 = root at hxq
+  let P := graphCoverRealizationProjection root
+  let cov := graphCoverRealizationProjection_isCovering root
+  let e₀ := graphCoverRootFiberPoint root
+  have hxp' : (show Symmetrify V from root) =
+        (graphCoverProjection root).symmetrify.obj xp := by
+    change root = xp.1
+    exact hxp.symm
+  have hxq' : (show Symmetrify V from root) =
+        (graphCoverProjection root).symmetrify.obj xq := by
+    change root = xq.1
+    exact hxq.symm
+  have hrp_cast : (graphCoverProjection root).symmetrify.mapPath rp =
+        (p'.cast rfl hxp') := by
+    exact (Quiver.Path.eq_cast_iff_heq rfl hxp' p'
+      ((graphCoverProjection root).symmetrify.mapPath rp)).2 hrp
+  have hrq_cast : (graphCoverProjection root).symmetrify.mapPath rq =
+        (q'.cast rfl hxq') := by
+    exact (Quiver.Path.eq_cast_iff_heq rfl hxq' q'
+      ((graphCoverProjection root).symmetrify.mapPath rq)).2 hrq
+  let ptop : Path (graphVertex root) (graphVertex root) :=
+    @graphRealizationQuiverPath V _ _ _ p
+  let qtop : Path (graphVertex root) (graphVertex root) :=
+    @graphRealizationQuiverPath V _ _ _ q
+  let plift : Path (graphVertex (graphCoverRootVertex root))
+      (graphVertex xp) :=
+    @graphRealizationQuiverPath (graphCoverVertex root)
+      (graphCoverQuiver root) _ _ rp
+  let qlift : Path (graphVertex (graphCoverRootVertex root))
+      (graphVertex xq) :=
+    @graphRealizationQuiverPath (graphCoverVertex root)
+      (graphCoverQuiver root) _ _ rq
+  let pbase : Path
+      (graphVertex (V := V) ((graphCoverProjection root).symmetrify.obj
+        (show Symmetrify (graphCoverVertex root) from graphCoverRootVertex root)))
+      (graphVertex (V := V) ((graphCoverProjection root).symmetrify.obj xp)) :=
+    @graphRealizationQuiverPath V _ _ _
+      ((graphCoverProjection root).symmetrify.mapPath rp)
+  let qbase : Path
+      (graphVertex (V := V) ((graphCoverProjection root).symmetrify.obj
+        (show Symmetrify (graphCoverVertex root) from graphCoverRootVertex root)))
+      (graphVertex (V := V) ((graphCoverProjection root).symmetrify.obj xq)) :=
+    @graphRealizationQuiverPath V _ _ _
+      ((graphCoverProjection root).symmetrify.mapPath rq)
+  have hpmap : plift.map cov.continuous = pbase := by
+    exact graphCoverRealizationQuiverPath_map root rp
+  have hqmap : qlift.map cov.continuous = qbase := by
+    exact graphCoverRealizationQuiverPath_map root rq
+  have hep : P (graphVertex xp) = graphVertex root := by
+    change graphVertex xp.1 = graphVertex root
+    exact congrArg graphVertex hxp
+  have heq : P (graphVertex xq) = graphVertex root := by
+    change graphVertex xq.1 = graphVertex root
+    exact congrArg graphVertex hxq
+  have hpbase_cast : pbase = ptop.cast e₀.2 hep := by
+    dsimp [pbase, ptop]
+    rw [hrp_cast]
+    have h1 := graphRealizationQuiverPath_cast (W := V)
+      (rfl : (graphCoverProjection root).symmetrify.obj
+        (show Symmetrify (graphCoverVertex root) from graphCoverRootVertex root) =
+        (graphCoverProjection root).symmetrify.obj
+          (show Symmetrify (graphCoverVertex root) from graphCoverRootVertex root))
+      hxp' p'
+    have h2 := graphRealizationQuiverPath_cast (W := V)
+      hpstart.symm (rfl : root = root) p
+    rw [h1, h2]
+    ext t
+    rfl
+  have hqbase_cast : qbase = qtop.cast e₀.2 heq := by
+    dsimp [qbase, qtop]
+    rw [hrq_cast]
+    have h1 := graphRealizationQuiverPath_cast (W := V)
+      (rfl : (graphCoverProjection root).symmetrify.obj
+        (show Symmetrify (graphCoverVertex root) from graphCoverRootVertex root) =
+        (graphCoverProjection root).symmetrify.obj
+          (show Symmetrify (graphCoverVertex root) from graphCoverRootVertex root))
+      hxq' q'
+    have h2 := graphRealizationQuiverPath_cast (W := V)
+      hpstart.symm (rfl : root = root) q
+    rw [h1, h2]
+    ext t
+    rfl
+  let ep : P ⁻¹' {graphVertex root} :=
+    ⟨graphVertex (V := graphCoverVertex root) (xp : graphCoverVertex root), hep⟩
+  let eqp : P ⁻¹' {graphVertex root} :=
+    ⟨graphVertex (V := graphCoverVertex root) (xq : graphCoverVertex root), heq⟩
+  have hpclass :
+      (Path.Homotopic.Quotient.mk plift).map
+          ⟨P, cov.continuous⟩ =
+        (Path.Homotopic.Quotient.mk ptop).cast e₀.2 hep := by
+    rw [← Path.Homotopic.Quotient.mk_map, hpmap, hpbase_cast]
+    rfl
+  have hqclass :
+      (Path.Homotopic.Quotient.mk qlift).map
+          ⟨P, cov.continuous⟩ =
+        (Path.Homotopic.Quotient.mk qtop).cast e₀.2 heq := by
+    rw [← Path.Homotopic.Quotient.mk_map, hqmap, hqbase_cast]
+    rfl
+  have hpmono : cov.monodromy (Path.Homotopic.Quotient.mk ptop) e₀ = ep := by
+    exact cov.monodromy_eq_of_map_eq
+      (Path.Homotopic.Quotient.mk plift) hpclass
+  have hqmono : cov.monodromy (Path.Homotopic.Quotient.mk qtop) e₀ = eqp := by
+    exact cov.monodromy_eq_of_map_eq
+      (Path.Homotopic.Quotient.mk qlift) hqclass
+  have hepf : ep = eqp := by
+    calc
+      ep = cov.monodromy (Path.Homotopic.Quotient.mk ptop) e₀ := hpmono.symm
+      _ = cov.monodromy (Path.Homotopic.Quotient.mk qtop) e₀ := by
+        congr 1
+      _ = eqp := hqmono
+  have hvertex :
+      graphVertex (V := graphCoverVertex root) (xp : graphCoverVertex root) =
+        graphVertex (V := graphCoverVertex root) (xq : graphCoverVertex root) := by
+    exact congrArg (fun z : P ⁻¹' {graphVertex root} =>
+      (z : graphCoverRealization root)) hepf
+  have hxpq : (xp : graphCoverVertex root) = (xq : graphCoverVertex root) := by
+    apply graphVertex_injective (V := graphCoverVertex root)
+    exact hvertex
+  cases hxpq
+  have hval : coverSymPathValue rp = coverSymPathValue rq := by
+    exact (coverSymPathValue_endpoint (xp : graphCoverVertex root) rp).symm.trans
+      (coverSymPathValue_endpoint (xp : graphCoverVertex root) rq)
+  have hbase :
+      baseSymPathValue ((graphCoverProjection root).symmetrify.mapPath rp) =
+        baseSymPathValue ((graphCoverProjection root).symmetrify.mapPath rq) := by
+    rw [← coverSymPathValue_eq_baseSymPathValue rp,
+      ← coverSymPathValue_eq_baseSymPathValue rq]
+    exact hval
+  have hbase' := hbase
+  rw [hrp_cast, hrq_cast] at hbase'
+  have hpcast :
+      Quiver.Path.cast rfl hxp' p' =
+        Quiver.Path.cast hpstart.symm hxp' p := by
+    dsimp [p']
+  have hqcast :
+      Quiver.Path.cast rfl hxq' q' =
+        Quiver.Path.cast hpstart.symm hxq' q := by
+    dsimp [q']
+  have hpvaleq :
+      baseSymPathValue (Quiver.Path.cast rfl hxp' p') =
+        baseSymPathValue (Quiver.Path.cast hpstart.symm hxp' p) := by
+    rw [hpcast]
+  have hqvaleq :
+      baseSymPathValue (Quiver.Path.cast rfl hxq' q') =
+        baseSymPathValue (Quiver.Path.cast hpstart.symm hxq' q) := by
+    rw [hqcast]
+  have hpval : HEq
+      (baseSymPathValue (Quiver.Path.cast rfl hxp' p'))
+      (baseSymPathValue p) :=
+    (heq_of_eq hpvaleq).trans
+      (baseSymPathValue_cast_heq hpstart.symm hxp' p)
+  have hqval : HEq
+      (baseSymPathValue (Quiver.Path.cast rfl hxq' q'))
+      (baseSymPathValue q) :=
+    (heq_of_eq hqvaleq).trans
+      (baseSymPathValue_cast_heq hpstart.symm hxq' q)
+  have hmid : HEq (baseSymPathValue p)
+      (baseSymPathValue (Quiver.Path.cast rfl hxq' q')) :=
+    hpval.symm.trans (heq_of_eq hbase')
+  exact eq_of_heq (hmid.trans hqval)
+
+noncomputable def graphCombinatorialToTopologicalEquiv
+    {V : Type u} [Quiver.{u} V] [WeaklyConnected V] (root : V) :
+    graphFundamentalGroup root ≃*
+      FundamentalGroup (graphRealization V) (graphVertex root) :=
+  MulEquiv.ofBijective (graphCombinatorialToTopological root)
+    ⟨graphCombinatorialToTopological_injective root,
+      graphCombinatorialToTopological_surjective root⟩
+
+end FiniteGraphFreeGroup
+end
+end Standalone_FiniteGraphFreeGroup_TopologicalComparison
+
+/-! Source module: PresentationComplex.Bouquet -/
+section Standalone_PresentationComplex_Bouquet
+
+
+
+/-!
+# The arbitrary bouquet and its canonical free-group generators
+
+The vertex is universe-correct even when the generator type is not small.
+The topology is exactly the weak endpoint quotient in `graphRealization`.
+-/
+
+open CategoryTheory Quiver
+
+set_option backward.isDefEq.respectTransparency false
+set_option backward.isDefEq.respectTransparency.types false
+
+noncomputable section
+universe u
+namespace PresentationComplex
+
+abbrev bouquetVertexGroup (S : Type u) :=
+  FiniteGraphFreeGroup.graphFundamentalGroup (default : Vertex S)
+
+/-- The actual edge in the free groupoid, regarded as an endomorphism. -/
+def edgeEnd {S : Type u} (s : S) : bouquetVertexGroup S :=
+  (Quiver.FreeGroupoid.of (Vertex S)).map
+    (show (default : Vertex S) ⟶ (default : Vertex S) from s)
+
+/-- The label map into the one-object groupoid of the free group. -/
+def labelPrefunctor (S : Type u) : Vertex S ⥤q CategoryTheory.SingleObj (FreeGroup S) where
+  obj _ := CategoryTheory.SingleObj.star _
+  map s := FreeGroup.of s
+
+/-- Its unique extension to the free groupoid. -/
+def labelFunctor (S : Type u) : Quiver.FreeGroupoid (Vertex S) ⥤ CategoryTheory.SingleObj (FreeGroup S) :=
+  Quiver.FreeGroupoid.lift (labelPrefunctor S)
+
+/-- Read a free-group word from a combinatorial loop. -/
+def vertexGroupToFree (S : Type u) : bouquetVertexGroup S →* FreeGroup S :=
+  (CategoryTheory.SingleObj.toEnd (FreeGroup S)).symm.toMonoidHom.comp
+    ((labelFunctor S).mapEnd ((Quiver.FreeGroupoid.of (Vertex S)).obj default))
+
+/-- Realize a free-group word as a combinatorial loop. -/
+def freeToVertexGroup (S : Type u) : FreeGroup S →* bouquetVertexGroup S :=
+  FreeGroup.lift edgeEnd
+
+@[simp]
+theorem vertexGroupToFree_edgeEnd {S : Type u} (s : S) :
+    vertexGroupToFree S (edgeEnd s) = FreeGroup.of s := by
+  have h := Prefunctor.congr_hom
+    (Quiver.FreeGroupoid.lift_spec (labelPrefunctor S))
+    (show (default : Vertex S) ⟶ (default : Vertex S) from s)
+  exact h
+
+@[simp]
+theorem freeToVertexGroup_of {S : Type u} (s : S) :
+    freeToVertexGroup S (FreeGroup.of s) = edgeEnd s :=
+  FreeGroup.lift_apply_of
+
+/-- The two universal-property maps are mutually inverse on the free group. -/
+theorem vertexGroupToFree_freeToVertexGroup (S : Type u) (w : FreeGroup S) :
+    vertexGroupToFree S (freeToVertexGroup S w) = w := by
+  have h : (vertexGroupToFree S).comp (freeToVertexGroup S) =
+      MonoidHom.id (FreeGroup S) := by
+    apply FreeGroup.lift.symm.injective
+    funext s
+    change vertexGroupToFree S (freeToVertexGroup S (FreeGroup.of s)) = FreeGroup.of s
+    simp
+  exact DFunLike.congr_fun h w
+
+/-- The same inverse equation on the free groupoid follows from its universal property. -/
+theorem freeToVertexGroup_vertexGroupToFree (S : Type u) (g : bouquetVertexGroup S) :
+    freeToVertexGroup S (vertexGroupToFree S g) = g := by
+  let E : Quiver.FreeGroupoid (Vertex S) ⥤ Quiver.FreeGroupoid (Vertex S) :=
+    labelFunctor S ⋙ CategoryTheory.SingleObj.functor
+      (C := Quiver.FreeGroupoid (Vertex S))
+      (X := (Quiver.FreeGroupoid.of (Vertex S)).obj (default : Vertex S))
+      (freeToVertexGroup S)
+  have hrest : Quiver.FreeGroupoid.of (Vertex S) ⋙q E.toPrefunctor =
+      Quiver.FreeGroupoid.of (Vertex S) := by
+    apply Prefunctor.ext
+      (fun x => by cases x; rfl)
+    intro x y s
+    cases x
+    cases y
+    change freeToVertexGroup S ((labelFunctor S).map
+      ((Quiver.FreeGroupoid.of (Vertex S)).map s)) = edgeEnd s
+    rw [show (labelFunctor S).map ((Quiver.FreeGroupoid.of (Vertex S)).map s) =
+      FreeGroup.of s from vertexGroupToFree_edgeEnd s]
+    exact freeToVertexGroup_of s
+  have hE : E = 𝟭 (Quiver.FreeGroupoid (Vertex S)) :=
+    (Quiver.FreeGroupoid.lift_unique (Quiver.FreeGroupoid.of (Vertex S)) E hrest).trans
+      (Quiver.FreeGroupoid.lift_unique (Quiver.FreeGroupoid.of (Vertex S))
+        (𝟭 _) rfl).symm
+  have h := Prefunctor.congr_hom (congrArg Functor.toPrefunctor hE) g
+  exact h
+
+/-- The universe-correct one-vertex free groupoid is the free group on its edge labels. -/
+def vertexGroupEquiv (S : Type u) : bouquetVertexGroup S ≃* FreeGroup S where
+  toFun := vertexGroupToFree S
+  invFun := freeToVertexGroup S
+  left_inv := freeToVertexGroup_vertexGroupToFree S
+  right_inv := vertexGroupToFree_freeToVertexGroup S
+  map_mul' := (vertexGroupToFree S).map_mul
+
+/-- The canonical topological realization of free-group words. -/
+def freeGroupEquiv (S : Type u) : FreeGroup S ≃* FundamentalGroup (Bouquet S) (base S) :=
+  (vertexGroupEquiv S).symm.trans
+    (FiniteGraphFreeGroup.graphCombinatorialToTopologicalEquiv (default : Vertex S))
+
+/-- The canonical labeling of topological loops. -/
+def bouquetEquiv (S : Type u) : FundamentalGroup (Bouquet S) (base S) ≃* FreeGroup S :=
+  (freeGroupEquiv S).symm
+
+@[simp]
+theorem freeGroupEquiv_of {S : Type u} (s : S) :
+    freeGroupEquiv S (FreeGroup.of s) = Path.Homotopic.Quotient.mk (edgeLoop s) := by
+  change FiniteGraphFreeGroup.graphCombinatorialToTopological (default : Vertex S)
+    (freeToVertexGroup S (FreeGroup.of s)) = _
+  rw [freeToVertexGroup_of]
+  have h := Prefunctor.congr_hom
+    (FiniteGraphFreeGroup.graphFreeGroupoidToTopological_restrict (V := Vertex S))
+    (show (default : Vertex S) ⟶ (default : Vertex S) from s)
+  exact h
+
+@[simp]
+theorem bouquetEquiv_edgeLoop {S : Type u} (s : S) :
+    bouquetEquiv S (Path.Homotopic.Quotient.mk (edgeLoop s)) = FreeGroup.of s := by
+  rw [← freeGroupEquiv_of]
+  exact (freeGroupEquiv S).symm_apply_apply _
+
+end PresentationComplex
+end
+end Standalone_PresentationComplex_Bouquet
+
 /-! Source module: PresentationComplex.GraphCells -/
 section Standalone_PresentationComplex_GraphCells
 
@@ -815,6 +5013,89 @@ def openDiskChart : (ball (0 : Fin 2 → ℝ) 1) ≃ₜ
 end PresentationComplex
 end
 end Standalone_PresentationComplex_CellCharts
+
+/-! Source module: PresentationComplex.WordLoops -/
+section Standalone_PresentationComplex_WordLoops
+
+
+
+/-! Actual finite word loops in the arbitrary weak bouquet. Mathlib multiplies
+loop classes in reverse chronological order, and this recursion respects it. -/
+noncomputable section
+open Set
+open Path.Homotopic
+universe u
+namespace PresentationComplex
+variable {S : Type u}
+
+theorem freeGroupEquiv_mk_wordLoop (w : List (S × Bool)) :
+    freeGroupEquiv S (FreeGroup.mk w) = Path.Homotopic.Quotient.mk (wordLoop w) := by
+  induction w with
+  | nil =>
+    change freeGroupEquiv S 1 = (1 : FundamentalGroup (Bouquet S) (base S))
+    exact (freeGroupEquiv S).map_one
+  | cons l w ih =>
+    rw [show FreeGroup.mk (l :: w) = FreeGroup.mk [l] * FreeGroup.mk w from
+      rfl, map_mul, ih]
+    have hsigned : freeGroupEquiv S (FreeGroup.mk [l]) = Path.Homotopic.Quotient.mk (signedEdgeLoop l) := by
+      cases l with
+      | mk s b =>
+        cases b
+        · rw [show FreeGroup.mk [(s,false)] = (FreeGroup.of s)⁻¹ from rfl,
+            map_inv,freeGroupEquiv_of]
+          rfl
+        · exact freeGroupEquiv_of s
+    rw [hsigned]
+    rfl
+
+theorem freeGroupEquiv_relatorLoop (g : FreeGroup S) :
+    freeGroupEquiv S g = Path.Homotopic.Quotient.mk (relatorLoop g) := by
+  classical
+  simpa only [FreeGroup.mk_toWord,relatorLoop,relatorWord] using
+    freeGroupEquiv_mk_wordLoop (FreeGroup.toWord g)
+
+end PresentationComplex
+end
+end Standalone_PresentationComplex_WordLoops
+
+/-! Source module: PresentationComplex.Relators -/
+section Standalone_PresentationComplex_Relators
+
+
+
+/-! Genuine circle maps and disk adjunction for arbitrary presentations. -/
+noncomputable section
+open Set Path.Homotopic
+universe u v
+namespace PresentationComplex
+variable {S : Type u} {R : Type v}
+
+theorem based_attaching_class {X : Type*} [TopologicalSpace X] {x₀ : X}
+    (f : C(Circle,X)) (h : f 1 = x₀) (p : Path x₀ x₀)
+    (hp : ∀ t, f (CellAttachment.circleGenerator t) = p t) :
+    Path.Homotopic.Quotient.mk (((Path.refl x₀).cast rfl h).trans
+      (((CellAttachment.circleGenerator.map f.continuous)).trans
+        ((Path.refl x₀).cast rfl h).symm)) = Path.Homotopic.Quotient.mk p := by
+  cases h
+  have heq : CellAttachment.circleGenerator.map f.continuous = p := by
+    apply Path.ext
+    funext t
+    exact hp t
+  rw [heq]
+  simp only [Path.cast_rfl_rfl,Path.refl_symm,Path.Homotopic.Quotient.mk_trans,Path.Homotopic.Quotient.mk_refl,
+    Path.Homotopic.Quotient.refl_trans,Path.Homotopic.Quotient.trans_refl]
+
+/-- Exact relator compatibility, including constant anchors rather than an assumed oracle. -/
+theorem attachingLoopClass_eq (r : R → FreeGroup S) (i : R) :
+    CellAttachment.attachingLoopClass (relatorMap r) (base S) (anchorPath r) i =
+      freeGroupEquiv S (r i) := by
+  rw [freeGroupEquiv_relatorLoop]
+  exact based_attaching_class (relatorMap r i) (relatorMap_one r i) (relatorLoop (r i))
+    (loopCircleMap_generator _)
+
+end PresentationComplex
+end
+end Standalone_PresentationComplex_Relators
 
 /-! Source module: CellAttachment.NormalForm -/
 section Standalone_CellAttachment_NormalForm
@@ -3701,4296 +7982,3 @@ def of_product_snd (γ : Dipath (x₀, y₀) (x₁, y₁)) : Dipath y₀ y₁ wh
 end Dipath
 end
 end Standalone_Lean4_dipath
-
-/-! Source module: Lean4.dTop -/
-section Standalone_Lean4_dTop
-
-
-
-
-/-!
-Bundled category of directed spaces. This follows the current Mathlib
-`TopCat` structure instead of the removed `BundledHom` API.
--/
-
-open DirectedMap
-open CategoryTheory
-
-universe u
-
-structure dTopCat where
-  /-- Underlying type. -/
-  carrier : Type u
-  /-- Topology and directed structure on the underlying type. -/
-  [str : DirectedSpace carrier]
-
-attribute [instance] dTopCat.str
-
-namespace dTopCat
-
-instance : CoeSort dTopCat (Type u) := ⟨dTopCat.carrier⟩
-
-instance : Category dTopCat where
-  Hom X Y := DirectedMap X Y
-  id X := DirectedMap.id X
-  comp f g := DirectedMap.comp g f
-  id_comp f := DirectedMap.comp_id f
-  comp_id f := DirectedMap.id_comp f
-  assoc f g h := (DirectedMap.comp_assoc h g f).symm
-
-instance concreteCategory : ConcreteCategory dTopCat (fun X Y => DirectedMap X Y) where
-  hom f := f
-  ofHom f := f
-
-instance directedSpaceUnbundled (X : dTopCat) : DirectedSpace X := X.str
-
-instance (X Y : dTopCat) : CoeFun (X ⟶ Y) (fun _ => X → Y) where
-  coe f := f
-
-lemma id_app (X : dTopCat.{u}) (x : ↑X) : (𝟙 X : X → X) x = x := rfl
-
-lemma comp_app {X Y Z : dTopCat.{u}} (f : X ⟶ Y) (g : Y ⟶ Z) (x : X) :
-  (f ≫ g : X → Z) x = g (f x) := rfl
-
-/-- Construct a bundled directed space. -/
-def of (X : Type u) [DirectedSpace X] : dTopCat := ⟨X⟩
-
-instance directedSpace_coe (X : dTopCat) : DirectedSpace X := X.str
-
-@[reducible]
-instance directedSpace_forget (X : dTopCat) : DirectedSpace <| (forget dTopCat).obj X := X.str
-
-instance subspace_coe {X : dTopCat} : CoeTC (Set X) dTopCat := ⟨fun s => dTopCat.of s⟩
-
-def DirectedSubtypeHom {X : dTopCat} (Y : Set X) : (dTopCat.of Y) ⟶ X :=
-  DirectedSubtypeInclusion (fun s => s ∈ Y)
-
-def DirectedSubsetHom {X : dTopCat} {Y₀ Y₁ : Set X} (h : Y₀ ⊆ Y₁) : (dTopCat.of Y₀) ⟶ Y₁ :=
-  DirectedSubsetInclusion h
-
-end dTopCat
-end Standalone_Lean4_dTop
-
-/-! Source module: Lean4.interpolate -/
-section Standalone_Lean4_interpolate
-
-
-
-
-/-
-  This file contains definitions about interpolating points in the directed unit interval
-  and contains conditions about when interpolating gives directed maps.
--/
-
-open scoped unitInterval
-
-universe u
-
-section
-
-lemma interp_mem_I (T a b : I) : (σ T : ℝ) * ↑a + ↑T * ↑b ∈ I := by
-    constructor
-
-    calc (0 : ℝ)
-        _ = ↑(σ T) * 0 + ↑T * 0 := by simp
-        _ ≤ ↑(σ T) * a + ↑T * 0 := add_le_add_left (mul_le_mul (le_refl (σ T : ℝ)) a.2.1 (le_refl 0) (σ T).2.1) (↑T * 0)
-        _ ≤ ↑(σ T) * a + ↑T * b := add_le_add_right (mul_le_mul (le_refl ↑T) b.2.1 (le_refl 0) T.2.1) (↑(σ T) * ↑a)
-
-    calc (σ T : ℝ) * ↑a + ↑T * ↑b
-        _ ≤ ↑(σ T) * 1 + ↑T * ↑b  := add_le_add_left (mul_le_mul (le_refl (σ T : ℝ)) a.2.2 a.2.1 (σ T).2.1) (↑T * ↑b)
-        _ ≤ ↑(σ T) * 1 + ↑T * 1   := add_le_add_right (mul_le_mul (le_refl ↑T) b.2.2 b.2.1 T.2.1) (↑(σ T) * 1)
-        _ = 1                     := by simp
-
-lemma interp_left_mem_I (T a : I) : (σ T : ℝ) * ↑a + ↑T ∈ I := by
-  convert interp_mem_I T a 1
-  simp
-
-lemma interp_right_mem_I (T b : I) : (σ T : ℝ) + ↑T * ↑b ∈ I := by
-  convert interp_mem_I T 1 b
-  simp
-
-lemma interp_const_le_of_le_of_le {a b T₀ T₁ : I} (hab : a ≤ b) (hT : T₀ ≤ T₁) :
-  ((σ T₀ : ℝ) * ↑a + ↑T₀ * ↑b) ≤ (σ T₁ : ℝ) * ↑a + ↑T₁ * ↑b := by
-  have h₁ : (T₀ : ℝ) * (b - a) ≤ T₁ * (b - a) := mul_le_mul_of_nonneg_right hT (sub_nonneg_of_le hab)
-
-  calc (1 - T₀ : ℝ) * (a : ℝ) + (T₀ : ℝ) * (b : ℝ)
-      _ = (a : ℝ) + ↑T₀ * (b - a)                        := by ring
-      _ ≤ ↑a + ↑T₁ * (b - a)                             := add_le_add_right h₁ a
-      _ = (1 - T₁ : ℝ) * (a : ℝ) + (T₁ : ℝ) * (b : ℝ)   := by ring
-
-def interpolate_const (a b : I) : C(I, I) where
-  toFun := fun t => ⟨_, interp_mem_I t a b⟩
-
-def directed_interpolate_const {a b : I} (h : a ≤ b) : D(I, I) where
-  toContinuousMap := interpolate_const a b
-  directed_toFun := fun _ _ _ hγ _ _ hxy => interp_const_le_of_le_of_le h (hγ hxy)
-
-variable (f g : C(I, I))
-
-def interpolate : C(I × I, I) where
-  toFun := fun t => ⟨(σ t.1 : ℝ) * (f t.2) + t.1 * (g t.2), interp_mem_I t.1 (f t.2) (g t.2)⟩
-
-lemma interpolate_left : (interpolate f g).curry 0 = f := by
-  ext
-  simp [interpolate]
-
-lemma interpolate_right : (interpolate f g).curry 1 = g := by
-  ext
-  simp [interpolate]
-
-lemma interpolate_constant_apply (t v : I) (hf : f t = v) (hg : g t = v) :
-    ∀ x, interpolate f g (x, t) = v := by
-  intro x
-  simp [interpolate, hf, hg]
-  ring_nf
-
-end
-
-section
-
-variable (f g : D(I, I))
-
-lemma directed_interpolate (h : ∀ t, f t ≤ g t) :
-    DirectedMap.Directed (interpolate f.toContinuousMap g.toContinuousMap) := by
-  intros t₀ t₁ γ γ_dipath x y hxy
-
-  let a₀ := (γ x).1
-  let a₁ := (γ x).2
-  let b₀ := (γ y).1
-  let b₁ := (γ y).2
-
-  have hfab : (f a₁ : ℝ) ≤ f b₁ := DirectedUnitInterval.monotone_of_directed f (γ_dipath.2 hxy)
-  have hgab : (g a₁ : ℝ) ≤ g b₁ := DirectedUnitInterval.monotone_of_directed g (γ_dipath.2 hxy)
-  have : 0 ≤ (g a₁ : ℝ) - (f a₁ : ℝ) := by simp [h]
-  have h₁ : (a₀ : ℝ) * (g a₁ - f a₁) ≤ b₀ * (g a₁ - f a₁) := mul_le_mul_of_nonneg_right (γ_dipath.1 hxy) this
-
-  apply Subtype.coe_le_coe.mp
-
-  calc (interpolate f.toContinuousMap g.toContinuousMap (γ x) : ℝ)
-      _  = (1 - a₀ : ℝ) * (f a₁ : ℝ) + (a₀ : ℝ) * (g a₁ : ℝ) := by rfl
-      _  = ↑(f a₁) + ↑a₀ * (g a₁ - f a₁)                      := by ring
-      _  ≤ ↑(f a₁) + ↑b₀ * (g a₁ - f a₁)                      := add_le_add_right h₁ ↑(f a₁)
-      _  = (1 - b₀ : ℝ) * (f a₁ : ℝ) + (b₀ : ℝ) * (g a₁ : ℝ) := by ring
-      _  ≤ (1 - b₀ : ℝ) * (f b₁ : ℝ) + (b₀ : ℝ) * (g a₁ : ℝ) := add_le_add_left (mul_le_mul_of_nonneg_left hfab (by unit_interval)) ((b₀ : ℝ) * (g a₁ : ℝ))
-      _  ≤ (1 - b₀ : ℝ) * (f b₁ : ℝ) + (b₀ : ℝ) * (g b₁ : ℝ) := add_le_add_right (mul_le_mul_of_nonneg_left hgab (by unit_interval)) ((1 - b₀ : ℝ) * (f b₁ : ℝ))
-      _  = (interpolate f.toContinuousMap g.toContinuousMap (γ y) : ℝ) := rfl
-
-end
-end Standalone_Lean4_interpolate
-
-/-! Source module: Lean4.SplitPath.split_path -/
-section Standalone_Lean4_SplitPath_split_path
-
-
-
-
-/- This file contains definitions for splitting a path `γ : Path x y` at some point `T : I`
-  yielding two different paths:
-  * Its first part, from `x` to `γ T`, given by evaluating `γ` on `[0, T]`.
-  * Its second part, from `γ T` to `y`, given by evaluating `γ` on `[T, 1]`.
--/
-
-open scoped unitInterval
-
-noncomputable section
-
-universe u
-
-variable {X : Type u} [DirectedSpace X] {x₀ x₁ : X}
-
-namespace SplitPath
-
-/-- The part of a path on the interval [0, T] -/
-def FirstPart (γ : Path x₀ x₁) (T : I) : Path x₀ (γ T) where
-  toFun := fun t => γ ⟨(T : ℝ) * ↑t, unitInterval.mul_mem T.2 t.2⟩
-  source' := by simp [γ.source']
-  target' := by simp
-
-/-- The part of a path on the interval [T, 1] -/
-def SecondPart (γ : Path x₀ x₁) (T : I) : Path (γ T) x₁ where
-  toFun := fun t => γ ⟨(σ T : ℝ) * ↑t + ↑T, interp_left_mem_I T t⟩
-  source' := by simp
-  target' := by simp [γ.target']
-
-/--
-  The map needed to reparametrize the concatenation of the first and second part of a path
-  back into the original pat
--/
-def trans_reparam (T t : I) : ℝ :=
-if (t : ℝ) ≤ (T : ℝ) then
-  t / (2 * T)
-else
-  (1 + t - 2*T) / (2 * (1-T))
-
-@[continuity]
-lemma continuous_trans_reparam {T : I} (hT₀ : 0 < T) (hT₁ : T < 1) : Continuous (trans_reparam T) := by
-  refine' continuous_if_le _ _ (Continuous.continuousOn _) (Continuous.continuousOn _) _
-  · continuity
-  · continuity
-  · continuity
-  · continuity
-  intro x hx
-  apply (div_eq_div_iff (ne_of_gt (unitIAux.double_pos_of_pos hT₀)) (ne_of_gt (unitIAux.double_sigma_pos_of_lt_one hT₁))).mpr
-  simp [hx]
-  ring
-
-lemma trans_reparam_mem_I (t : I) {T : I} (hT₀ : 0 < T) (hT₁ : T < 1): trans_reparam T t ∈ I := by
-  unfold trans_reparam
-  split
-  case isTrue h₀ =>
-    constructor
-    · exact div_nonneg t.2.1 (le_of_lt (unitIAux.double_pos_of_pos hT₀))
-    · apply (div_le_one (unitIAux.double_pos_of_pos hT₀)).mpr
-      have : 0 < (T : ℝ) := hT₀
-      have : (T : ℝ) ≤ (2 * T : ℝ) := by linarith only [this]
-      apply le_trans h₀ this
-  case isFalse h₀ =>
-    constructor
-    · apply div_nonneg _ (le_of_lt (unitIAux.double_sigma_pos_of_lt_one hT₁))
-      linarith [unitIAux.double_sigma_pos_of_lt_one hT₁]
-    · exact (div_le_one (unitIAux.double_sigma_pos_of_lt_one hT₁)).mpr (by
-      linarith only [unitInterval.le_one t])
-
-lemma trans_reparam_zero (T : I) : trans_reparam T 0 = 0 := by
-  unfold trans_reparam
-  simp
-  intro hT
-  linarith [unitInterval.nonneg T]
-
-lemma trans_reparam_one {T : I} (hT₁ : T < 1): trans_reparam T 1 = 1 := by
-  unfold trans_reparam
-  split_ifs
-  case pos h =>
-    exfalso
-    exact lt_irrefl T (lt_of_lt_of_le hT₁ (Subtype.coe_le_coe.mp h))
-  case neg h =>
-    apply (div_eq_one_iff_eq _).mpr
-    · show (1 : ℝ) + 1 - 2 * T = 2 * (1 - T)
-      ring
-    · simp
-      have h₁ : T ≠ 1 := ne_of_lt hT₁
-      exact fun h₂ => h₁ (Subtype.coe_inj.mp ((sub_eq_zero.mp h₂).symm))
-
-lemma monotone_trans_reparam {T : I} (hT₀ : 0 < T) (hT₁ : T < 1) : Monotone (trans_reparam T) := by
-  intro x y hxy
-  unfold trans_reparam
-  split_ifs with h₁ h₂
-  · exact (div_le_div_iff_of_pos_right (unitIAux.double_pos_of_pos hT₀)).mpr (Subtype.coe_le_coe.mpr hxy)
-  · apply (div_le_div_iff₀ (unitIAux.double_pos_of_pos hT₀) (unitIAux.double_sigma_pos_of_lt_one hT₁)).mpr
-    have : 0 ≤ (T : ℝ) * (↑y - ↑T) := mul_nonneg T.2.1 (by linarith)
-    calc (x : ℝ) * (2 * (1 - ↑T))
-      _ ≤  ↑T * (2 * (1 - ↑T))                    := mul_le_mul_of_nonneg_right h₁ (le_of_lt (unitIAux.double_sigma_pos_of_lt_one hT₁))
-      _ ≤  ↑T * (2 * (1 - ↑T)) + ↑T * (↑y - ↑T)   := le_add_of_nonneg_right (mul_nonneg T.2.1 (by linarith))
-      _ ≤ (1 + ↑y - 2 * ↑T)  * (2 * ↑T)           := by linarith
-  · linarith [Subtype.coe_le_coe.mpr hxy]
-  · apply (div_le_div_iff_of_pos_right (unitIAux.double_sigma_pos_of_lt_one hT₁)).mpr
-    linarith [Subtype.coe_le_coe.mpr hxy]
-
-lemma first_trans_second_reparam_eq_self_aux (γ : Path x₀ x₁) (t : I) {T: I} (hT₀ : 0 < T) (hT₁ : T < 1) :
-    γ t = ((FirstPart γ T).trans (SecondPart γ T)).reparam
-    (fun t => ⟨trans_reparam T t, trans_reparam_mem_I t hT₀ hT₁⟩)
-    (by continuity)
-    (Subtype.ext $ trans_reparam_zero T) (Subtype.ext $ trans_reparam_one hT₁) t := by
-
-  have hT_ne_zero : (T : ℝ) ≠ 0 := (lt_iff_le_and_ne.mp (Subtype.coe_lt_coe.mpr hT₀)).2.symm
-  rw [Path.reparam]
-  simp [Path.trans_apply, FirstPart, SecondPart, trans_reparam]
-  split_ifs with h₁ h₂ h₂
-  · congr
-    apply Subtype.coe_inj.mp
-    simp
-    calc (t : ℝ)
-      _ = t * 1 := (mul_one (t : ℝ)).symm
-      _ = t * ((2 * T) / (2 * T)) := by rw [div_self (mul_ne_zero two_ne_zero hT_ne_zero)]
-      _ = T * (2 * (t / (2 * T))) := by ring
-  · exfalso
-    have hT_lt_t : ↑T < ↑t := by
-      simp at h₂
-      calc (T : ℝ)
-        _ = 1 * T                     := (one_mul (T : ℝ)).symm
-        _ = (2⁻¹ * 2) * T             := by norm_num
-        _ = 2⁻¹ * (2 * T)             := by ring
-        _ < (t / (2 * T)) * (2 * T) := mul_lt_mul_of_pos_right h₂ (unitIAux.double_pos_of_pos hT₀)
-        _ = t * ((2 * T) / (2 * T)) := by ring
-        _ = t * 1                     := by rw [div_self (mul_ne_zero two_ne_zero hT_ne_zero)]
-        _ = t                         := (mul_one (t : ℝ))
-    exact not_le_of_gt hT_lt_t h₁
-  · exfalso
-    have : (1 + (t : ℝ) - 2 * ↑T) ≤ (1 - ↑T) := by
-      rw [div_le_iff₀ (unitIAux.double_sigma_pos_of_lt_one hT₁)] at h₂
-      simp at h₂
-      simp [h₂]
-    apply h₁ (Subtype.coe_le_coe.mp _)
-    linarith
-  · congr
-    apply Subtype.coe_inj.mp
-    simp
-    calc (t : ℝ)
-      _ = (1 + t - 2 * T) - 1 + 2 * T := by ring
-      _ = (1 + t - 2 * T) * (2 * (1 - T)) / (2 * (1 - T)) - 1 + 2 * ↑T
-            := by simp [mul_div_cancel_right₀ ((1 : ℝ) + t - 2 * T) (ne_of_gt (unitIAux.double_sigma_pos_of_lt_one hT₁))]
-      _ = (1 - T) * (2 * ((1 + t - 2 * T) / (2 * (1 - T))) - 1) + T := by ring
-
-lemma first_trans_second_reparam_eq_self (γ : Path x₀ x₁) {T: I} (hT₀ : 0 < T) (hT₁ : T < 1) :
-    γ = ((FirstPart γ T).trans (SecondPart γ T)).reparam
-    (fun t => ⟨trans_reparam T t, trans_reparam_mem_I t hT₀ hT₁⟩)
-    (by continuity)
-    (Subtype.ext $ trans_reparam_zero T) (Subtype.ext $ trans_reparam_one hT₁) := by
-  ext t
-  exact first_trans_second_reparam_eq_self_aux γ t hT₀ hT₁
-
-end SplitPath
-
-
-
-
-end
-end Standalone_Lean4_SplitPath_split_path
-
-/-! Source module: Lean4.SplitPath.split_dipath -/
-section Standalone_Lean4_SplitPath_split_dipath
-
-
-
-
-/- This file contains definitions for splitting a directed path `γ : Dipath x y` at some point
-  `T : I` yielding two different directed paths:
-  * Its first part, from `x` to `γ T`, given by evaluating `γ` on `[0, T]`.
-  * Its second part, from `γ T` to `y`, given by evaluating `γ` on `[T, 1]`.
--/
-
-noncomputable section
-universe u
-variable {X : Type u} [DirectedSpace X] {x₀ x₁ : X}
-
-namespace SplitDipath
-
-open SplitPath
-open scoped unitInterval
-
-lemma first_part_is_dipath {γ : Path x₀ x₁} (γ_dipath : IsDipath γ) (T : I) :
-  IsDipath (FirstPart γ T) := by
-
-  let φ : Path 0 T := {
-    toFun := fun t => ⟨(T : ℝ) * (t : ℝ), unitInterval.mul_mem T.2 t.2⟩
-    source' := by simp
-    target' := by simp
-  }
-
-  have φ_mono : Monotone φ := fun x y hxy => by
-    show (T : ℝ) * x ≤ T * y
-    apply mul_le_mul_of_nonneg_left (Subtype.coe_le_coe.mpr hxy) T.2.1
-
-  have : FirstPart γ T = (φ.map γ.continuous_toFun).cast γ.source.symm rfl := by { ext; rfl }
-  rw [this]
-
-  apply isDipath_cast _ γ.source.symm rfl
-  exact isDipath_reparam φ_mono γ_dipath
-
-
-lemma second_part_is_dipath {γ : Path x₀ x₁} (γ_dipath : IsDipath γ) (T : I) :
-  IsDipath (SecondPart γ T) := by
-
-  let φ : Path T 1 := {
-    toFun := fun t => ⟨(σ T : ℝ) * (t : ℝ) + (T : ℝ), interp_left_mem_I T t⟩
-    source' := by simp
-    target' := by simp
-  }
-
-  have φ_mono : Monotone φ := fun x y hxy => by
-    show (σ T : ℝ) * x + T ≤ (σ T : ℝ) * y + T
-    have hmul : (σ T : ℝ) * x ≤ (σ T : ℝ) * y :=
-      mul_le_mul_of_nonneg_left (Subtype.coe_le_coe.mpr hxy) (σ T).2.1
-    linarith
-
-  have : SecondPart γ T = ((φ.map γ.continuous_toFun).cast rfl γ.target.symm) := by { ext; rfl }
-  rw [this]
-
-  apply isDipath_cast _ rfl γ.target.symm
-  exact isDipath_reparam φ_mono γ_dipath
-
-def FirstPart (γ : Dipath x₀ x₁) (T : I) : Dipath x₀ (γ T) := {
-  SplitPath.FirstPart (γ : Path x₀ x₁) T with
-  dipath_toPath := first_part_is_dipath γ.dipath_toPath T
-}
-
-def SecondPart (γ : Dipath x₀ x₁) (T : I) : Dipath (γ T) x₁ := {
-  SplitPath.SecondPart (γ : Path x₀ x₁) T with
-  dipath_toPath := second_part_is_dipath γ.dipath_toPath T
-}
-
-@[simp]
-lemma first_part_apply (γ : Dipath x₀ x₁) (T t : I) :
-  (FirstPart γ T) t = γ ⟨ T* t, unitInterval.mul_mem T.2 t.2⟩ := rfl
-
-@[simp]
-lemma second_part_apply (γ : Dipath x₀ x₁) (T t : I) :
-  (SecondPart γ T) t = γ ⟨(σ T : ℝ) * (t : ℝ) + (T : ℝ), interp_left_mem_I T t⟩ := rfl
-
-def trans_reparam_map {T : I} (hT₀ : 0 < T) (hT₁ : T < 1) : D(I, I) :=
-{
-  toContinuousMap := ⟨fun t => ⟨trans_reparam T t, trans_reparam_mem_I t hT₀ hT₁⟩,
-    Continuous.subtype_mk (continuous_trans_reparam hT₀ hT₁) _⟩,
-  directed_toFun := DirectedUnitInterval.directed_of_monotone _ (monotone_trans_reparam hT₀ hT₁)
-}
-
-lemma trans_reparam_map_zero {T : I} (hT₀ : 0 < T) (hT₁ : T < 1) : trans_reparam_map hT₀ hT₁ 0 = 0 :=
-  Subtype.ext (trans_reparam_zero T)
-lemma trans_reparam_map_one {T : I} (hT₀ : 0 < T) (hT₁ : T < 1) : trans_reparam_map hT₀ hT₁ 1 = 1 :=
-  Subtype.ext (trans_reparam_one hT₁)
-
-lemma first_trans_second_reparam_eq_self (γ : Dipath x₀ x₁) {T: I} (hT₀ : 0 < T) (hT₁ : T < 1) :
-  γ = ((FirstPart γ T).trans (SecondPart γ T)).reparam
-    (trans_reparam_map hT₀ hT₁) (trans_reparam_map_zero _ _) (trans_reparam_map_one _ _) := by
-  ext t
-  exact first_trans_second_reparam_eq_self_aux (γ : Path x₀ x₁) t hT₀ hT₁
-
-end SplitDipath
-
-end
-end Standalone_Lean4_SplitPath_split_dipath
-
-/-! Source module: Lean4.stretch_path -/
-section Standalone_Lean4_stretch_path
-
-
-
-
-/-
-  This file contains definitions about stretching a (directed) path in `I` in two ways:
-    If its image is contained in `[0, 1/2]`, it can be stretched upwards
-    If its image is contained in `[1/2, 1]`, it can be stretched downwards
-
-  These cases can be determined by the endpoints of the directed path.
--/
-
-open unitIAux
-open scoped unitInterval
-
-namespace Dipath
-
-/-### Stretching a path that only lives in the first half of the unit interval upwards -/
-
-lemma double_mem_I_of_bounded {t₀ t₁ : I} (t : I) (γ : Dipath t₀ t₁) (ht₁ : ↑t₁ ≤ (2⁻¹ : ℝ)) : 2 * (γ t : ℝ) ∈ I :=
-  double_mem_I $ le_trans (monotone_path_bounded γ.dipath_toPath t).2 (ht₁)
-
-def stretch_up_path {t₀ t₁ : I} (γ : Dipath t₀ t₁) (ht₁ : ↑t₁ ≤ (2⁻¹ : ℝ)) : Path
-  (⟨2 * ↑t₀, by { rw [←γ.source']; exact double_mem_I_of_bounded 0 γ ht₁ }⟩ : I)
-  ⟨2 * ↑t₁, double_mem_I ht₁⟩ where
-    toContinuousMap := ⟨fun t => ⟨2 * (γ t : ℝ), double_mem_I_of_bounded t γ ht₁⟩,
-      Continuous.subtype_mk (continuous_const.mul (continuous_subtype_val.comp γ.continuous)) _⟩
-    source' := by simp [γ.source']
-    target' := by simp [γ.target']
-
-lemma isDipath_stretch_up {t₀ t₁ : I} (γ : Dipath t₀ t₁) (ht₁ : ↑t₁ ≤ (2⁻¹ : ℝ)) :
-  IsDipath (stretch_up_path γ ht₁) := by
-  intros x y hxy
-  unfold stretch_up_path
-  simp
-  exact γ.dipath_toPath hxy
-
-def stretch_up {t₀ t₁ : I} (γ : Dipath t₀ t₁) (ht₁ : ↑t₁ ≤ (2⁻¹ : ℝ)) : Dipath
-  (⟨2 * ↑t₀, by { rw [←γ.source']; exact double_mem_I_of_bounded 0 γ ht₁ }⟩ : I)
-  ⟨2 * ↑t₁, double_mem_I ht₁⟩ where
-    toPath := stretch_up_path γ ht₁
-    dipath_toPath := isDipath_stretch_up γ ht₁
-
-/-### Stretching a path that only lives in the second half of the unit interval downwards -/
-
-lemma double_sub_one_mem_I_of_bounded {t₀ t₁ : I} (t : I) (γ : Dipath t₀ t₁) (ht₀ : (2⁻¹ : ℝ) ≤ ↑t₀)
- : 2 * (γ t : ℝ) - 1 ∈ I :=
-  double_sub_one_mem_I $ le_trans ht₀ (monotone_path_bounded γ.dipath_toPath t).1
-
-def stretch_down_path {t₀ t₁ : I} (γ : Dipath t₀ t₁) (ht₀ : (2⁻¹ : ℝ) ≤ ↑t₀) : Path
-  (⟨2 * ↑t₀ - 1, double_sub_one_mem_I ht₀⟩ : I)
-  ⟨2 * ↑t₁ - 1, by { rw [←γ.target']; exact double_sub_one_mem_I_of_bounded 1 γ ht₀ }⟩ where
-    toContinuousMap := ⟨fun t => ⟨2 * (γ t : ℝ) - 1, double_sub_one_mem_I_of_bounded t γ ht₀⟩,
-      Continuous.subtype_mk
-        ((continuous_const.mul (continuous_subtype_val.comp γ.continuous)).sub continuous_const) _⟩
-    source' := by simp [γ.source']
-    target' := by simp [γ.target']
-
-lemma isDipath_stretch_down {t₀ t₁ : I} (γ : Dipath t₀ t₁) (ht₀ : (2⁻¹ : ℝ) ≤ ↑t₀) :
-  IsDipath (stretch_down_path γ ht₀) := by
-  intros x y hxy
-  unfold stretch_down_path
-  simp
-  exact γ.dipath_toPath hxy
-
-def stretch_down {t₀ t₁ : I} (γ : Dipath t₀ t₁) (ht₀ : (2⁻¹ : ℝ) ≤ ↑t₀) : Dipath
-  (⟨2 * ↑t₀ - 1, double_sub_one_mem_I ht₀⟩ : I)
-  ⟨2 * ↑t₁ - 1, by { rw [←γ.target']; exact double_sub_one_mem_I_of_bounded 1 γ ht₀ }⟩ where
-    toPath := stretch_down_path γ ht₀
-    dipath_toPath := isDipath_stretch_down γ ht₀
-
-end Dipath
-end Standalone_Lean4_stretch_path
-
-/-! Source module: Lean4.directed_homotopy -/
-section Standalone_Lean4_directed_homotopy
-
-
-
-
-/-
-  This file contains the definitions of three type of directed homotopies:
-  * `Dihomotopy f g` : the type of homotopies between two directed maps `f g : D(X, Y)`.
-  * `Dihomotopy_with f g P` : the type of homotopies between two directed maps `f g : D(X, Y)` satisfying `P : D(X, Y) → Prop` at all intermediate point `t : I`.
-  * `Dihomotopy_rel f g S` : the type of homotopies between two directed maps `f g : D(X, Y)` that are fixed on all points of `S : set X`.
-
-  The structure of this file is based on the undirected variant in Mathlib, found at:
-  https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Topology/Homotopy/Basic.lean
--/
-
-noncomputable section
-
-namespace DirectedMap
-
-open DirectedMap DirectedUnitInterval
-open unitIAux
-open scoped unitInterval
-
-
-universe u v w
-
-variable {X : Type u} {Y : Type v} {Z : Type w}
-variable [DirectedSpace X] [DirectedSpace Y] [DirectedSpace Z]
-
-/-- `DirectedMap.Dihomotopy f₀ f₁` is the type of directed homotopies from `f₀` to `f₁`. -/
-structure Dihomotopy (f₀ f₁ : DirectedMap X Y) extends D((I × X), Y) :=
-  (map_zero_left : ∀ x, toFun (0, x) = f₀.toFun x)
-  (map_one_left : ∀ x, toFun (1, x) = f₁.toFun x)
-
-section
-
-/-- `DirectedMap.DihomotopyLike F f₀ f₁` states that `F` is a type of homotopies between `f₀` and `f₁` -/
-class DihomotopyLike {X Y : outParam (Type*)} [DirectedSpace X] [DirectedSpace Y]
-    (F : Type*) (f₀ f₁ : outParam <| D(X, Y)) [FunLike F (I × X) Y]
-    extends DirectedMapClass F (I × X) Y : Prop where
-  map_zero_left (f : F) : ∀ x, f (0, x) = f₀ x
-  map_one_left (f : F) : ∀x, f (1, x) = f₁ x
-
-end
-
-namespace Dihomotopy
-
-section
-
-variable {f₀ f₁ : D(X, Y)}
-
-instance instFunLike : FunLike (Dihomotopy f₀ f₁) (I × X) Y where
-  coe f := f.toFun
-  coe_injective f g h := by
-    obtain ⟨⟨⟨_, _⟩, _⟩, _⟩ := f
-    obtain ⟨⟨⟨_, _⟩, _⟩, _⟩ := g
-    congr
-
-instance : DihomotopyLike (Dihomotopy f₀ f₁) f₀ f₁ where
-  map_continuous f := f.continuous_toFun
-  map_directed f := f.directed_toFun
-  map_zero_left f := f.map_zero_left
-  map_one_left f := f.map_one_left
-
-end
-
-variable {f₀ f₁ : D(X, Y)}
-
-@[ext] theorem ext {f g : Dihomotopy f₀ f₁} (h : ∀ x, f x = g x) : f = g := DFunLike.ext _ _ h
-
-/-- See Note [custom simps projection]. We need to specify this projection explicitly in this case,
-because it is a composition of multiple projections. -/
-def Simps.apply (F : Dihomotopy f₀ f₁) : I × X → Y := F
-
-initialize_simps_projections Dihomotopy (toDirectedMap_toContinuousMap_toFun → apply, -toDirectedMap_toContinuousMap)
-
-@[simp] lemma apply_zero (F : Dihomotopy f₀ f₁) (a : X) : F (0, a) = f₀ a := F.map_zero_left a
-@[simp] lemma apply_one (F : Dihomotopy f₀ f₁) (a : X) : F (1, a) = f₁ a := F.map_one_left a
-@[simp] lemma coe_to_continuous_map (F : Dihomotopy f₀ f₁) : ⇑F.toContinuousMap = F := rfl
-@[simp] lemma coe_to_directed_map (F : Dihomotopy f₀ f₁) : ⇑F.toDirectedMap = F := rfl
-
-/--
-Currying a dihomotopy to a map fron `I` to `D(X, Y)`.
--/
-def curry (F : Dihomotopy f₀ f₁) : I → D(X, Y) := by
-  intro t
-  exact DirectedMap.prod_const_fst ↑F t
-
-@[simp]
-lemma curry_apply (F : Dihomotopy f₀ f₁) (t : I) (x : X) : F.curry t x = F (t, x) := rfl
-
-/--
-Currying a dihomotopy to a map fron `X` to `D(I, Y)`.
--/
-def curry_snd (F : Dihomotopy f₀ f₁) : X → D(I, Y) := by
-  intro x
-  exact DirectedMap.prod_const_snd ↑F x
-
-@[simp]
-lemma curry_snd_apply (F : Dihomotopy f₀ f₁) (x : X) (t : I) : F.curry_snd x t = F (t, x) := rfl
-
-def hom_to_dihom (F : ContinuousMap.Homotopy (↑f₀ : C(X, Y)) ↑f₁) (HF : Directed (F : C(I × X, Y))) :
-  Dihomotopy f₀ f₁ where
-    toFun := F.toFun
-    continuous_toFun := F.continuous_toFun
-    directed_toFun := HF
-    map_zero_left := F.map_zero_left
-    map_one_left := F.map_one_left
-
-def dihom_to_hom (F : Dihomotopy f₀ f₁) : ContinuousMap.Homotopy (f₀ : C(X, Y)) ↑f₁ where
-  toFun := F.toFun
-  continuous_toFun := F.continuous_toFun
-  map_zero_left := F.map_zero_left
-  map_one_left := F.map_one_left
-
-instance coe_dihom_to_hom : Coe (Dihomotopy f₀ f₁) (ContinuousMap.Homotopy (f₀ : C(X, Y)) ↑f₁) :=
-  ⟨fun F => F.dihom_to_hom⟩
-
-section
-
-/-! Evaluating dihomotopies at intermidiate points -/
-
-/--
-Evaluating a dipath homotopy at an intermediate point in the left coordinate, giving us a `dipath`.
--/
-def eval_at_left {f g : D(I, X)} (F : Dihomotopy f g) (t : I) : Dipath (F (t, 0)) (F (t, 1)) where
-  toContinuousMap := (F.curry t).toContinuousMap
-  source' := by simp
-  target' := by simp
-  dipath_toPath := DirectedUnitInterval.isDipath_of_isDipath_comp_id
-    $ (F.curry t).directed_toFun DirectedUnitInterval.IdentityPath DirectedUnitInterval.isDipath_identityPath
-
-/--
-Given a dihomotopy H: f ∼ g, get the dipath traced by the point `x` as it moves from
-`f x` to `g x`
--/
-def eval_at_right {X : Type*} {Y : Type*} [DirectedSpace X] [DirectedSpace Y] {f g : D(X, Y)}
-  (H : DirectedMap.Dihomotopy f g) (x : X) : Dipath (f x) (g x) where
-    toContinuousMap := ⟨fun t => H (t, x), H.continuous_toFun.comp (continuous_id.prodMk continuous_const)⟩
-    source' := H.apply_zero x
-    target' := H.apply_one x
-    dipath_toPath := by
-        convert H.directed_toFun { toFun := fun t => (t, x), source' := rfl, target' := rfl}
-          ⟨DirectedUnitInterval.isDipath_identityPath, isDipath_constant _⟩ <;> simp
-
-end
-
-/--
-Given a directed map `f`, we can define a `Dihomotopy f f` by `F (t, x) = f x`
--/
-lemma directed_refl (f : D(X, Y)) : Directed (↑(ContinuousMap.Homotopy.refl (↑f : C(X, Y))) : C(I × X, Y)) :=
-  fun _ _ γ γ_dipath => (f.directed_toFun (γ.map continuous_snd) (directed_snd.directed_toFun γ γ_dipath))
-
-@[simps!]
-def refl (f : D(X, Y)) : Dihomotopy f f := hom_to_dihom _ (directed_refl f)
-
-instance : Inhabited (Dihomotopy (DirectedMap.id X) (DirectedMap.id X)) := ⟨Dihomotopy.refl _⟩
-
-/- Note: there is no `Dihomotopy.symm`, as paths generally cannot be reversed -/
-
-/- Auxiliary functions to prove that homotopy.trans is directed if the given homotopies are directed -/
-section trans_aux
-
-section trans_aux₁
-
-open SplitPath SplitDipath
-
-variable {t₀ t₁ : I} (γ : Dipath t₀ t₁) {T : I}
-variable (hT : γ T = half_I)
-
-def FirstPartStretch (ht₀ : (t₀ : ℝ) ≤ 2⁻¹) : Dipath (⟨2 * (t₀.1 : ℝ), double_mem_I ht₀⟩ : I) (1 : I) where
-  toPath := (Dipath.stretch_up (FirstPart γ T)
-      (by { convert le_refl (2⁻¹ : ℝ); simp [hT] })).toPath.cast (by simp) (by simp [hT])
-  dipath_toPath := isDipath_cast _ _ _ <| Dipath.isDipath_stretch_up (FirstPart γ T)
-    (by { convert le_refl (2⁻¹ : ℝ); simp [hT] })
-
-def SecondPartStretch (ht₁ : 2⁻¹ ≤ (t₁ : ℝ)) : Dipath (0 : I) ⟨2 * (t₁.1 : ℝ) - 1, double_sub_one_mem_I ht₁⟩ where
-  toPath := (Dipath.stretch_down (SecondPart γ T)
-      (by { convert le_refl (2⁻¹ : ℝ); simp [hT] })).toPath.cast (by simp [hT]) (by simp)
-  dipath_toPath := isDipath_cast _ _ _ <| Dipath.isDipath_stretch_down (SecondPart γ T)
-    (by { convert le_refl (2⁻¹ : ℝ); simp [hT] })
-
-
-end trans_aux₁
-
-section trans_aux₂
-
-variable {f₂ : D(X, Y)} (F : Dihomotopy f₀ f₁) (G: Dihomotopy f₁ f₂) (t : I) (x : X)
-
-lemma trans_apply_half_left (ht: t = half_I) : (dihom_to_hom F).trans (dihom_to_hom G) (t, x) = F (1, x) := by
-  rw [ContinuousMap.Homotopy.trans_apply]
-  have ht_coe : (t : ℝ) = 2⁻¹ := Subtype.coe_inj.mpr ht
-  have : (t : ℝ) ≤ 2⁻¹ := by linarith
-  simp [this]
-  simp [ht_coe]
-
-lemma trans_apply_half_right (ht: t = half_I) : (dihom_to_hom F).trans (dihom_to_hom G) (t, x) = G (0, x) := by
-  rw [ContinuousMap.Homotopy.trans_apply]
-  have ht_coe : (t : ℝ) = 2⁻¹ := Subtype.coe_inj.mpr ht
-  split_ifs <;> simp [ht_coe]
-
-lemma trans_apply_left (t : I) (x : X) (ht : (t : ℝ) ≤ 2⁻¹) :
-  (dihom_to_hom F).trans (dihom_to_hom G) (t, x) = F (⟨2 * t, double_mem_I ht⟩, x) := by
-  rw [ContinuousMap.Homotopy.trans_apply]
-  simp [ht]
-  rfl
-
-lemma trans_apply_right (t : I) (x : X) (ht : 2⁻¹ ≤ (t : ℝ)) :
-  (dihom_to_hom F).trans (dihom_to_hom G) (t, x) = G (⟨2 * t - 1, double_sub_one_mem_I ht⟩, x) := by
-  rw [ContinuousMap.Homotopy.trans_apply]
-  simp [ht]
-  split_ifs
-  {
-    have : (t : ℝ) = 2⁻¹ := by linarith
-    simp [this]
-  }
-  rfl
-
-end trans_aux₂
-
-section trans_aux₃
-
-variable {f₂ : D(X, Y)} (F : Dihomotopy f₀ f₁) (G: Dihomotopy f₁ f₂)
-
-lemma trans_first_case {a₀ a₁ : I × X} {γ : Path a₀ a₁} (γ_dipath : IsDipath γ) (ht₁ : (a₁.1 : ℝ) ≤ 2⁻¹) :
-  IsDipath (γ.map ((dihom_to_hom F).trans (dihom_to_hom G)).continuous_toFun) := by
-  obtain ⟨t₀, x₀⟩ := a₀
-  obtain ⟨t₁, x₁⟩ := a₁
-
-  set Γ := (dihom_to_hom F).trans (dihom_to_hom G) with Γ_def
-  set γ_as_dipath := Dipath.of_isDipath γ_dipath
-  set γ₁ := γ_as_dipath.of_product_fst
-  set γ₂ := γ_as_dipath.of_product_snd
-
-  set p := Dipath.dipath_product (Dipath.stretch_up γ₁ ht₁) γ₂ with p_def
-  set p' := p.map (↑F : D(I × X, Y)) with p'_def
-
-  have h : ∀ (t : I) (x : X), (ht : (t : ℝ) ≤ 2⁻¹) → Γ (t, x) = F (⟨2 * (t : ℝ), double_mem_I ht⟩, x) := by
-    intros t x ht
-    rw [Γ_def]
-    rw [ContinuousMap.Homotopy.trans_apply (dihom_to_hom F) (dihom_to_hom G) (t, x)]
-    simp [ht]
-    rfl
-
-  have : (t₀ : ℝ) ≤ 2⁻¹ := le_trans (Subtype.coe_le_coe.mpr (directed_path_source_le_target γ_dipath.1)) ht₁
-  convert (p'.cast (h t₀ x₀ this) (h t₁ x₁ ht₁)).dipath_toPath
-  ext
-  simp
-  exact h _ _ (le_trans (directed_path_bounded γ_dipath.1 _).2 ht₁)
-
-lemma trans_second_case {a₀ a₁ : I × X} {γ : Path a₀ a₁} (γ_dipath : IsDipath γ) (ht₀ : 2⁻¹ ≤ (a₀.1 : ℝ)) :
-  IsDipath (γ.map ((dihom_to_hom F).trans (dihom_to_hom G)).continuous_toFun) := by
-  obtain ⟨t₀, x₀⟩ := a₀
-  obtain ⟨t₁, x₁⟩ := a₁
-
-  set Γ := (dihom_to_hom F).trans (dihom_to_hom G) with Γ_def
-  set γ_as_dipath := Dipath.of_isDipath γ_dipath
-  set γ₁ := γ_as_dipath.of_product_fst
-  set γ₂ := γ_as_dipath.of_product_snd
-
-  set p := Dipath.dipath_product (Dipath.stretch_down γ₁ ht₀) γ₂ with p_def
-  set p' := p.map (↑G : D(I × X, Y)) with p'_def
-
-  have h : ∀ (t : I) (x : X), (ht : (2⁻¹ : ℝ) ≤ ↑t) →
-    Γ (t, x) = G (⟨2 * (t : ℝ) - 1, double_sub_one_mem_I ht⟩, x) := by
-    intros t x ht
-    rw [Γ_def]
-    rw [ContinuousMap.Homotopy.trans_apply (dihom_to_hom F) (dihom_to_hom G) (t, x)]
-    split_ifs with ht'
-    · simp at ht'
-      have : ↑t = (2⁻¹ : ℝ) := by linarith
-      simp [this]
-    · rfl
-
-  have : 2⁻¹ ≤ (t₁ : ℝ) := le_trans ht₀ (Subtype.coe_le_coe.mpr (directed_path_source_le_target γ₁.dipath_toPath))
-  convert (p'.cast (h t₀ x₀ ht₀) (h t₁ x₁ this)).dipath_toPath
-  ext
-  simp
-  exact h _ _ (le_trans ht₀ (directed_path_bounded γ_dipath.1 _).1)
-
-end trans_aux₃
-
-end trans_aux
-
-/-
-Given `Dihomotopy f₀ f₁` and `Dihomotopy f₁ f₂`, we can define a `Dihomotopy f₀ f₂` by putting the first
-dihomotopy on `[0, 1/2]` and the second on `[1/2, 1]`.
--/
-def trans {f₂ : D(X, Y)} (F : Dihomotopy f₀ f₁) (G: Dihomotopy f₁ f₂) : Dihomotopy f₀ f₂ := by
-  set Fₕ := dihom_to_hom F
-  set Gₕ := dihom_to_hom G
-  set Γ := Fₕ.trans Gₕ
-  apply hom_to_dihom Γ
-
-  rintro ⟨t₀, x₀⟩ ⟨t₁, x₁⟩ γ γ_dipath
-  set γ_as_dipath := Dipath.of_isDipath γ_dipath
-  set γ₁ := γ_as_dipath.of_product_fst
-  set γ₂ := γ_as_dipath.of_product_snd
-
-  by_cases ht₁ : (↑t₁ : ℝ) ≤ 2⁻¹
-  ·  -- The entire path falls in the domain of F
-    exact trans_first_case F G γ_dipath ht₁
-
-  by_cases ht₀ : (↑t₀ : ℝ) < 2⁻¹
-  case neg
-  · -- The entire path falls in the domain of G
-    have ht₀ : (2⁻¹ : ℝ) ≤ ↑t₀ := by linarith
-    exact trans_second_case F G γ_dipath ht₀
-
-  · -- Complicated
-    push_neg at ht₁
-    cases' has_T_half (γ.map continuous_fst) ht₀ ht₁ with T hT
-    obtain ⟨hT₀, ⟨hT₁, hT_half⟩⟩ := hT
-
-    /- Split γ into two parts (one with image in [0, 2⁻¹] × X, the other with image in [2⁻¹, 1] × X)-/
-    set a₁ := SplitDipath.FirstPart γ_as_dipath T
-    set a₂ := SplitDipath.SecondPart γ_as_dipath T
-
-    /- Create two new paths, where the first coordinate is stretched and the second coordinate remains the same -/
-    set p₁ := FirstPartStretch γ₁ hT_half (le_of_lt ht₀)
-    set p₂ := SecondPartStretch γ₁ hT_half (le_of_lt ht₁)
-
-    set p₁' := SplitDipath.FirstPart γ₂ T
-    set p₂' := SplitDipath.SecondPart γ₂ T
-
-    set q₁ := (Dipath.dipath_product p₁ p₁').map F.toDirectedMap
-    set q₂ := (Dipath.dipath_product p₂ p₂').map G.toDirectedMap
-
-    set φ := SplitDipath.trans_reparam_map hT₀ hT₁
-    have φ₀ : φ 0 = 0 := Subtype.ext (SplitPath.trans_reparam_zero T)
-    have φ₁ : φ 1 = 1 := Subtype.ext (SplitPath.trans_reparam_one hT₁)
-
-    have hγT_eq_half : ((γ T).1 : ℝ) = 2⁻¹ := Subtype.coe_inj.mpr hT_half
-    have hγT_le_half : ((γ T).1 : ℝ) ≤ 2⁻¹ := le_of_eq hγT_eq_half
-
-    set r₁ := q₁.cast (trans_apply_left F G t₀ x₀ (le_of_lt ht₀)) (trans_apply_half_left F G (γ T).1 (γ T).2 hT_half)
-    set r₂ := q₂.cast (trans_apply_half_right F G (γ T).1 (γ T).2 hT_half) (trans_apply_right F G t₁ x₁ (le_of_lt ht₁))
-
-    convert ((r₁.trans r₂).reparam φ φ₀ φ₁).dipath_toPath
-    ext t
-
-    have hr₁a₁ : r₁.toPath = a₁.toPath.map Γ.continuous_toFun := by
-      ext x
-      have h₀ : ((a₁ x).1 : ℝ) ≤ 2⁻¹ := le_trans (directed_path_bounded a₁.dipath_toPath.1 _).2 hγT_le_half
-      have : (1/2 : ℝ) = 2⁻¹ := by norm_num
-
-      calc r₁ x
-        _ = F (⟨2 * ((a₁ x).1 : ℝ), double_mem_I h₀⟩, (a₁ x).2) := rfl
-        _ = if h : ((a₁ x).1 : ℝ) ≤ 1/2
-            then F (⟨2 * ((a₁ x).1 : ℝ), by { simp at h; exact double_mem_I h }⟩, (a₁ x).2)
-            else G (⟨2 * ((a₁ x).1 : ℝ) - 1, by { simp at h; exact double_sub_one_mem_I (le_of_lt h) }⟩, (a₁ x).2)
-                  := by { simp only [h₀, this]; simp }
-        _ = if h : ((a₁ x).1 : ℝ) ≤ 1/2
-            then Fₕ (⟨2 * ((a₁ x).1 : ℝ), by { simp at h; exact double_mem_I h }⟩, (a₁ x).2)
-            else Gₕ (⟨2 * ((a₁ x).1 : ℝ) - 1, by { simp at h; exact double_sub_one_mem_I (le_of_lt h) }⟩, (a₁ x).2)
-                  := rfl
-        _ = (Fₕ.trans Gₕ) (a₁ x) := (ContinuousMap.Homotopy.trans_apply Fₕ Gₕ (a₁ x)).symm
-        _ = Γ (a₁ x) := rfl
-        _ = (a₁.toPath.map Γ.continuous_toFun) x := rfl
-
-    have hr₂a₂ : r₂.toPath = a₂.toPath.map Γ.continuous_toFun := by
-      ext x
-      have : 2⁻¹ ≤ ((a₂ x).1 : ℝ) := by
-        calc (2⁻¹ : ℝ)
-            _ = ↑(γ T).1 := Subtype.coe_inj.mpr hT_half.symm
-            _ ≤ ↑(a₂ x).1 := (directed_path_bounded a₂.dipath_toPath.1 _).1
-
-      calc r₂.toPath x
-        _ = G (⟨2 * ((a₂ x).1 : ℝ) - 1, double_sub_one_mem_I this⟩, (a₂ x).2) := rfl
-        _ = if h : ((a₂ x).1 : ℝ) ≤ 1/2
-                then F (⟨2 * ((a₂ x).1 : ℝ), by { simp at h; exact double_mem_I h }⟩, (a₂ x).2)
-                else G (⟨2 * ((a₂ x).1 : ℝ) - 1,  by { simp at h; exact double_sub_one_mem_I (le_of_lt h) }⟩, (a₂ x).2)
-              := by
-                split_ifs with h
-                · have : ((a₂ x).1 : ℝ) ≤ 2⁻¹ := by convert h using 1; norm_num
-                  have ha₂x : ((a₂ x).1 : ℝ) = 2⁻¹ := by linarith
-                  have : G (0, _) = F (1, _) := Eq.trans (G.map_zero_left (a₂ x).2) (F.map_one_left (a₂ x).2).symm
-                  convert this <;> rw [ha₂x] <;> norm_num
-                · rfl
-        _ = if h : ((a₂ x).1 : ℝ) ≤ 1/2
-                then Fₕ (⟨2 * ((a₂ x).1 : ℝ), by { simp at h; exact double_mem_I h }⟩, (a₂ x).2)
-                else Gₕ (⟨2 * ((a₂ x).1 : ℝ) - 1, by { simp at h; exact double_sub_one_mem_I (le_of_lt h) }⟩, (a₂ x).2)
-              := rfl
-        _ = (Fₕ.trans Gₕ) (a₂ x) := (ContinuousMap.Homotopy.trans_apply Fₕ Gₕ (a₂ x)).symm
-        _ = Γ (a₂ x) := rfl
-        _ = (a₂.toPath.map Γ.continuous_toFun) x := rfl
-
-    calc (Γ ∘ γ) t
-        _ = Γ (γ t) := rfl
-        _ = Γ (((a₁.trans a₂).reparam φ φ₀ φ₁) t) := by { rw [←SplitDipath.first_trans_second_reparam_eq_self γ_as_dipath hT₀ hT₁]; rfl }
-        _ = ((a₁.trans a₂).toPath.map Γ.continuous_toFun).reparam φ φ.continuous_toFun φ₀ φ₁ t := by rfl
-        _ = ((a₁.toPath.trans a₂.toPath).map Γ.continuous_toFun).reparam φ φ.continuous_toFun φ₀ φ₁ t := by rfl
-        _ = ((a₁.toPath.map Γ.continuous_toFun).trans (a₂.toPath.map Γ.continuous_toFun)).reparam φ φ.continuous_toFun φ₀ φ₁ t
-                                                                          := by rw [Path.map_trans a₁.toPath a₂.toPath (Γ.continuous_toFun)]
-        _ = (r₁.toPath.trans r₂.toPath).reparam φ φ.continuous_toFun φ₀ φ₁ t := by rw [hr₁a₁, hr₂a₂]; rfl
-        _ = (r₁.trans r₂).reparam φ φ₀ φ₁ t := rfl
-
-lemma trans_apply {f₀ f₁ f₂ : D(X, Y)} (F : Dihomotopy f₀ f₁) (G : Dihomotopy f₁ f₂) (x : I × X) :
-  (F.trans G) x =
-  if h : (x.1 : ℝ) ≤ 1/2 then
-    F (⟨2 * x.1, (unitInterval.mul_pos_mem_iff two_pos).2 ⟨x.1.2.1, h⟩⟩, x.2)
-  else
-    G (⟨2 * x.1 - 1, unitInterval.two_mul_sub_one_mem_iff.2 ⟨(not_le.1 h).le, x.1.2.2⟩⟩, x.2) := by
-  have : ((dihom_to_hom F).trans (dihom_to_hom G)) x = (F.trans G) x := rfl
-  rw [←this]
-  exact ContinuousMap.Homotopy.trans_apply _ _ x
-
-/--
-Casting a `Dihomotopy f₀ f₁` to a `Dihomotopy g₀ g₁` where `f₀ = g₀` and `f₁ = g₁`.
--/
-@[simps]
-def cast {f₀ f₁ g₀ g₁ : D(X, Y)} (F : Dihomotopy f₀ f₁) (h₀ : f₀ = g₀) (h₁ : f₁ = g₁) :
-  Dihomotopy g₀ g₁ where
-    toFun := F
-    directed_toFun := F.directed_toFun
-    map_zero_left := by simp [←h₀]
-    map_one_left := by simp [←h₁]
-
-/--
-If we have a `Dihomotopy f₀ f₁` and a `Dihomotopy g₀ g₁`, then we can compose them and get a
-`Dihomotopy (g₀.comp f₀) (g₁.comp f₁)`.
--/
-@[simps!]
-def hcomp {f₀ f₁ : D(X, Y)} {g₀ g₁ : D(Y, Z)} (F : Dihomotopy f₀ f₁) (G : Dihomotopy g₀ g₁) :
-  Dihomotopy (g₀.comp f₀) (g₁.comp f₁) := by
-  set Fₕ := dihom_to_hom F
-  set Gₕ := dihom_to_hom G
-  exact hom_to_dihom (Gₕ.comp Fₕ) (G.comp (directed_fst.prod_map_mk (F : D(I × X, Y)))).directed_toFun
-
-end Dihomotopy
-
-/--
-  Given directed maps `f₀` and `f₁`, we say `f₀` and `f₁` are PreDihomotopic if there exists a
-  `Dihomotopy f₀ f₁`.
--/
-def PreDihomotopic (f₀ f₁ : D(X, Y)) : Prop := Nonempty (Dihomotopy f₀ f₁)
-
-/--
-  Given directed maps `f₀` and `f₁`, we say `f₀` and `f₁` are Dihomotopic if there
-  is a chain of PreDihomotopic maps leading from `f₀` to `f₁`.
-  In other words, Dihomotopic is the equivalence relation generated by PreDihomotopic.
--/
-def Dihomotopic (f₀ f₁ : D(X, Y)) : Prop := (Relation.EqvGen PreDihomotopic) f₀ f₁
-
-namespace Dihomotopic
-
-lemma equivalence : Equivalence (@Dihomotopic X Y _ _) := by apply Relation.EqvGen.is_equivalence
-
-end Dihomotopic
-
-/--
-The type of dihomotopies between `f₀ f₁ : D(X, Y)`, where the intermediate maps satisfy the predicate
-`P : D(X, Y) → Prop`
--/
-structure DihomotopyWith (f₀ f₁ : D(X, Y)) (P : D(X, Y) → Prop) extends Dihomotopy f₀ f₁ :=
-(
-  prop' : ∀ (t : I), P (toDirectedMap.prod_const_fst t)
-)
-
-namespace DihomotopyWith
-
-section
-
-variable {f₀ f₁ : D(X, Y)} {P : D(X, Y) → Prop}
-
-instance instFunLike : FunLike (DihomotopyWith f₀ f₁ P) (I × X) Y where
-  coe F := ⇑F.toDihomotopy
-  coe_injective := by
-    rintro ⟨⟨⟨⟨F, _⟩, _⟩, _⟩, _⟩ ⟨⟨⟨⟨G, _⟩, _⟩, _⟩, _⟩ h
-    congr
-
-instance : DihomotopyLike (DihomotopyWith f₀ f₁ P) f₀ f₁ where
-  map_continuous F := F.continuous_toFun
-  map_directed F := F.directed_toFun
-  map_zero_left F := F.map_zero_left
-  map_one_left F := F.map_one_left
-
-theorem coeFn_injective : @Function.Injective (DihomotopyWith f₀ f₁ P) (I × X → Y) (⇑) :=
-  DFunLike.coe_injective
-
-@[ext]
-lemma ext {F G : DihomotopyWith f₀ f₁ P} (h : ∀ x, F x = G x) : F = G :=
-coeFn_injective $ funext h
-
-/-- See Note [custom simps projection]. We need to specify this projection explicitly in this case,
-because it is a composition of multiple projections. -/
-def Simps.apply (F : DihomotopyWith f₀ f₁ P) : I × X → Y := F
-
-initialize_simps_projections DihomotopyWith (toDihomotopy_toDirectedMap_toContinuousMap_toFun → apply,
-    -toDihomotopy_toDirectedMap_toContinuousMap)
-
-@[continuity]
-protected lemma continuous (F : DihomotopyWith f₀ f₁ P) : Continuous F := F.continuous_toFun
-
-@[simp]
-lemma apply_zero (F : DihomotopyWith f₀ f₁ P) (x : X) : F (0, x) = f₀ x := F.map_zero_left x
-
-@[simp]
-lemma apply_one (F : DihomotopyWith f₀ f₁ P) (x : X) : F (1, x) = f₁ x := F.map_one_left x
-
-@[simp]
-lemma coe_to_continuous_map (F : DihomotopyWith f₀ f₁ P) : ⇑F.toContinuousMap = F := rfl
-
-@[simp]
-lemma coe_to_dihomotopy (F : DihomotopyWith f₀ f₁ P) : ⇑F.toDihomotopy = F := rfl
-
-lemma prop (F : DihomotopyWith f₀ f₁ P) (t : I) : P (F.toDihomotopy.curry t) := F.prop' t
-
-end
-
-variable {P : D(X, Y) → Prop}
-
-/--
-Given a directed map `f`, and a proof `h : P f`, we can define a `DihomotopyWith f f P` by `F (t, x) = f x`
--/
-@[simps!]
-def refl (f : D(X, Y)) (hf : P f) : DihomotopyWith f f P := {
-  Dihomotopy.refl f with
-  prop' := by
-    intro t
-    convert hf
-    apply DirectedMap.ext
-    intro x
-    rfl
-}
-
-instance : Inhabited (DihomotopyWith (DirectedMap.id X) (DirectedMap.id X) (fun _ => True)) :=
-  ⟨DihomotopyWith.refl _ trivial⟩
-
-/--
-Given `DihomotopyWith f₀ f₁ P` and `DihomotopyWith f₁ f₂ P`, we can define a `DihomotopyWith f₀ f₂ P`
-by putting the first dihomotopy on `[0, 1/2]` and the second on `[1/2, 1]`.
--/
-def trans {f₀ f₁ f₂ : D(X, Y)} (F : DihomotopyWith f₀ f₁ P) (G : DihomotopyWith f₁ f₂ P) :
-  DihomotopyWith f₀ f₂ P :=
-{
-  F.toDihomotopy.trans G.toDihomotopy with
-  prop' := fun t => by
-    simp only [Dihomotopy.trans]
-    change P ⟨⟨fun _ => ite ((t : ℝ) ≤ _) _ _, _⟩, _⟩
-    split
-    case isTrue h =>
-      have : ((t : ℝ) ≤ 2⁻¹) := by { simp at h; exact h }
-      convert F.prop' ⟨2 * (t : ℝ), double_mem_I this⟩
-      all_goals
-        rename_i x
-        change (F.toDihomotopy.dihom_to_hom.extend (2 * (t : ℝ))) x =
-          F.toDihomotopy.dihom_to_hom (⟨2 * (t : ℝ), double_mem_I this⟩, x)
-        rw [←ContinuousMap.Homotopy.extend_apply_coe
-          F.toDihomotopy.dihom_to_hom ⟨2 * (t : ℝ), double_mem_I this⟩ x]
-
-    case isFalse h =>
-      have : (2⁻¹ ≤ (t : ℝ)) := by { simp at h; linarith }
-      convert G.prop' ⟨2 * (t : ℝ) - 1, double_sub_one_mem_I this⟩
-      all_goals
-        rename_i x
-        change (G.toDihomotopy.dihom_to_hom.extend (2 * (t : ℝ) - 1)) x =
-          G.toDihomotopy.dihom_to_hom (⟨2 * (t : ℝ) - 1, double_sub_one_mem_I this⟩, x)
-        rw [←ContinuousMap.Homotopy.extend_apply_coe
-          G.toDihomotopy.dihom_to_hom ⟨2 * (t : ℝ) - 1, double_sub_one_mem_I this⟩ x]
-}
-
-lemma trans_apply {f₀ f₁ f₂ : D(X, Y)} (F : DihomotopyWith f₀ f₁ P) (G : DihomotopyWith f₁ f₂ P)
-  (x : I × X) : (F.trans G) x =
-  if h : (x.1 : ℝ) ≤ 1/2 then
-    F (⟨2 * x.1, (unitInterval.mul_pos_mem_iff two_pos).2 ⟨x.1.2.1, h⟩⟩, x.2)
-  else
-    G (⟨2 * x.1 - 1, unitInterval.two_mul_sub_one_mem_iff.2 ⟨(not_le.1 h).le, x.1.2.2⟩⟩, x.2) :=
-Dihomotopy.trans_apply _ _ _
-
-/--
-Casting a `DihomotopyWith f₀ f₁ P` to a `DihomotopyWith g₀ g₁ P` where `f₀ = g₀` and `f₁ = g₁`.
--/
-@[simps!]
-def cast {f₀ f₁ g₀ g₁ : D(X, Y)} (F : DihomotopyWith f₀ f₁ P) (h₀ : f₀ = g₀) (h₁ : f₁ = g₁) :
-  DihomotopyWith g₀ g₁ P :=
-{
-  F.toDihomotopy.cast h₀ h₁ with
-  prop' := F.prop,
-}
-
-end DihomotopyWith
-
-/--
-Given directed maps `f₀` and `f₁`, we say `f₀` and `f₁` are pre_dihomotopic with respect to the
-predicate `P` if there exists a `DihomotopyWith f₀ f₁ P`.
--/
-def PreDihomotopicWith (P : D(X, Y) → Prop) (f₀ f₁ : D(X, Y)): Prop :=
-  Nonempty (DihomotopyWith f₀ f₁ P)
-
-/--
-`DihomotopicWith` is the equivalence relation generated by `PreDihomotopicWith`.
--/
-def DihomotopicWith (P : D(X, Y) → Prop) (f₀ f₁ : D(X, Y)) : Prop := Relation.EqvGen (PreDihomotopicWith P) f₀ f₁
-
-/--
-A `DihomotopyRel f₀ f₁ S` is a dihomotopy between `f₀` and `f₁` which is fixed on the points in `S`.
--/
-abbrev DihomotopyRel (f₀ f₁ : D(X, Y)) (S : Set X) :=
-  DihomotopyWith f₀ f₁ (fun f => ∀ x ∈ S, f x = f₀ x)
-
-namespace DihomotopyRel
-
-section
-
-variable {f₀ f₁ : D(X, Y)} {S : Set X}
-
-lemma eq_fst (F : DihomotopyRel f₀ f₁ S) (t : I) {x : X} (hx : x ∈ S) : F (t, x) = f₀ x :=
-  F.prop t x hx
-
-lemma eq_snd (F : DihomotopyRel f₀ f₁ S) (t : I) {x : X} (hx : x ∈ S) : F (t, x) = f₁ x := by
-  rw [F.eq_fst t hx, ← F.eq_fst 1 hx, F.apply_one]
-
-lemma fst_eq_snd (F : DihomotopyRel f₀ f₁ S) {x : X} (hx : x ∈ S) : f₀ x = f₁ x :=
-  F.eq_fst 0 hx ▸ F.eq_snd 0 hx
-
-end
-
-variable {f₀ f₁ f₂ : D(X, Y)} {S : Set X}
-
-/--
-Given a map `f : D(X, Y)` and a set `S`, we can define a `DihomotopyRel f f S` by setting
-`F (t, x) = f x` for all `t`. This is defined using `DihomotopyWith.refl`, but with the proof
-filled in.
--/
-@[simps!]
-def refl (f : D(X, Y)) (S : Set X) : DihomotopyRel f f S :=
-DihomotopyWith.refl f (fun _ _ => rfl)
-
-/--
-Given `DihomotopyRel f₀ f₁ S` and `DihomotopyRel f₁ f₂ S`, we can define a `DihomotopyRel f₀ f₂ S`
-by putting the first dihomotopy on `[0, 1/2]` and the second on `[1/2, 1]`.
--/
-def trans (F : DihomotopyRel f₀ f₁ S) (G : DihomotopyRel f₁ f₂ S) : DihomotopyRel f₀ f₂ S :=
-{
-  Dihomotopy.trans F.toDihomotopy G.toDihomotopy with
-  prop' := fun t => by
-    intros x hx
-    simp only [Dihomotopy.trans]
-    change (⟨⟨fun _ => ite ((t : ℝ) ≤ _) _ _, _⟩, _⟩ : D(X, Y)) x = f₀ x
-    split_ifs with h
-    · have : ((t : ℝ) ≤ 2⁻¹) := by { simp at h; exact h }
-      set t' : I := ⟨2 * (t : ℝ), double_mem_I this⟩
-      convert F.eq_fst t' hx
-      change ((F.toDihomotopy.dihom_to_hom.extend) (2 * t : ℝ)) x = F.toDihomotopy.dihom_to_hom (⟨2 * (t : ℝ), _⟩, x)
-      rw [←ContinuousMap.Homotopy.extend_apply_coe F.toDihomotopy.dihom_to_hom _ x]
-    · have : (2⁻¹ ≤ (t : ℝ)) := by { simp at h; linarith }
-      set t' : I := ⟨2 * (t : ℝ) - 1, double_sub_one_mem_I this⟩
-      convert (G.eq_fst t' hx).trans (F.fst_eq_snd hx).symm
-      change ((G.toDihomotopy.dihom_to_hom.extend) (2 * (t : ℝ) - 1)) x = G.toDihomotopy.dihom_to_hom (⟨2 * (t : ℝ) - 1, _⟩, x)
-      rw [←ContinuousMap.Homotopy.extend_apply_coe G.toDihomotopy.dihom_to_hom _ x]
-}
-
-lemma trans_apply (F : DihomotopyRel f₀ f₁ S) (G : DihomotopyRel f₁ f₂ S)
-  (x : I × X) : (F.trans G) x =
-  if h : (x.1 : ℝ) ≤ 1/2 then
-    F (⟨2 * x.1, (unitInterval.mul_pos_mem_iff two_pos).2 ⟨x.1.2.1, h⟩⟩, x.2)
-  else
-    G (⟨2 * x.1 - 1, unitInterval.two_mul_sub_one_mem_iff.2 ⟨(not_le.1 h).le, x.1.2.2⟩⟩, x.2) :=
-Dihomotopy.trans_apply _ _ _
-
-/--
-Casting a `DihomotopyRel f₀ f₁ S` to a `DihomotopyRel g₀ g₁ S` where `f₀ = g₀` and `f₁ = g₁`.
--/
-@[simps!]
-def cast {f₀ f₁ g₀ g₁ : D(X, Y)} (F : DihomotopyRel f₀ f₁ S) (h₀ : f₀ = g₀) (h₁ : f₁ = g₁) :
-  DihomotopyRel g₀ g₁ S :=
-{
-  Dihomotopy.cast F.toDihomotopy h₀ h₁ with
-  prop' := fun t x hx => by { simpa [←h₀, ←h₁] using F.prop t x hx }
-}
-
-end DihomotopyRel
-
-/--
-Given directed maps `f₀` and `f₁`, we say `f₀` and `f₁` are PreDihomotopic relative to a set `S` if
-there exists a `DihomotopyRel f₀ f₁ S`.
--/
-def PreDihomotopicRel (S : Set X) (f₀ f₁ : D(X, Y)) : Prop :=
-Nonempty (DihomotopyRel f₀ f₁ S)
-
-/--
-`DihomotopicRel` is the equivalence relation generated by `PreDihomotopicRel`.
--/
-def DihomotopicRel (S : Set X) (f₀ f₁ : D(X, Y)) : Prop := Relation.EqvGen (PreDihomotopicRel S) f₀ f₁
-
-namespace DihomotopicRel
-
-variable {S : Set X}
-
-lemma equivalence : Equivalence (fun f g : D(X, Y) => DihomotopicRel S f g) := by apply Relation.EqvGen.is_equivalence
-
-end DihomotopicRel
-
-end DirectedMap
-
-end
-end Standalone_Lean4_directed_homotopy
-
-/-! Source module: Lean4.trans_refl -/
-section Standalone_Lean4_trans_refl
-
-
-
-
-/-
-  Auxiliary lemmas for the refl_trans and trans_refl definitions in directed_path_homotopy.lean.
-  These two are definitions are dihomotopies related to a `p : Dipath x₀ x₁`:
-    refl_trans : from `(refl x₀).trans p` to `p`
-    trans_refl : from `p` to `p.trans (refl x₁)`
-
-  Those for trans_refl can be based on the auxiliary lemmas found in algebraic_topology.fundamental_groupoid.basic.
-  They use symmetry for refl_trans which is not possible in the directed case, so we have to define them manually.
--/
-
-open DirectedSpace DirectedMap
-open scoped unitInterval
-
-universe u v
-
-variable {X : Type u} {Y : Type v}
-variable [DirectedSpace X] [DirectedSpace Y]
-variable {x₀ x₁ : X}
-
-noncomputable section
-
-namespace Dipath
-
-namespace Dihomotopy
-
-open Path.Homotopy
-
-section TransRefl
-
-lemma directed_transReflReparamAux : DirectedMap.Directed
-    ({ toFun := fun t => ⟨transReflReparamAux t, transReflReparamAux_mem_I t⟩,
-       continuous_toFun := Continuous.subtype_mk continuous_transReflReparamAux _} : C(I, I)) := by
-  apply DirectedUnitInterval.directed_of_monotone _
-  intros x y hxy
-  unfold transReflReparamAux
-  simp
-  have : (x : ℝ) ≤ (y : ℝ) := hxy
-  split_ifs with h₁ h₂
-  · linarith
-  · calc 2 * (x : ℝ)
-      _ ≤ 2 * 2⁻¹ := (mul_le_mul_iff_of_pos_left (by norm_num)).mpr h₁
-      _ = 1       := by simp
-  · linarith
-  · linarith
-
-def TransReflReparamAuxMap : D(I, I) where
-  toContinuousMap := ⟨fun t => ⟨transReflReparamAux t, transReflReparamAux_mem_I t⟩,
-    Continuous.subtype_mk continuous_transReflReparamAux _⟩
-  directed_toFun := directed_transReflReparamAux
-
-lemma trans_refl_reparam_dipath (p : Dipath x₀ x₁) : p.trans (Dipath.refl x₁) =
-    p.reparam TransReflReparamAuxMap (Subtype.ext transReflReparamAux_zero)
-      (Subtype.ext transReflReparamAux_one) := by
-  ext t
-  have : (p.trans (Dipath.refl x₁)) t = p.toPath.trans (Path.refl x₁) t := rfl
-  rw [this, Path.Homotopy.trans_refl_reparam p.toPath]
-  rfl
-
-end TransRefl
-
-section ReflTrans
-
-/-- Auxilliary function for `ReflTransReparam` -/
-def ReflTransReparamAux (t : I) : ℝ :=
-if (t : ℝ) ≤ 1/2 then
-  0
-else
-  2 * t - 1
-
-@[continuity]
-lemma continuous_ReflTransReparamAux : Continuous ReflTransReparamAux := by
-  refine' continuous_if_le _ _ (Continuous.continuousOn _) (Continuous.continuousOn _) _ <;>
-  [continuity; continuity; continuity; continuity; skip]
-  intros x hx
-  norm_num [hx]
-
-lemma reflTransReparamAux_mem_I (t : I) : ReflTransReparamAux t ∈ I := by
-  unfold ReflTransReparamAux
-  split_ifs <;> constructor <;> linarith [unitInterval.le_one t, unitInterval.nonneg t]
-
-lemma reflTransReparamAux_zero : ReflTransReparamAux 0 = 0 :=
-by norm_num [ReflTransReparamAux]
-
-lemma reflTransReparamAux_one : ReflTransReparamAux 1 = 1 :=
-by norm_num [ReflTransReparamAux]
-
-
-lemma directed_ReflTransReparamAux : DirectedMap.Directed
-    ({ toFun := fun t => ⟨ReflTransReparamAux t, reflTransReparamAux_mem_I t⟩,
-       continuous_toFun := Continuous.subtype_mk continuous_ReflTransReparamAux _} : C(I, I)) := by
-  apply DirectedUnitInterval.directed_of_monotone _
-  intros x y hxy
-  unfold ReflTransReparamAux
-  simp
-  have : (x : ℝ) ≤ (y : ℝ) := hxy
-  split_ifs with h₁ h₂
-  · linarith
-  · calc (0 : ℝ)
-      _ = (2 : ℝ) * (2⁻¹ : ℝ) - (1 : ℝ) := by norm_num
-      _ ≤ 2 * (y : ℝ) - 1 := le_of_lt $ sub_lt_sub_right ((mul_lt_mul_iff_of_pos_left (by norm_num)).mpr (lt_of_not_ge h₂)) 1
-  · linarith
-  · linarith
-
-def ReflTransReparamAuxMap : D(I, I) where
-  toContinuousMap := ⟨fun t => ⟨ReflTransReparamAux t, reflTransReparamAux_mem_I t⟩,
-    Continuous.subtype_mk continuous_ReflTransReparamAux _⟩
-  directed_toFun := directed_ReflTransReparamAux
-
-lemma refl_trans_reparam (p : Path x₀ x₁) :
-    (Path.refl x₀).trans p =
-      p.reparam (fun t => ⟨ReflTransReparamAux t, reflTransReparamAux_mem_I t⟩) (by continuity)
-        (Subtype.ext reflTransReparamAux_zero) (Subtype.ext reflTransReparamAux_one) := by
-  ext
-  unfold ReflTransReparamAux
-  simp [Path.trans_apply, not_le, coe_to_fun, Function.comp_apply]
-  split_ifs
-  · simp
-  · simp
-  · rfl
-  · rfl
-
-lemma refl_trans_reparam_dipath (p : Dipath x₀ x₁) : (Dipath.refl x₀).trans p =
-    p.reparam ReflTransReparamAuxMap
-      (Subtype.ext reflTransReparamAux_zero) (Subtype.ext reflTransReparamAux_one) := by
-  ext t
-  have : ((Dipath.refl x₀).trans p) t =  (Path.refl x₀).trans p.toPath t := rfl
-  rw [this, refl_trans_reparam p.toPath]
-  rfl
-
-end ReflTrans
-
-end Dihomotopy
-
-end Dipath
-
-
-end
-end Standalone_Lean4_trans_refl
-
-/-! Source module: Lean4.directed_path_homotopy -/
-section Standalone_Lean4_directed_path_homotopy
-
-
-
-
-/-
-  This file contains the definition of a directed path homotopy, or `Dipath.Dihomotopy`:
-  It is a dihomotopy between two paths that keeps the endpoints fixed.
-
-  We prove a few constructions and define the equivalence relation `Dihomtopic` between two paths.
-  We show that this relation is closed under reparametrizations, and that concatenation and directed maps respect it.
-
-  Much of the structure of this file is based on the undirected version:
-  https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Topology/Homotopy/Path.lean
--/
-
-universe u v
-
-open unitIAux
-open DirectedUnitInterval
-open scoped unitInterval
-
-variable {X : Type u} {Y : Type v}
-variable [DirectedSpace X] [DirectedSpace Y]
-variable {x y z : X}
-
-noncomputable section
-
-namespace Dipath
-
-/--
-The type of dihomotopies between two directed paths.
--/
-abbrev Dihomotopy (p₀ p₁ : Dipath x y) :=
-  DirectedMap.DihomotopyRel p₀.toDirectedMap p₁.toDirectedMap {0, 1}
-
-namespace Dihomotopy
-
-section
-
-variable {p₀ p₁ : Dipath x y}
-
-lemma coeFn_injective : @Function.Injective (Dihomotopy p₀ p₁) (I × I → X) (⇑) :=
-  DFunLike.coe_injective
-
-@[simp]
-lemma source (F : Dihomotopy p₀ p₁) (t : I) : F (t, 0) = x := by
-  calc F (t, 0)
-    _ = p₀ 0 := DirectedMap.DihomotopyRel.eq_fst _ _ (.inl rfl)
-    _ = x := p₀.source
-
-@[simp]
-lemma target (F : Dihomotopy p₀ p₁) (t : I) : F (t, 1) = y := by
-  calc F (t, 1)
-    _ = p₀ 1 := DirectedMap.DihomotopyRel.eq_fst _ _ (.inr rfl)
-    _ = y := p₀.target
-
-/-- A `F : Dihomotopy ↑p₁ ↑p₂` between two dipaths `p₁ p₂ : Dipath y z` can be coerced into a dihomotopy,
-  if it is directed -/
-def hom_to_dihom (F : Path.Homotopy p₀.toPath p₁.toPath)
-    (HF : DirectedMap.Directed F.toContinuousMap) : Dihomotopy p₀ p₁ where
-  toFun := F.toFun
-  continuous_toFun := F.continuous_toFun
-  directed_toFun := HF
-  map_zero_left := F.map_zero_left
-  map_one_left := F.map_one_left
-  prop' := F.prop'
-
-
-/-- A Dihomotopy `F` between two Dipaths `p₁ p₂` can be coerced into a Homotopy between `p₀.toPath`
- and `p₁.toPath`-/
-def dihom_to_hom (F : Dihomotopy p₀ p₁) : Path.Homotopy p₀.toPath p₁.toPath where
-  toFun := F.toFun
-  continuous_toFun := F.continuous_toFun
-  map_zero_left := F.map_zero_left
-  map_one_left := F.map_one_left
-  prop' := F.prop'
-
-instance coe_dihom_to_hom : Coe (Dihomotopy p₀ p₁) (Path.Homotopy p₀.toPath p₁.toPath) :=
-  ⟨fun F => F.dihom_to_hom⟩
-
-/--
-Evaluating a dipath homotopy at an intermediate point, giving us a `Dipath`.
--/
-def eval (F : Dihomotopy p₀ p₁) (t : I) : Dipath x y where
-  toPath := {
-    toContinuousMap := (F.toDihomotopy.curry t).toContinuousMap
-    source' := F.source t
-    target' := F.target t
-  }
-  dipath_toPath := DirectedUnitInterval.isDipath_of_isDipath_comp_id
-    $ (F.toDihomotopy.curry t).directed_toFun DirectedUnitInterval.IdentityPath
-      DirectedUnitInterval.isDipath_identityPath
-
-@[simp]
-lemma coe_eval (F : Dihomotopy p₀ p₁) (t : I) :
-  (⇑(F.eval t) : I → X)  = ⇑(F.toDihomotopy.curry t) := rfl
-
-@[simp]
-lemma eval_zero (F : Dihomotopy p₀ p₁) : F.eval 0 = p₀ := by
-  ext t
-  change F.toDihomotopy (0, t) = p₀ t
-  exact F.toDihomotopy.apply_zero t
-
-@[simp]
-lemma eval_one (F : Dihomotopy p₀ p₁) : F.eval 1 = p₁ := by
-  ext t
-  change F.toDihomotopy (1, t) = p₁ t
-  exact F.toDihomotopy.apply_one t
-
-end
-
-section
-variable {p₀ p₁ p₂ : Dipath x y}
-
-/--
-Given a dipath `p`, we can define a `Dihomotopy p p` by `F (t, x) = p x`
--/
-@[simps!]
-def refl (p : Dipath x y) : Dihomotopy p p :=
-  DirectedMap.DihomotopyRel.refl p.toDirectedMap {0, 1}
-
-/--
-Given `Dihomotopy p₀ p₁` and `Dihomotopy p₁ p₂`, we can define a `Dihomotopy p₀ p₂` by putting the first
-dihomotopy on `[0, 1/2]` and the second on `[1/2, 1]`.
--/
-def trans (F : Dihomotopy p₀ p₁) (G : Dihomotopy p₁ p₂) : Dihomotopy p₀ p₂ :=
-  DirectedMap.DihomotopyRel.trans F G
-
-lemma trans_apply (F : Dihomotopy p₀ p₁) (G : Dihomotopy p₁ p₂) (x : I × I) :
-  (F.trans G) x =
-    if h : (x.1 : ℝ) ≤ 1/2 then
-      F (⟨2 * x.1, (unitInterval.mul_pos_mem_iff two_pos).2 ⟨x.1.2.1, h⟩⟩, x.2)
-    else
-      G (⟨2 * x.1 - 1, unitInterval.two_mul_sub_one_mem_iff.2 ⟨(not_le.1 h).le, x.1.2.2⟩⟩, x.2) :=
-DirectedMap.DihomotopyRel.trans_apply _ _ _
-
-/--
-Casting a `Dihomotopy p₀ p₁` to a `Dihomotopy q₀ q₁` where `p₀ = q₀` and `p₁ = q₁`.
--/
--- @[simps]
-def cast {p₀ p₁ q₀ q₁ : Dipath x y} (F : Dihomotopy p₀ p₁) (h₀ : p₀ = q₀) (h₁ : p₁ = q₁) :
-    Dihomotopy q₀ q₁ :=
-  DirectedMap.DihomotopyRel.cast F (congr_arg _ h₀) (congr_arg _ h₁)
-
-end
-
-section
-
-variable {p₀ q₀ : Dipath x y} {p₁ q₁ : Dipath y z}
-
-section hcomp_aux
-
-variable (F : Dihomotopy p₀ q₀) (G: Dihomotopy p₁ q₁) (s t : I) (ht: t = half_I)
-
-lemma hcomp_apply_half_left (ht: t = half_I) :
-    (dihom_to_hom F).hcomp (dihom_to_hom G) (s, t) = F (s, 1) := by
-  rw [Path.Homotopy.hcomp_apply]
-  have ht_coe : (t : ℝ) = 2⁻¹ := Subtype.coe_inj.mpr ht
-  have : (t : ℝ) ≤ 2⁻¹ := by linarith
-  simp [this, ht_coe]
-
-lemma hcomp_apply_half_right (ht: t = half_I) :
-    (dihom_to_hom F).hcomp (dihom_to_hom G) (s, t) = G (s, 0) := by
-  rw [Path.Homotopy.hcomp_apply]
-  have ht_coe : (t : ℝ) = 2⁻¹ := Subtype.coe_inj.mpr ht
-  split_ifs <;> simp [ht_coe]
-
-lemma hcomp_apply_left (ht : (t : ℝ) ≤ 2⁻¹) :
-    (dihom_to_hom F).hcomp (dihom_to_hom G) (s, t) = F (s, ⟨2 * t, double_mem_I ht⟩) := by
-  rw [Path.Homotopy.hcomp_apply]
-  simp [ht]
-  rfl
-
-lemma hcomp_apply_right (ht : 2⁻¹ ≤ (t : ℝ)) :
-    (dihom_to_hom F).hcomp (dihom_to_hom G) (s, t) = G (s, ⟨2 * t - 1, double_sub_one_mem_I ht⟩) := by
-  rw [Path.Homotopy.hcomp_apply]
-  simp [ht]
-  split_ifs
-  · have : (t : ℝ) = 2⁻¹ := by linarith
-    simp [this]
-  · rfl
-
-lemma hcomp_first_case (F : Dihomotopy p₀ q₀) (G : Dihomotopy p₁ q₁) {a₀ a₁ : I × I} {γ : Path a₀ a₁}
-  (γ_dipath : IsDipath γ) (ht₁ : (a₁.2 : ℝ) ≤ 2⁻¹) :
-    IsDipath (γ.map ((dihom_to_hom F).hcomp (dihom_to_hom G)).continuous_toFun) := by
-  obtain ⟨s₀, t₀⟩ := a₀
-  obtain ⟨s₁, t₁⟩ := a₁
-
-  set Γ := (dihom_to_hom F).hcomp (dihom_to_hom G)
-  set γ_as_dipath := Dipath.of_isDipath γ_dipath
-  set γ₁ := γ_as_dipath.of_product_fst
-  set γ₂ := γ_as_dipath.of_product_snd
-
-  set p := Dipath.dipath_product γ₁ (Dipath.stretch_up γ₂ ht₁)
-  set p' := p.map (F.toDirectedMap)
-
-  have h : ∀ (s t : I), (h : (t : ℝ) ≤ 2⁻¹) → Γ (s, t) = F (s, ⟨2 * (t : ℝ), double_mem_I h⟩) := by
-    intros s t ht
-    rw [Path.Homotopy.hcomp_apply (dihom_to_hom F) (dihom_to_hom G) (s, t)]
-    simp [ht]
-    rfl
-
-  have ht₀ : (t₀ : ℝ) ≤ 2⁻¹ :=
-    le_trans (Subtype.coe_le_coe.mpr (directed_path_source_le_target γ_dipath.2)) ht₁
-
-  convert (p'.cast (h s₀ t₀ ht₀) (h s₁ t₁ ht₁)).dipath_toPath
-  ext
-  simp
-  exact h _ _ (le_trans (directed_path_bounded γ_dipath.2 _).2 ht₁)
-
-
-lemma hcomp_second_case (F : Dihomotopy p₀ q₀) (G : Dihomotopy p₁ q₁) {a₀ a₁ : I × I}
-  {γ : Path a₀ a₁} (γ_dipath : IsDipath γ) (ht₀ : 2⁻¹ ≤ (a₀.2 : ℝ)) :
-    IsDipath (γ.map ((dihom_to_hom F).hcomp (dihom_to_hom G)).continuous_toFun) := by
-  obtain ⟨s₀, t₀⟩ := a₀
-  obtain ⟨s₁, t₁⟩ := a₁
-
-  set Γ := (dihom_to_hom F).hcomp (dihom_to_hom G)
-  set γ_as_dipath := Dipath.of_isDipath γ_dipath
-  set γ₁ := γ_as_dipath.of_product_fst
-  set γ₂ := γ_as_dipath.of_product_snd
-
-  set p := Dipath.dipath_product γ₁ (Dipath.stretch_down γ₂ ht₀)
-  set p' := p.map G.toDirectedMap
-
-  have h : ∀ (s t : I), (h : (2⁻¹ : ℝ) ≤ ↑t) →
-    Γ (s, t) = G (s, ⟨2 * (t : ℝ) - 1, double_sub_one_mem_I h⟩) := by
-    intros s t ht
-    rw [Path.Homotopy.hcomp_apply (dihom_to_hom F) (dihom_to_hom G) (s, t)]
-    split_ifs with ht'
-    · simp at ht'
-      have : ↑t = (2⁻¹ : ℝ) := by linarith
-      simp [this]
-    · rfl
-
-  have ht₁ : 2⁻¹ ≤ (t₁ : ℝ) := le_trans ht₀ (Subtype.coe_le_coe.mpr (directed_path_source_le_target γ_dipath.2))
-  convert (p'.cast (h s₀ t₀ ht₀) (h s₁ t₁ ht₁)).dipath_toPath
-  ext x
-  simp
-  exact h (γ x).1 (γ x).2 (le_trans ht₀ (directed_path_bounded γ_dipath.2 _).1)
-
-end hcomp_aux
-
-/--
-Suppose `p₀` and `q₀` are dipaths from `x` to `y`, `p₁` and `q₁` are dipaths from `y` to `z`.
-Furthermore, suppose `F : Dihomotopy p₀ q₀` and `G : Dihomotopy p₁ q₁`. Then we can define a dihomotopy
-from `p₀.trans p₁` to `q₀.trans q₁`.
--/
-def hcomp (F : Dihomotopy p₀ q₀) (G : Dihomotopy p₁ q₁) :
-    Dihomotopy (p₀.trans p₁) (q₀.trans q₁) := by
-  set Fₕ := dihom_to_hom F
-  set Gₕ := dihom_to_hom G
-  set Γ := Fₕ.hcomp Gₕ
-  have : DirectedMap.Directed Γ.toContinuousMap := by
-    rintro ⟨s₀, t₀⟩ ⟨s₁, t₁⟩ γ γ_dipath
-    set γ_as_dipath := Dipath.of_isDipath γ_dipath
-    set γ₁ := γ_as_dipath.of_product_fst
-    set γ₂ := γ_as_dipath.of_product_snd
-
-    by_cases ht₁ : (↑t₁ : ℝ) ≤ 2⁻¹
-    case pos => exact hcomp_first_case F G γ_dipath ht₁
-
-    by_cases ht₀ : (↑t₀ : ℝ) < 2⁻¹
-    case neg => exact hcomp_second_case F G γ_dipath (by linarith)
-
-    -- Complicated
-    push_neg at ht₁
-    cases' has_T_half (γ.map continuous_snd) ht₀ ht₁ with T hT
-    obtain ⟨hT₀, ⟨hT₁, hT_half⟩⟩ := hT
-
-    /- Split γ into two parts (one with image in I × [0, 2⁻¹], the other with image in I × [2⁻¹, 1])-/
-    set a₁ := SplitDipath.FirstPart γ_as_dipath T
-    set a₂ := SplitDipath.SecondPart γ_as_dipath T
-
-    /- Create two new paths, where the first coordinate is stretched and the second coordinate remains the same -/
-    set p₁ := SplitDipath.FirstPart γ₁ T
-    set p₂ := SplitDipath.SecondPart γ₁ T
-
-    set p₁' := DirectedMap.Dihomotopy.FirstPartStretch γ₂ hT_half (le_of_lt ht₀)
-    set p₂' := DirectedMap.Dihomotopy.SecondPartStretch γ₂ hT_half (le_of_lt ht₁)
-
-    set q₁ := (Dipath.dipath_product p₁ p₁').map F.toDirectedMap
-    set q₂ := (Dipath.dipath_product p₂ p₂').map G.toDirectedMap
-
-    set φ := SplitDipath.trans_reparam_map hT₀ hT₁
-    have φ₀ : φ 0 = 0 := Subtype.ext $ SplitPath.trans_reparam_zero T
-    have φ₁ : φ 1 = 1 := Subtype.ext $ SplitPath.trans_reparam_one hT₁
-
-    have hγT_eq_half : ((γ T).2 : ℝ) = 2⁻¹ := Subtype.coe_inj.mpr hT_half
-    have hγT_le_half : ((γ T).2 : ℝ) ≤ 2⁻¹ := le_of_eq hγT_eq_half
-
-    set r₁ := q₁.cast (hcomp_apply_left F G s₀ t₀ (le_of_lt ht₀)) (hcomp_apply_half_left F G (γ T).1 (γ T).2 hT_half)
-    set r₂ := q₂.cast (hcomp_apply_half_right F G (γ T).1 (γ T).2 hT_half) (hcomp_apply_right F G s₁ t₁ (le_of_lt ht₁))
-
-    convert ((r₁.trans r₂).reparam φ φ₀ φ₁).dipath_toPath
-    ext t
-
-    have hr₁a₁ : r₁.toPath = a₁.toPath.map Γ.continuous_toFun := by
-      ext x
-      have this : ((a₁ x).2 : ℝ) ≤ 2⁻¹ := le_trans (directed_path_bounded a₁.dipath_toPath.2 _).2 hγT_le_half
-      calc r₁ x
-        _ = F ((a₁ x).1, ⟨2 * ((a₁ x).2 : ℝ), double_mem_I this⟩)
-              := rfl
-        _ = if h : ((a₁ x).2 : ℝ) ≤ 1/2
-                then F ((a₁ x).1, ⟨2 * ((a₁ x).2 : ℝ), double_mem_I this⟩)
-                else G ((a₁ x).1, ⟨2 * ((a₁ x).2 : ℝ) - 1, by { apply double_sub_one_mem_I (le_of_lt _); convert h; norm_num }⟩)
-              := by apply Eq.symm; apply dif_pos; convert this using 1; norm_num
-        _ = if h : ((a₁ x).2 : ℝ) ≤ 1/2
-                then Fₕ.eval (a₁ x).1 ⟨2 * ((a₁ x).2 : ℝ), double_mem_I this⟩
-                else Gₕ.eval (a₁ x).1 ⟨2 * ((a₁ x).2 : ℝ) - 1, by { apply double_sub_one_mem_I (le_of_lt _); convert h; norm_num }⟩
-              := rfl
-        _ = (Fₕ.hcomp Gₕ) (a₁ x)
-              := (Path.Homotopy.hcomp_apply Fₕ Gₕ (a₁ x)).symm
-        _ = Γ (a₁ x)
-              := rfl
-        _ = (a₁.toPath.map Γ.continuous_toFun) x
-              := rfl
-    have hr₂a₂ : r₂.toPath = a₂.toPath.map Γ.continuous_toFun := by
-      ext x
-      have : 2⁻¹ ≤ ((a₂ x).2 : ℝ) := by
-        calc (2⁻¹ : ℝ)
-          _ = ↑(γ T).2   := Subtype.coe_inj.mpr hT_half.symm
-          _ ≤  ↑(a₂ x).2 := (directed_path_bounded a₂.dipath_toPath.2 _).1
-
-      calc r₂.toPath x
-        _ = G ((a₂ x).1, ⟨2 * ((a₂ x).2 : ℝ) - 1, double_sub_one_mem_I this⟩)
-              := rfl
-        _ = if h : ((a₂ x).2 : ℝ) ≤ 1/2
-                then F ((a₂ x).1, ⟨2 * ((a₂ x).2 : ℝ), by { apply double_mem_I; convert h using 1; norm_num }⟩)
-                else G ((a₂ x).1, ⟨2 * ((a₂ x).2 : ℝ) - 1,  by { apply double_sub_one_mem_I (le_of_lt _); convert h using 1; norm_num }⟩)
-              := by
-                split_ifs with h
-                · have : ((a₂ x).2 : ℝ) ≤ 2⁻¹ := by convert h using 1; norm_num
-                  have ha₂x : ((a₂ x).2 : ℝ) = 2⁻¹ := by linarith
-                  have : G (_, 0) = F (_, 1) := Eq.trans (G.source (a₂ x).1) (F.target (a₂ x).1).symm
-                  convert this <;> rw [ha₂x] <;> norm_num
-                · rfl
-        _ = if h : ((a₂ x).2 : ℝ) ≤ 1/2
-                then Fₕ.eval (a₂ x).1 ⟨2 * ((a₂ x).2 : ℝ), by { apply double_mem_I; convert h using 1; norm_num }⟩
-                else Gₕ.eval (a₂ x).1 ⟨2 * ((a₂ x).2 : ℝ) - 1, by { apply double_sub_one_mem_I (le_of_lt _); convert h using 1; norm_num }⟩
-              := rfl
-        _ = (Fₕ.hcomp Gₕ) (a₂ x)
-              := (Path.Homotopy.hcomp_apply Fₕ Gₕ (a₂ x)).symm
-        _ = Γ (a₂ x)
-              := rfl
-        _ = (a₂.toPath.map Γ.continuous_toFun) x
-              := rfl
-
-    calc (Γ ∘ γ) t
-      _ = Γ (γ t)
-            := rfl
-      _ = Γ (((a₁.trans a₂).reparam φ φ₀ φ₁) t)
-            := by rw [←SplitDipath.first_trans_second_reparam_eq_self γ_as_dipath hT₀ hT₁]; rfl
-      _ = ((a₁.trans a₂).toPath.map Γ.continuous_toFun).reparam φ φ.continuous_toFun φ₀ φ₁ t
-            := rfl
-      _ = ((a₁.toPath.trans a₂.toPath).map Γ.continuous_toFun).reparam φ φ.continuous_toFun φ₀ φ₁ t
-            := rfl
-      _ = ((a₁.toPath.map Γ.continuous_toFun).trans (a₂.toPath.map Γ.continuous_toFun)).reparam φ φ.continuous_toFun φ₀ φ₁ t
-            := by rw [Path.map_trans a₁.toPath a₂.toPath (Γ.continuous_toFun)]
-      _ = (r₁.toPath.trans r₂.toPath).reparam φ φ.continuous_toFun φ₀ φ₁ t
-            := by rw [hr₁a₁, hr₂a₂]; rfl
-      _ = (r₁.trans r₂).reparam φ φ₀ φ₁ t
-            := rfl
-  exact hom_to_dihom Γ this
-
-lemma hcomp_apply (F : Dihomotopy p₀ q₀) (G : Dihomotopy p₁ q₁) (x : I × I) :
-    F.hcomp G x =
-      if h : (x.2 : ℝ) ≤ 1/2 then
-        F.eval x.1 ⟨2 * x.2, (unitInterval.mul_pos_mem_iff two_pos).2 ⟨x.2.2.1, h⟩⟩
-      else
-        G.eval x.1 ⟨2 * x.2 - 1, unitInterval.two_mul_sub_one_mem_iff.2 ⟨(not_le.1 h).le, x.2.2.2⟩⟩ :=
-  show ite _ _ _ = _ by split_ifs <;> exact Path.extend_extends _ _
-
-lemma hcomp_half (F : Dihomotopy p₀ q₀) (G : Dihomotopy p₁ q₁) (t : I) :
-    F.hcomp G (t, ⟨1/2, by norm_num, by norm_num⟩) = y :=
-  show ite _ _ _ = _ by norm_num
-
-end
-
-/--
-Suppose `p` is a dipath, and `f g : D(I, I)` two monotonic subparametrizations. If `f` is dominated by `g`,
-i.e. `∀ t, f t ≤ g t`, then we obtain a dihomotopy between the two subparametrization of `p` as
-the interpolation between the two becomes directed.
--/
-def reparam (p : Dipath x y) (f : D(I, I)) (g : D(I, I)) (hf_le_g : ∀ (t : I), f t ≤ g t)
-  (hf₀ : f 0 = 0) (hf₁ : f 1 = 1) (hg₀ : g 0 = 0) (hg₁ : g 1 = 1) :
-    Dihomotopy (p.reparam f hf₀ hf₁) (p.reparam g hg₀ hg₁) where
-  toFun := p.comp (interpolate f.toContinuousMap g.toContinuousMap)
-  map_zero_left := fun x => by { unfold interpolate; norm_num; rfl }
-  map_one_left := fun x => by { unfold interpolate; norm_num; rfl }
-  prop' := fun t x hx => by
-    simp
-    cases' hx with hx hx
-    · have : g 0 = f 0 := hg₀.trans (hf₀.symm)
-      rw [hx]
-      calc (p ((interpolate f.toContinuousMap g.toContinuousMap) (t, 0)))
-        _ = p (f 0) := by rw [interpolate_constant_apply f.toContinuousMap g.toContinuousMap 0 (f 0) rfl this t]
-    · have : g 1 = f 1 := hg₁.trans (hf₁.symm)
-      rw [Set.mem_singleton_iff] at hx
-      rw [hx]
-      calc (p ((interpolate f.toContinuousMap g.toContinuousMap) (t, 1)))
-        _ = p (f 1) := by rw [interpolate_constant_apply f.toContinuousMap g.toContinuousMap 1 (f 1) rfl this t]
-  directed_toFun := fun t₀ t₁ γ γ_dipath =>
-    (p.toDirectedMap).directed_toFun (γ.map _) (directed_interpolate f g hf_le_g γ γ_dipath)
-
-
-/--
-For any `p : Dipath x y`, there is a dihomotopy from `p` to `p.trans (Dipath.refl y)`.
--/
-def trans_refl (p : Dipath x y) : Dihomotopy p (p.trans (Dipath.refl y)) := by
-  set f : D(I, I) := DirectedMap.id I
-  set g : D(I, I) := TransReflReparamAuxMap
-  have hf_le_g : ∀ (t : I), f t ≤ g t := by
-    intro t
-    apply Subtype.coe_le_coe.mp
-    dsimp [f, g, TransReflReparamAuxMap, Path.Homotopy.transReflReparamAux]
-    show (t : ℝ) ≤ ite ((t : ℝ) ≤ 1 / 2) ((2 : ℝ) * (t : ℝ)) 1
-    split_ifs
-    · have : 0 ≤ (t : ℝ) := t.2.1
-      linarith
-    · exact t.2.2
-  convert reparam p f g hf_le_g (rfl) (rfl)
-    (Subtype.ext Path.Homotopy.transReflReparamAux_zero)
-    (Subtype.ext Path.Homotopy.transReflReparamAux_one)
-  · ext t
-    rfl
-  · exact trans_refl_reparam_dipath p
-
-/--
-For any `p : Dipath x y`, there is a dihomotopy from `(Dipath.refl x).trans p` to `p`.
--/
-def refl_trans (p : Dipath x y) : Dihomotopy ((Dipath.refl x).trans p) p := by
-  set f : D(I, I) := ReflTransReparamAuxMap
-  set g : D(I, I) := DirectedMap.id I
-  have hf_le_g : ∀ (t : I), f t ≤ g t := fun t => by
-    apply Subtype.coe_le_coe.mp
-    dsimp [f, g, ReflTransReparamAuxMap, ReflTransReparamAux]
-    show ite ((t : ℝ) ≤ 1 / 2) 0 ((2 : ℝ) * (t : ℝ) - 1) ≤ (t : ℝ)
-    split_ifs
-    · exact t.2.1
-    · linarith [t.2.2]
-
-  convert reparam p f g hf_le_g (Subtype.ext reflTransReparamAux_zero)
-    (Subtype.ext reflTransReparamAux_one) (rfl) (rfl)
-  · exact refl_trans_reparam_dipath p
-  · ext t
-    rfl
-
-/--
-For any `p : Dipath x y`, there is a homotopy from `(Dipath.refl x).trans p` to `q.trans (Dipath.refl y)`,
-where `q` is any directed reparametrization of `p`.
--/
-def refl_trans_to_reparam_trans_refl (p : Dipath x y) (f : D(I, I)) (hf₀ : f 0 = 0) (hf₁ : f 1 = 1) :
-    Dihomotopy ((Dipath.refl x).trans p) ((p.reparam f hf₀ hf₁).trans (Dipath.refl y)) := by
-  set φ₁ : D(I, I) := ReflTransReparamAuxMap
-  set φ₂ : D(I, I) := f.comp TransReflReparamAuxMap
-
-  have hφ₁_le_φ₂ : ∀ (t : I), φ₁ t ≤ φ₂ t := by
-    intro t
-    apply Subtype.coe_le_coe.mp
-    dsimp [φ₁, φ₂, ReflTransReparamAuxMap, ReflTransReparamAux, TransReflReparamAuxMap, Path.Homotopy.transReflReparamAux, DirectedMap.comp]
-    show ite ((t : ℝ) ≤ 1 / 2) 0 ((2 : ℝ) * (t : ℝ) - 1) ≤ (f ⟨ite ((t : ℝ) ≤ 1 / 2) ((2 : ℝ) * (t : ℝ)) 1, _⟩ : ℝ)
-    by_cases h : (t : ℝ) ≤ 2⁻¹ <;> simp [h]
-    · exact (f _).2.1
-    · have : (t : ℝ) ≤ 1 := t.2.2
-      simp [hf₁]
-      linarith
-
-  have hφ₂₀ : φ₂ 0 = 0 := by
-    show f ⟨Path.Homotopy.transReflReparamAux 0, _⟩ = 0
-    nth_rewrite 3 [←hf₀]
-    congr
-    exact Path.Homotopy.transReflReparamAux_zero
-
-  have hφ₂₁ : φ₂ 1 = 1 := by
-    show f ⟨Path.Homotopy.transReflReparamAux 1, _⟩ = 1
-    nth_rewrite 3 [←hf₁]
-    congr
-    exact Path.Homotopy.transReflReparamAux_one
-
-  convert reparam p φ₁ φ₂ hφ₁_le_φ₂ (Subtype.ext reflTransReparamAux_zero)
-    (Subtype.ext reflTransReparamAux_one) hφ₂₀ hφ₂₁
-  · exact refl_trans_reparam_dipath p
-  · rw [trans_refl_reparam_dipath (p.reparam f hf₀ hf₁)]
-    ext
-    rfl
-
-
-/--
-Given `F : Dihomotopy p q`, and `f : D(X, Y)`, there is a dihomotopy from `p.map f` to
-`q.map f` given by `f ∘ F`.
--/
-@[simps!]
-def map {p q : Dipath x y} (F : Dihomotopy p q) (f : D(X, Y)) :
-    Dihomotopy (p.map f) (q.map f) where
-  toFun := f ∘ F
-  map_zero_left := fun _ => by simp
-  map_one_left := fun _ => by simp
-  prop' := fun t s hs => by
-    unfold DirectedMap.prod_const_fst DirectedMap.prod_map_mk
-
-    cases' hs with hs hs
-    case inl =>
-      simp [hs]
-      calc (f (F (t ,0)))
-        _ = (f x) := by simp
-
-    case inr => -- s = 1
-      have : s = 1 := Set.mem_singleton_iff.mp hs
-      simp [this]
-      calc (f (F (t ,1)))
-        _ = (f y) := by simp
-  directed_toFun := (f.comp F.toDirectedMap).directed_toFun
-
-end Dihomotopy
-
-
-section
-
-variable (p₀ p₁ : Dipath x y)
-/--
-Two dipaths `p₀` and `p₁` are `Dipath.PreDihomotopic` if there exists a `Dihomotopy` from `p₀` to `p₁`.
--/
-def PreDihomotopic : Prop := Nonempty (Dihomotopy p₀ p₁)
-
-/--
-`Dipath.Dihomotopic` is the equivalence generated by `Dipath.PreDihomotopic`.
--/
-def Dihomotopic : Prop := Relation.EqvGen PreDihomotopic p₀ p₁
-
-end
-
-namespace Dihomotopic
-
-lemma equivalence : Equivalence (@Dihomotopic X _ x y) := by apply Relation.EqvGen.is_equivalence
-
-/-- If `p` is dihomotopic with `q`, then `f ∘ p` is dihomotopic with `f ∘ q` for any directed map `f` -/
-lemma map {p q : Dipath x y} (h : p.Dihomotopic q) (f : D(X, Y)) :
-    Dihomotopic (p.map f) (q.map f) :=
-  Relation.EqvGen.rec
-    (fun _ _ h => Relation.EqvGen.rel _ _ ⟨h.some.map f⟩)
-    (fun x => Relation.EqvGen.refl (x.map f))
-    (fun _ _ _ h => Relation.EqvGen.symm _ _ h)
-    (fun _ _ _ _ _ h₁ h₂ => Relation.EqvGen.trans _ _ _ h₁ h₂)
-  h
-
-lemma hcomp_aid_left {p₀ p₁ : Dipath x y} (q : Dipath y z) (hp : p₀.Dihomotopic p₁) :
-    (p₀.trans q).Dihomotopic (p₁.trans q) :=
-  Relation.EqvGen.rec
-    (fun _ _ h => Relation.EqvGen.rel _ _ ⟨h.some.hcomp (Dihomotopy.refl q)⟩)
-    (fun p => Relation.EqvGen.refl (p.trans q))
-    (fun _ _ _ h => Relation.EqvGen.symm _ _ h)
-    (fun _ _ _ _ _ h₁ h₂ => Relation.EqvGen.trans _ _ _ h₁ h₂)
-  hp
-
-lemma hcomp_aid_right (p : Dipath x y) {q₀ q₁ : Dipath y z} (hq : q₀.Dihomotopic q₁) :
-    (p.trans q₀).Dihomotopic (p.trans q₁) :=
-  Relation.EqvGen.rec
-    (fun _ _ h => Relation.EqvGen.rel _ _ ⟨(Dihomotopy.refl p).hcomp h.some⟩)
-    (fun q => Relation.EqvGen.refl (p.trans q))
-    (fun _ _ _ h => Relation.EqvGen.symm _ _ h)
-    (fun _ _ _ _ _ h₁ h₂ => Relation.EqvGen.trans _ _ _ h₁ h₂)
-  hq
-
-/--
-Suppose we have`p₀ p₁ : Dipath x y` and `q₀ q₁ : Dipath y z`.
-If `p₀` is dihomotopic with `p₁` and `q₀` is dihomotopic with `q₁`,
-then `p₀.trans q₀` is dihomotopic with `p₁.trans q₁`.
--/
-lemma hcomp {p₀ p₁ : Dipath x y} {q₀ q₁ : Dipath y z} (hp : p₀.Dihomotopic p₁)
-    (hq : q₀.Dihomotopic q₁) : (p₀.trans q₀).Dihomotopic (p₁.trans q₁) :=
-  Relation.EqvGen.rec
-    (fun p₀ p₁ hp₀_p₁ => by
-      exact Relation.EqvGen.rec
-          (fun _ _ hq₀_q₁ => Relation.EqvGen.rel _ _ ⟨hp₀_p₁.some.hcomp hq₀_q₁.some⟩)
-          (fun q => Relation.EqvGen.rel _ _ ⟨hp₀_p₁.some.hcomp (Dihomotopy.refl q)⟩)
-          (fun q₀ q₁ _ hp₀q₀_p₁q₁ => by
-              have hp₀q₁_p₁q₂ := hcomp_aid_left q₁ (Relation.EqvGen.rel _ _ hp₀_p₁)
-              have hp₁q₁_p₀q₀ := Relation.EqvGen.symm _ _ hp₀q₀_p₁q₁
-              have hp₀q₀_p₁q₀ := hcomp_aid_left q₀ (Relation.EqvGen.rel _ _ hp₀_p₁)
-              exact Relation.EqvGen.trans _ _ _ (Relation.EqvGen.trans _ _ _ hp₀q₁_p₁q₂ hp₁q₁_p₀q₀) hp₀q₀_p₁q₀
-          )
-          (fun q₀ q₁ q₂ hq₀_q₁ hq₁_q₂ _ _ => by
-              have hp₀q₀_p₀q₁ := hcomp_aid_right p₀ hq₀_q₁
-              have hp₀q₁_p₀q₂ := hcomp_aid_right p₀ hq₁_q₂
-              have hp₀q₂_p₁q₂ := hcomp_aid_left q₂ (Relation.EqvGen.rel _ _ hp₀_p₁)
-              exact Relation.EqvGen.trans _ _ _ (Relation.EqvGen.trans _ _ _ hp₀q₀_p₀q₁ hp₀q₁_p₀q₂) hp₀q₂_p₁q₂
-          )
-        hq
-    )
-    (fun p => by
-      exact Relation.EqvGen.rec
-          (fun _ _ h => hcomp_aid_right p (Relation.EqvGen.rel _ _ h))
-          (fun q => Relation.EqvGen.refl (p.trans q))
-          (fun _ _ _ h => Relation.EqvGen.symm _ _ h)
-          (fun _ _ _ _ _ h₁ h₂ => Relation.EqvGen.trans _ _ _ h₁ h₂)
-        hq
-    )
-    (fun p₀ p₁ hp₀_p₁ _ => by
-      have hp₁_p₀ := Relation.EqvGen.symm _ _ hp₀_p₁
-      exact Relation.EqvGen.rec
-          (fun q₀ q₁ hq₀_q₁ => by
-            have hp₁q₀_p₀q₀ := hcomp_aid_left q₀ hp₁_p₀
-            have hp₀q₀_p₀q₁ := hcomp_aid_right p₀ (Relation.EqvGen.rel _ _ hq₀_q₁)
-            exact Relation.EqvGen.trans _ _ _ hp₁q₀_p₀q₀ hp₀q₀_p₀q₁
-          )
-          (fun q => hcomp_aid_left q hp₁_p₀)
-          (fun q₀ q₁ hq₀_q₁ _ => by
-            have hp₁q₁_p₁q₀ := hcomp_aid_right p₁ (Relation.EqvGen.symm _ _ hq₀_q₁)
-            have hp₁q₀_p₀q₀ := hcomp_aid_left q₀ (Relation.EqvGen.symm _ _ hp₀_p₁)
-            exact Relation.EqvGen.trans _ _ _ hp₁q₁_p₁q₀ hp₁q₀_p₀q₀
-          )
-          (fun q₀ q₁ q₂ _ _ hp₁q₀_p₀q₁ hp₁q₁_p₀q₂ => by
-            have hp₀q₁_p₁q₁ := hcomp_aid_left q₁ hp₀_p₁
-            exact Relation.EqvGen.trans _ _ _ (Relation.EqvGen.trans _ _ _ hp₁q₀_p₀q₁ hp₀q₁_p₁q₁) hp₁q₁_p₀q₂
-          )
-        hq
-    )
-    (fun p₀ p₁ p₂ hp₀_p₁ hp₁_p₂ _ _ => by
-      exact Relation.EqvGen.rec
-          (fun q₀ q₁ hq₀_q₁ => by
-            have hp₀q₁_p₁q₀ := hcomp_aid_left q₀ hp₀_p₁
-            have hp₁q₀_p₂q₀ := hcomp_aid_left q₀ hp₁_p₂
-            have hp₂q₀_p₂q₁ := hcomp_aid_right p₂ (Relation.EqvGen.rel _ _ hq₀_q₁)
-            exact Relation.EqvGen.trans _ _ _ (Relation.EqvGen.trans _ _ _ hp₀q₁_p₁q₀ hp₁q₀_p₂q₀) hp₂q₀_p₂q₁
-          )
-          (fun q => by
-            have hp₀q_p₁q := hcomp_aid_left q hp₀_p₁
-            have hp₁q_p₂q := hcomp_aid_left q hp₁_p₂
-            exact Relation.EqvGen.trans _ _ _ hp₀q_p₁q hp₁q_p₂q
-          )
-          (fun q₀ q₁ hq₀_q₁ hp₀q₀_p₂q₁ => by
-            have hq₁_q₀ := Relation.EqvGen.symm _ _ hq₀_q₁
-            have hp₀q₁_p₀q₀ := hcomp_aid_right p₀ hq₁_q₀
-            have hp₂q₁_p₂q₀ := hcomp_aid_right p₂ hq₁_q₀
-            exact Relation.EqvGen.trans _ _ _ (Relation.EqvGen.trans _ _ _ hp₀q₁_p₀q₀ hp₀q₀_p₂q₁) hp₂q₁_p₂q₀
-          )
-          (fun q₀ q₁ q₂ _ _ hp₀q₀_p₂q₁ hp₀q₁_p₂q₂ => by
-            have hp₂_p₀ := Relation.EqvGen.symm _ _ (Relation.EqvGen.trans _ _ _ hp₀_p₁ hp₁_p₂)
-            have hp₂q₂_p₀q₁ := hcomp_aid_left q₁ hp₂_p₀
-            exact Relation.EqvGen.trans _ _ _ (Relation.EqvGen.trans _ _ _ hp₀q₀_p₂q₁ hp₂q₂_p₀q₁) hp₀q₁_p₂q₂
-          )
-        hq
-    )
-  hp
-
-/--
-If `p` is a dipath, then it is dihomotopic with any monotonic subparametrization.
--/
-lemma reparam (p : Dipath x y) (f : D(I, I)) (hf₀ : f 0 = 0) (hf₁ : f 1 = 1) :
-  p.Dihomotopic (p.reparam f hf₀ hf₁) := by
-
-  set p' := p.reparam f hf₀ hf₁
-  set p₁ := ((refl x).trans p)
-  set p₂ := (p'.trans (refl y))
-
-  have h₁ : p₁.PreDihomotopic p := ⟨Dihomotopy.refl_trans p⟩
-  have h₂ : p₁.PreDihomotopic p₂ := ⟨Dihomotopy.refl_trans_to_reparam_trans_refl p f hf₀ hf₁⟩
-  have h₃ : p'.PreDihomotopic p₂ := ⟨Dihomotopy.trans_refl p'⟩
-
-  have h₁ : p.Dihomotopic p₁ := Relation.EqvGen.symm _ _ (Relation.EqvGen.rel _ _ h₁)
-  have h₂ : p₁.Dihomotopic p₂ := Relation.EqvGen.rel _ _ h₂
-  have h₃ : p₂.Dihomotopic p' := Relation.EqvGen.symm _ _ (Relation.EqvGen.rel _ _ h₃)
-
-  exact Relation.EqvGen.trans _ _ _ (Relation.EqvGen.trans _ _ _ h₁ h₂) h₃
-
-/--
-The setoid on `Dipath`s defined by the equivalence relation `Dipath.Dihomotopic`. That is, two paths are
-equivalent if there is a chain of `Dihomotopies` starting in one and ending in the other.
--/
-protected def setoid (x y : X) : Setoid (Dipath x y) := ⟨Dihomotopic, equivalence⟩
-
-/--
-The quotient on `Dipath x y` by the equivalence relation `Dipath.Dihomotopic`.
--/
-protected def Quotient (x y : X) := Quotient (Dihomotopic.setoid x y)
-
-attribute [local instance] Dihomotopic.setoid
-
-instance : Inhabited (Dihomotopic.Quotient x x) :=
-  ⟨Quotient.mk' <| Dipath.refl x⟩
-
-/- The composition of dipath dihomotopy classes. This is `Dipath.trans` descended to the quotient. -/
-def Quotient.comp (P₀ : Dipath.Dihomotopic.Quotient x y) (P₁ : Dipath.Dihomotopic.Quotient y z) :
-  Dipath.Dihomotopic.Quotient x z :=
-Quotient.map₂ Dipath.trans (fun (_ : Dipath x y) _ hp (_ : Dipath y z) _ hq => (hcomp hp hq)) P₀ P₁
-
-lemma comp_lift (P₀ : Dipath x y) (P₁ : Dipath y z) : ⟦P₀.trans P₁⟧ = Quotient.comp ⟦P₀⟧ ⟦P₁⟧ := rfl
-
-/- The image of a dipath dihomotopy class `P₀` under a directed map `f`.
-    This is `Dipath.map` descended to the quotient -/
-def Quotient.mapFn (P₀ : Dipath.Dihomotopic.Quotient x y) (f : D(X, Y)) :
-  Dipath.Dihomotopic.Quotient (f x) (f y) :=
-Quotient.map (fun (q : Dipath x y) => q.map f) (fun _ _ h => Dipath.Dihomotopic.map h f) P₀
-
-lemma map_lift (P₀ : Dipath x y) (f : D(X, Y)) :
-  ⟦P₀.map f⟧ = Quotient.mapFn ⟦P₀⟧ f := rfl
-
-lemma quot_reparam (γ : Dipath x y) {f : D(I, I)} (hf₀ : f 0 = 0) (hf₁ : f 1 = 1) :
-    @Eq (Dipath.Dihomotopic.Quotient _ _) ⟦γ.reparam f hf₀ hf₁⟧ ⟦γ⟧ := by
-  symm
-  exact Quotient.eq.mpr (Dipath.Dihomotopic.reparam γ f hf₀ hf₁)
-
-lemma hpath_hext {x₀ x₁ x₂ x₃ : X} {p₁ : Dipath x₀ x₁} {p₂ : Dipath x₂ x₃} (hp : ∀ t, p₁ t = p₂ t) :
-    @HEq (Dipath.Dihomotopic.Quotient _ _) ⟦p₁⟧ (Dipath.Dihomotopic.Quotient _ _) ⟦p₂⟧ := by
-  obtain rfl : x₀ = x₂ := by convert hp 0 <;> simp
-  obtain rfl : x₁ = x₃ := by convert hp 1 <;> simp
-  have hp' : p₁ = p₂ := by
-    apply Dipath.ext
-    funext t
-    exact hp t
-  subst p₂
-  rfl
-
-end Dihomotopic
-
-end Dipath
-
-
-
-
-end
-end Standalone_Lean4_directed_path_homotopy
-
-/-! Source module: Lean4.fundamental_category -/
-section Standalone_Lean4_fundamental_category
-
-
-
-
-/-
-  This file contains the definition of the fundamental category of a directed space.
-  We follow the structure of the undirected version found at:
-  https://leanprover-community.github.io/mathlib_docs/algebraic_topology/fundamental_groupoid/basic.html#fundamental_groupoid
--/
-
-open DirectedMap
-open CategoryTheory
-
-universe u v
-variable {X : Type u} {Y : Type v} [DirectedSpace X] [DirectedSpace Y] {x₀ x₁ : X}
-
-open scoped unitInterval
-
-noncomputable section
-
-namespace Dipath
-
-namespace Dihomotopy
-
-open Path.Homotopy
-
-section assoc
-
-lemma transAssocReparamAux_directed : DirectedMap.Directed
-  ({ toFun := fun t => ⟨transAssocReparamAux t, transAssocReparamAux_mem_I t⟩} : C(I, I)) := by
-  apply DirectedUnitInterval.directed_of_monotone _
-  intros x y hxy
-  unfold transAssocReparamAux
-  simp
-  have : (x : ℝ) ≤ (y : ℝ) := hxy
-  split_ifs with h₀ h₁ h₂ h₃ h₄ h₅
-  · linarith
-  · linarith
-  · push_neg at h₂
-    have : 0 ≤ (y : ℝ) := le_trans (by norm_num) (le_of_lt h₂)
-    have : 1 ≤ (y : ℝ) + 1 := by linarith
-    calc 2 * (x : ℝ)
-      _ ≤ 2 * 4⁻¹ := (mul_le_mul_iff_of_pos_left (by norm_num)).mpr h₀
-      _ = (2⁻¹ : ℝ) * 1 := by norm_num
-      _ ≤ (2⁻¹ : ℝ) * (↑y + 1) := (mul_le_mul_iff_of_pos_left (by norm_num)).mpr this
-  · linarith
-  · linarith
-  · push_neg at h₅
-    calc (x : ℝ) + (4⁻¹ : ℝ)
-      _ = 4⁻¹ + ↑x := by ring
-      _ ≤ 4⁻¹ + 2⁻¹ := add_le_add_right h₃ 4⁻¹
-      _ = 2⁻¹ + 4⁻¹ := by ring
-      _ = 2⁻¹ * (2⁻¹ + 1) := by norm_num
-      _ ≤ 2⁻¹ * (↑y + 1) := (mul_le_mul_iff_of_pos_left (by norm_num)).mpr (by linarith)
-  · linarith
-  · linarith
-  · apply (mul_le_mul_iff_of_pos_left (show 0 < (2⁻¹ : ℝ) by norm_num)).mpr
-    linarith [Subtype.coe_le_coe.mpr hxy]
-
-def transAssocReparamAuxMap : D(I, I) where
-  toFun := fun t => ⟨transAssocReparamAux t, transAssocReparamAux_mem_I t⟩
-  directed_toFun := transAssocReparamAux_directed
-
-lemma trans_assoc_reparam_directed {x₀ x₁ x₂ x₃ : X} (p : Dipath x₀ x₁) (q : Dipath x₁ x₂) (r : Dipath x₂ x₃) :
-    (p.trans q).trans r = (p.trans (q.trans r)).reparam
-      transAssocReparamAuxMap
-      (Subtype.ext transAssocReparamAux_zero)
-      (Subtype.ext transAssocReparamAux_one) := by
-  ext t
-  have : (p.trans q).trans r t =  (p.toPath.trans q.toPath).trans r.toPath t := rfl
-  rw [this, trans_assoc_reparam p.toPath q.toPath r.toPath]
-  rfl
-
-/--
-For any three dipaths `p q r`, `(p.trans q).trans r` is dihomotopic with `p.trans (q.trans r)`.
--/
-def trans_assoc {x₀ x₁ x₂ x₃ : X} (p : Dipath x₀ x₁) (q : Dipath x₁ x₂) (r : Dipath x₂ x₃) :
-    ((p.trans q).trans r).Dihomotopic (p.trans (q.trans r)) := by
-  have := Dihomotopic.reparam (p.trans (q.trans r)) transAssocReparamAuxMap
-    (Subtype.ext transAssocReparamAux_zero)
-    (Subtype.ext transAssocReparamAux_one)
-  rw [←trans_assoc_reparam_directed] at this
-  exact Relation.EqvGen.symm _ _ this
-
-end assoc
-
-end Dihomotopy
-
-end Dipath
-
-/-
- Definition of the fundamental category and of the functor sending a directed space to its
- fundamental category
--/
-@[ext]
-structure FundamentalCategory (X : Type u) where
-  as : X
-
-namespace FundamentalCategory
-
-@[simps]
-def equiv (X : Type*) : FundamentalCategory X ≃ X where
-  toFun x := x.as
-  invFun x := .mk x
-  left_inv _ := rfl
-  right_inv _ := rfl
-
-@[simp]
-lemma isEmpty_iff (X : Type*) :
-    IsEmpty (FundamentalCategory X) ↔ IsEmpty X :=
-  equiv _ |>.isEmpty_congr
-
-instance (X : Type*) [IsEmpty X] :
-    IsEmpty (FundamentalCategory X) :=
-  equiv _ |>.isEmpty
-
-@[simp]
-lemma nonempty_iff (X : Type*) :
-    Nonempty (FundamentalCategory X) ↔ Nonempty X :=
-  equiv _ |>.nonempty_congr
-
-instance (X : Type*) [Nonempty X] :
-    Nonempty (FundamentalCategory X) :=
-  equiv _ |>.nonempty
-
-@[simp]
-lemma subsingleton_iff (X : Type*) :
-    Subsingleton (FundamentalCategory X) ↔ Subsingleton X :=
-  equiv _ |>.subsingleton_congr
-
-instance (X : Type*) [Subsingleton X] :
-    Subsingleton (FundamentalCategory X) :=
-  equiv _ |>.subsingleton
-
-
-instance {X : Type u} [Inhabited X] : Inhabited (FundamentalCategory X) :=
-  ⟨⟨default⟩⟩
-
-attribute [local instance] Dipath.Dihomotopic.setoid
-
-instance : CategoryTheory.Category (FundamentalCategory X) where
-  Hom x y := Dipath.Dihomotopic.Quotient x.as y.as
-  id x := ⟦Dipath.refl x.as⟧
-  comp {_ _ _} := Dipath.Dihomotopic.Quotient.comp
-  id_comp {x _} f :=
-    Quotient.inductionOn f fun a =>
-      show ⟦(Dipath.refl x.as).trans a⟧ = ⟦a⟧ from Quotient.sound (Relation.EqvGen.rel _ _ ⟨Dipath.Dihomotopy.refl_trans a⟩)
-  comp_id {_ y} f :=
-    Quotient.inductionOn f fun a =>
-      show ⟦a.trans (Dipath.refl y.as)⟧ = ⟦a⟧ from Quotient.sound (Relation.EqvGen.symm _ _ (Relation.EqvGen.rel _ _ ⟨Dipath.Dihomotopy.trans_refl a⟩))
-  assoc {_ _ _ _} f g h :=
-    Quotient.inductionOn₃ f g h fun p q r =>
-      show ⟦(p.trans q).trans r⟧ = ⟦p.trans (q.trans r)⟧ from
-        Quotient.sound (Dipath.Dihomotopy.trans_assoc p q r)
-
-lemma comp_eq (x y z : FundamentalCategory X) (p : x ⟶ y) (q : y ⟶ z) :
-    p ≫ q = p.comp q := rfl
-
-lemma id_eq_path_refl (x : FundamentalCategory X) :
-    𝟙 x = ⟦Dipath.refl x.as⟧ := rfl
-
-@[reducible]
-def fundamentalCategoryFunctor : dTopCat ⥤ CategoryTheory.Cat where
-      obj X := { α := FundamentalCategory X }
-      map f := { toFunctor := {
-      obj := fun x => ⟨f x.as⟩
-      map := fun {X Y} p => by exact p.mapFn f
-      map_id := fun X => by
-        change Dipath.Dihomotopic.Quotient.mapFn
-          ⟦Dipath.refl X.as⟧ f = ⟦Dipath.refl (f X.as)⟧
-        rw [← Dipath.Dihomotopic.map_lift]
-        congr 1
-      map_comp := fun {x y z} p q => by
-        refine Quotient.inductionOn₂ p q fun a b => ?_
-        change Dipath.Dihomotopic.Quotient.mapFn
-          (Dipath.Dihomotopic.Quotient.comp ⟦a⟧ ⟦b⟧) f =
-          Dipath.Dihomotopic.Quotient.comp ⟦a.map f⟧ ⟦b.map f⟧
-        rw [←Dipath.Dihomotopic.comp_lift a b,
-          ←Dipath.Dihomotopic.map_lift (a.trans b) f,
-          Dipath.map_trans,
-          ←Dipath.Dihomotopic.comp_lift]
-    }}
-
-      map_id X := by
-        apply CategoryTheory.Cat.ext
-        simp only
-        change _ = 𝟭 (FundamentalCategory X)
-        congr
-        ext x y p
-        refine' Quotient.inductionOn p fun q => _
-        rw [← Dipath.Dihomotopic.map_lift]
-        conv_rhs => rw [←q.map_id]
-        rfl
-
-      map_comp f g := by
-        apply CategoryTheory.Cat.ext
-        simp only
-        congr
-        ext x y p
-        refine' Quotient.inductionOn p fun q => _
-        simp only [Quotient.map_mk, Dipath.map_map, Quotient.eq']
-        rfl
-
-scoped notation "dπ" => FundamentalCategory.fundamentalCategoryFunctor
-scoped notation "dπₓ" => FundamentalCategory.fundamentalCategoryFunctor.obj
-scoped notation "dπₘ" => FundamentalCategory.fundamentalCategoryFunctor.map
-
-lemma map_eq {X Y : dTopCat} {x₀ x₁ : X} (f : D(X, Y)) (p : Dipath.Dihomotopic.Quotient x₀ x₁) :
-  (dπₘ f).toFunctor.map p = p.mapFn f := rfl
-
-/-- Help the typechecker by converting a point in the fundamental category back to a point in
-the underlying directed space. -/
-@[reducible]
-def toTop {X : dTopCat} (x : dπₓ X) : X := x.as
-
-/-- Help the typechecker by converting a point in a directed space to a
-point in the fundamental category of that space -/
-@[reducible]
-def fromTop {X : dTopCat} (x : X) : dπₓ X := ⟨x⟩
-
-/-- Help the typechecker by converting an arrow in the fundamental category of
-a directed space back to a directed path in that space (i.e., `Dipath.Dihomotopic.Quotient`). -/
-@[reducible]
-def toPath {X : dTopCat} {x₀ x₁ : dπₓ X} (p : x₀ ⟶ x₁) :
-  Dipath.Dihomotopic.Quotient (X := X) x₀.as x₁.as := p
-
-/-- Help the typechecker by convering a directed path in a directed space to an arrow in the
-fundamental category of that space. -/
-@[reducible]
-def fromPath {X : dTopCat} {x₀ x₁ : X} (p : Dipath.Dihomotopic.Quotient x₀ x₁) :
-  FundamentalCategory.mk x₀ ⟶ FundamentalCategory.mk x₁ := p
-
-end FundamentalCategory
-
-end
-end Standalone_Lean4_fundamental_category
-
-/-! Source module: Lean4.dipath_subtype -/
-section Standalone_Lean4_dipath_subtype
-
-
-
-
-/-
-  This file contains properties of dipaths contained in directed subspaces of a directed space.
-  In particular, properties about their equivalence classes in the fundamental category.
--/
-
-open Set
-open scoped FundamentalCategory unitInterval
-
-attribute [local instance] Dipath.Dihomotopic.setoid
-
-namespace DiSubtype
-
-variable {X : dTopCat} {X₀ : Set X}
-
-lemma subtypeHom_eq_coe (x : X₀) : (dTopCat.DirectedSubtypeHom X₀) x = (x : X) := rfl
-
-lemma range_dipath_map_inclusion {x y : X₀} (γ : Dipath x y) : range (γ.map (DirectedSubtypeInclusion X₀)) ⊆ X₀ := by
-  rintro z ⟨t, ht⟩
-  rw [←ht]
-  show (dTopCat.DirectedSubtypeHom X₀) (γ t) ∈ X₀
-  rw [subtypeHom_eq_coe]
-  exact Subtype.mem (γ t)
-
-lemma subtype_path_class_eq_map {x y : X₀} (γ : Dipath x y) :
-    (dπₘ (dTopCat.DirectedSubtypeHom X₀)).toFunctor.map ⟦γ⟧ = ⟦(γ.map (DirectedSubtypeInclusion X₀))⟧ :=
-  rfl
-
-
-variable {x y z : X}
-
-lemma source_elt_of_image_subset {γ : Dipath x y} (hγ : range γ ⊆ X₀) : x ∈ X₀ := γ.source ▸ (hγ (mem_range_self 0))
-lemma target_elt_of_image_subset {γ : Dipath x y} (hγ : range γ ⊆ X₀) : y ∈ X₀ := γ.target ▸ (hγ (mem_range_self 1))
-
-def SubtypePath {γ : Dipath x y} (hγ : range γ ⊆ X₀) :
-    Path (⟨x, source_elt_of_image_subset hγ⟩ : X₀) ⟨y, target_elt_of_image_subset hγ⟩ where
-  toFun := fun t => ⟨γ t, hγ (mem_range_self t)⟩
-  continuous_toFun := Continuous.subtype_mk γ.continuous (fun t => hγ (mem_range_self t))
-  source' := by simp
-  target' := by simp
-
-def SubtypeDipath (γ : Dipath x y) (hγ : range γ ⊆ X₀) :
-    Dipath (⟨x, source_elt_of_image_subset hγ⟩ : X₀) ⟨y, target_elt_of_image_subset hγ⟩ where
-  toPath := SubtypePath hγ
-  dipath_toPath := γ.dipath_toPath
-
-lemma map_subtypeDipath_eq {x y : X} (γ : Dipath x y) (hγ : range γ ⊆ X₀) :
-    (dπₘ (dTopCat.DirectedSubtypeHom X₀)).toFunctor.map ⟦SubtypeDipath γ hγ⟧ = ⟦γ⟧ := by
-  rw [subtype_path_class_eq_map]
-  congr 1
-
-lemma subtypeDipath_of_included_dipath_eq {x y : X₀} (γ : Dipath x y) :
-    SubtypeDipath (γ.map (DirectedSubtypeInclusion X₀)) (range_dipath_map_inclusion γ) =
-    γ.cast (by ext; rw [←subtypeHom_eq_coe x]; rfl) (by ext; rw [←subtypeHom_eq_coe y]; rfl) := by
-  ext t
-  rfl
-
-lemma range_refl_subset_of_mem {x : X} (hx : x ∈ X₀) : range (Dipath.refl x) ⊆ X₀ := by
-  rw [Dipath.refl_range]
-  exact singleton_subset_iff.mpr hx
-
-lemma subtype_refl {x : X} (hx : x ∈ X₀) : (SubtypeDipath (Dipath.refl x) (range_refl_subset_of_mem hx)) = Dipath.refl (⟨x, hx⟩ : X₀) := rfl
-
-lemma subsets_of_trans_subset {γ₁ : Dipath x y} {γ₂ : Dipath y z} (hγ : range (γ₁.trans γ₂) ⊆ X₀) :
-    range γ₁ ⊆ X₀ ∧ range γ₂ ⊆ X₀ := by
-  rw [Dipath.trans_range] at hγ
-  exact ⟨subset_trans subset_union_left hγ, subset_trans subset_union_right hγ⟩
-
-lemma trans_subset_of_subsets  {γ₁ : Dipath x y} {γ₂ : Dipath y z} (hγ₁ : range γ₁ ⊆ X₀) (hγ₂ : range γ₂ ⊆ X₀) :
-    range (γ₁.trans γ₂) ⊆ X₀ := by
-  rw [Dipath.trans_range]
-  exact union_subset hγ₁ hγ₂
-
-lemma subtype_trans {γ₁ : Dipath x y} {γ₂ : Dipath y z} (hγ : range (γ₁.trans γ₂) ⊆ X₀) :
-    (SubtypeDipath γ₁ (subsets_of_trans_subset hγ).1).trans (SubtypeDipath γ₂ (subsets_of_trans_subset hγ).2) =
-    SubtypeDipath (γ₁.trans γ₂) hγ := by
-  ext t
-  show _ = (γ₁.trans γ₂) t
-  rw [Dipath.trans_apply, Dipath.trans_apply,]
-  split_ifs <;> rfl
-
-lemma subtype_reparam {γ : Dipath x y} (hγ : range γ ⊆ X₀) {f : D(I, I)} (hf₀ : f 0 = 0) (hf₁ : f 1 = 1):
-    SubtypeDipath (γ.reparam f hf₀ hf₁) ((Dipath.range_reparam γ f hf₀ hf₁).symm ▸ hγ) =
-    (SubtypeDipath γ hγ).reparam f hf₀ hf₁ :=
-  rfl
-
-lemma reparam_subset_of_subset {γ : Dipath x y} (hγ : range γ ⊆ X₀) {f : D(I, I)} (hf₀ : f 0 = 0) (hf₁ : f 1 = 1) :
-    range (γ.reparam f hf₀ hf₁) ⊆ X₀ := by
-  rw [Dipath.range_reparam]
-  exact hγ
-
-def DihomotopyOfSubtype {γ γ' : Dipath x y} (hγ : range γ ⊆ X₀) (hγ' : range γ' ⊆ X₀)
-  {F : Dipath.Dihomotopy γ γ'} (hF : range F ⊆ X₀) :
-    Dipath.Dihomotopy (SubtypeDipath γ hγ) (SubtypeDipath γ' hγ') where
-  toFun := fun t => ⟨F t, hF (mem_range_self t)⟩
-  directed_toFun := fun a b p hp => F.directed_toFun _ hp
-  map_zero_left := fun t => by simp; rfl
-  map_one_left := fun t => by simp; rfl
-  prop' := fun t p hp => by
-    have := F.prop' t p hp
-    ext
-    show _ = (γ.toDirectedMap) p
-    rw [←this]
-    rfl
-
-lemma dihomSubtype_of_dihom_range_subset {γ γ' : Dipath x y} (hγ : range γ ⊆ X₀) (hγ' : range γ' ⊆ X₀)
-  {F : Dipath.Dihomotopy γ γ'} (hF : range F ⊆ X₀) :
-    @Eq (Dipath.Dihomotopic.Quotient _ _) ⟦SubtypeDipath γ hγ⟧ ⟦SubtypeDipath γ' hγ'⟧ :=
-Quotient.eq.mpr (Relation.EqvGen.rel _ _ ⟨DihomotopyOfSubtype hγ hγ' hF⟩)
-
-end DiSubtype
-
-end Standalone_Lean4_dipath_subtype
-
-/-! Source module: Lean4.fraction_equalities -/
-section Standalone_Lean4_fraction_equalities
-
-
-
-
-namespace FractionEqualities
-
-lemma one_sub_inverse_of_add_one {n : ℝ} (hn : n + 1 ≠ 0) :
-    1 - 1 / (n + 1) = n / (n + 1) := by
-  field_simp [hn]
-  ring
-
-lemma frac_cancel {a b c : ℝ} (hb : b ≠ 0) : (a / b) * (b / c) = a / c := by
-  by_cases hc : c = 0
-  · simp [hc]
-  · field_simp [hb, hc]
-
-lemma frac_cancel' {a b c : ℝ} (hb : b ≠ 0) : (b / a) * (c / b) = c / a := by
-  rw [mul_comm]
-  exact frac_cancel hb
-
-lemma one_sub_frac {a b : ℝ} (hb : b + 1 ≠ 0) : (1 - (a + 1)/(b+1)) = (b - a) / (b + 1) := by
-  field_simp [hb]
-  ring
-
-lemma frac_special {a b c : ℝ} (hbc : b ≠ c) (hc : c + 1 ≠ 0) :
-    (a + (b + 1)) / (c + 1) = (1 - (b + 1) / (c + 1)) * (a / (c - b)) + (b + 1) / (c + 1) := by
-  rw [one_sub_frac hc, frac_cancel']
-  · exact (div_add_div_same _ _ _).symm
-  · exact sub_ne_zero_of_ne hbc.symm
-
-/--
-  For any `i n : ℕ` with `i > 0` and `i ≤ (n + 1) * i`, we have that `1 / (n + 1) = i / ((n + 1) * i)`.
--/
-lemma cancel_common_factor {i n : ℕ} (i_pos : 0 < i) (hi_n : (i - 1).succ ≤ ((n+1) * i - 1).succ) :
-    Fraction.ofPos (Nat.succ_pos n) = Fraction (Nat.succ_pos _) hi_n := by
-  apply Subtype.ext
-  simp only [Fraction.ofPos_coe, Fraction.Fraction_coe]
-  have hi : (i : ℝ) ≠ 0 := by exact_mod_cast (ne_of_gt i_pos)
-  have hn : (0 : ℝ) < (n : ℝ) + 1 := by positivity
-  have hi_succ : (i - 1).succ = i := Nat.succ_pred_eq_of_pos i_pos
-  have hn_succ : ((n + 1) * i - 1).succ = (n + 1) * i :=
-    Nat.succ_pred_eq_of_pos (mul_pos (Nat.succ_pos n) i_pos)
-  simp only [hi_succ, hn_succ, Nat.cast_succ, Nat.cast_mul]
-  field_simp [hi, ne_of_gt hn]
-  ring
-
-end FractionEqualities
-end Standalone_Lean4_fraction_equalities
-
-/-! Source module: Lean4.SplitPath.split_properties -/
-section Standalone_Lean4_SplitPath_split_properties
-
-
-
-
-/-
-  This file contains many lemmas about relations that the parts of a split path satisfy.
--/
-
-open scoped unitInterval
-open SplitDipath Set
-
-noncomputable section
-
-universe u
-
-variable {X : Type u} [DirectedSpace X] {x₀ x₁ : X}
-
-namespace SplitProperties
-
-
---TODO: Rework some of these statement to make them more general: that should make proving the
--- specfic versions easier.
-
-/-! ### General -/
-
-lemma firstPart_cast {x₀' x₁' : X} (γ : Dipath x₀ x₁) (hx₀ : x₀' = x₀) (hx₁ : x₁' = x₁) (T : I) :
-  (FirstPart (γ.cast hx₀ hx₁) T) = (FirstPart γ T).cast hx₀ rfl := rfl
-
-lemma secondPart_cast {x₀' x₁' : X} (γ : Dipath x₀ x₁) (hx₀ : x₀' = x₀) (hx₁ : x₁' = x₁) (T : I) :
-  (SecondPart (γ.cast hx₀ hx₁) T) = (SecondPart γ T).cast rfl hx₁ := rfl
-
-lemma firstPart_eq_of_split_point_eq (γ : Dipath x₀ x₁) {T T' : I} (hT : T = T') :
-  (FirstPart γ T) = (FirstPart γ T').cast rfl (congr_arg γ hT) := by subst_vars; rfl
-
-lemma secondPart_eq_of_split_point_eq (γ : Dipath x₀ x₁) {T T' : I} (hT : T = T') :
-  (SecondPart γ T) = (SecondPart γ T').cast (congr_arg γ hT) rfl := by subst_vars; rfl
-
-lemma firstPart_eq_of_point_eq (γ : Dipath x₀ x₁) {T T': I} (h : T = T') (t : I) :
-  (FirstPart γ T) t = (FirstPart γ T') t := by subst_vars; rfl
-
-lemma secondPart_eq_of_point_eq (γ : Dipath x₀ x₁) {T T': I} (h : T = T') (t : I) :
-  (SecondPart γ T) t = (SecondPart γ T') t := by subst_vars; rfl
-
-lemma interval_cast {γ : Dipath x₀ x₁} {A : Set X} {a b a' b' : I} (h_im : A = γ '' Icc a b)
-      (ha : a' = a) (hb : b' = b) :
-    A = γ '' Icc a' b' := by subst_vars; rfl
-
-
-/-! ### First Part -/
-
-lemma firstPart_image (γ : Dipath x₀ x₁) (T a b : I) (h_ab : a ≤ b):
-    (FirstPart γ T) '' Icc a b = γ '' Icc (T * a) (T * b) := by
-  ext z
-  constructor
-  · rintro ⟨t, t_a_b, ht⟩
-    rw [first_part_apply] at ht
-    use T * t
-    constructor
-    constructor
-    · exact Subtype.coe_le_coe.mp $ mul_le_mul_of_nonneg_left (Subtype.coe_le_coe.mpr t_a_b.1) T.2.1
-    · exact Subtype.coe_le_coe.mp $ mul_le_mul_of_nonneg_left (Subtype.coe_le_coe.mpr t_a_b.2) T.2.1
-    · exact ht
-  · rintro ⟨t, t_Ta_Tb, ht⟩
-    by_cases h : T = 0
-    · use a
-      constructor
-      · simp; exact h_ab
-      · show γ (T * a) = z
-        simp [h] at t_Ta_Tb
-        rw [h, zero_mul]
-        exact t_Ta_Tb ▸ ht
-    have hT : 0 < T := lt_of_le_of_ne unitInterval.nonneg' (show T ≠ 0 by exact h).symm
-    have h₁ : (a : ℝ) ≤ (t / T : ℝ) :=
-      (le_div_iff₀ $ Subtype.coe_lt_coe.mpr hT).mpr $ mul_comm (a : ℝ) T ▸ Subtype.coe_le_coe.mpr t_Ta_Tb.1
-    have h₂ : (t / T : ℝ) ≤ b :=
-      (div_le_iff₀ $ Subtype.coe_lt_coe.mpr hT).mpr $ mul_comm (b : ℝ) T ▸ Subtype.coe_le_coe.mpr t_Ta_Tb.2
-    use ⟨t / T, le_trans a.2.1 h₁, le_trans h₂ b.2.2⟩
-
-    constructor
-    · exact ⟨h₁, h₂⟩
-    · rw [first_part_apply]
-      convert ht using 2
-      simp
-      apply Subtype.coe_inj.mp
-      show (T : ℝ) * (t / T) = t
-      rw [mul_div_left_comm, div_self]
-      · exact mul_one (t : ℝ)
-      · exact unitInterval.coe_ne_zero.mpr h
-
-lemma firstPart_range (γ : Dipath x₀ x₁) (T : I) :
-    range (FirstPart γ T) = (γ '' Icc 0 T) := by
-  rw [Dipath.range_eq_image_I _]
-  convert firstPart_image γ T 0 1 zero_le_one <;> norm_num
-
-lemma firstPart_range_interval (γ : Dipath x₀ x₁) {n : ℕ} (h : 0 < n) :
-    range (FirstPart γ (Fraction.ofPos h)) = γ ''  Icc 0 (Fraction.ofPos h) :=
-  firstPart_range γ (Fraction.ofPos h)
-
-lemma firstPart_range_interval_coe (γ : Dipath x₀ x₁) {n : ℕ} (h : 0 < n):
-    range (FirstPart γ (Fraction.ofPos h)) = γ.extend ''  Icc 0 (1/(↑n)) := by
-  rw [firstPart_range_interval γ h, ←Dipath.image_extend_eq_image, Fraction.ofPos_coe]
-  rfl
-
-/--
-If `γ` is a path, then the image of `[i/(d+1), (i+1)/(d+1)]` under `γ` split at `(d+1)/(n+1)` is the
-image of `[i/(n+1), (i+1)/(n+1)]` under `γ`
--/
-lemma firstPart_range_interval_partial (γ : Dipath x₀ x₁) {n d i : ℕ} (hd : d.succ < n.succ) (hi : i < d.succ) :
-  (FirstPart γ (Fraction (Nat.succ_pos n) (le_of_lt hd))) '' Icc -- First part at (d + 1)/(n + 1)
-    (Fraction (Nat.succ_pos d) (le_of_lt hi)) -- frac i/(d+1)
-    (Fraction (Nat.succ_pos d) (Nat.succ_le_of_lt hi)) -- frac (i+1)/(d+1)
-    = γ ''  Icc
-    (Fraction (Nat.succ_pos n) (le_of_lt (lt_trans hi hd))) -- frac i/(n+1)
-    (Fraction (Nat.succ_pos n) (Nat.succ_le_of_lt (lt_trans hi hd))) -- frac (i+1)/(n+1)
-  := by
-  convert firstPart_image γ (Fraction (Nat.succ_pos n) (le_of_lt hd))
-    (Fraction (Nat.succ_pos d) (le_of_lt hi)) (Fraction (Nat.succ_pos d) (Nat.succ_le_of_lt hi))
-    (show _ ≤ _ by exact (Fraction.lt_frac_succ hi).le) <;>
-  simp [Fraction] <;>
-  apply Subtype.coe_inj.mp <;>
-  simp <;>
-  refine (FractionEqualities.frac_cancel' ?_).symm <;>
-  rw [←Nat.cast_succ] <;>
-  exact Nat.cast_ne_zero.mpr (Nat.succ_ne_zero d)
-
-/--
-If `γ` is a path, then the image of `[i/(d+1), (i+1)/(d+1)]` under `γ` split at `(d+1)/(n+1)` is the
-image of `[i/(n+1), (i+1)/(n+1)]` under `γ`.
--/
-lemma firstPart_range_interval_partial_coe (γ : Dipath x₀ x₁) {n d i : ℕ} (hd : d.succ < n.succ) (hi : i < d.succ) :
-    (FirstPart γ (Fraction (Nat.succ_pos n) (le_of_lt hd))).extend '' Icc (↑i/(↑d+1)) ((↑i+1)/(↑d+1))
-      = γ.extend ''  Icc (↑i/(↑n+1)) ((↑i+1)/(↑n+1)) := by
-  have := firstPart_range_interval_partial γ hd hi
-  rw [←Dipath.image_extend_eq_image] at this
-  rw [←Dipath.image_extend_eq_image] at this
-  convert this <;> exact (Nat.cast_succ _).symm
-
-/-! ### Second Part -/
-
-lemma secondPart_image (γ : Dipath x₀ x₁) (T a b : I) (h_ab : a ≤ b):
-    (SecondPart γ T) '' Icc a b = γ '' Icc
-      ⟨σ T * a + T, interp_left_mem_I T a⟩
-      ⟨σ T * b + T, interp_left_mem_I T b⟩ := by
-  ext z
-  constructor
-  · rintro ⟨t, t_a_b, ht⟩
-    rw [second_part_apply] at ht
-    use ⟨σ T * t + T, interp_left_mem_I T t⟩
-    exact ⟨⟨unitIAux.interp_left_le_of_le T t_a_b.1, unitIAux.interp_left_le_of_le T t_a_b.2⟩, ht⟩
-
-  · rintro ⟨t, t_Ta_Tb, ht⟩
-    by_cases h : T = 1
-    · use a
-      constructor
-      · simp; exact h_ab
-      · show γ (_) = z
-        simp [h] at t_Ta_Tb
-        simp [t_Ta_Tb] at ht
-        simp [h, ht]
-    have hT : T < 1 := lt_of_le_of_ne unitInterval.le_one' (show T ≠ 1 by exact h)
-    have : (T : ℝ) < 1 := Subtype.coe_lt_coe.mpr hT
-    have : (σ T : ℝ) > 0 := show (1 - T : ℝ) > 0 by linarith
-
-    have h₁ : (a : ℝ) ≤ ((t - T) / (σ T) : ℝ) := by
-      apply (le_div_iff₀ this).mpr
-      rw [mul_comm]
-      have : (σ T : ℝ) * a  + T ≤ t := t_Ta_Tb.1
-      linarith
-    have h₂ : ((t - T) / (1 - T) : ℝ) ≤ b := by
-      apply (div_le_iff₀ this).mpr
-      rw [mul_comm]
-      have : (t : ℝ) ≤ (σ T : ℝ) * b + T := t_Ta_Tb.2
-      linarith
-
-    use ⟨(t - T) / (1 - T), le_trans a.2.1 h₁, le_trans h₂ b.2.2⟩
-
-    constructor
-    · exact ⟨h₁, h₂⟩
-    · rw [second_part_apply]
-      convert ht using 2
-      simp
-      apply Subtype.coe_inj.mp
-      show (σ T : ℝ) * ((t-T)/(σ T)) + T = t
-      rw [mul_div_left_comm, div_self]
-      ring
-      exact ne_of_gt this
-
-lemma secondPart_range (γ : Dipath x₀ x₁) (T : I) :
-    range (SecondPart γ T) = γ '' Icc T 1  := by
-  rw [Dipath.range_eq_image_I _]
-  convert secondPart_image γ T 0 1 zero_le_one using 3 <;> simp
-
-/--
-  When γ is a dipath, an we split it on the intervals [0, 1/(n+1)] and [1/(n+1), 1], then the image of γ of
-  [(i+1)/(n+1), (i+2)/(n+1)] is equal to the image the second part of γ of [i/n, (i+1)/n]
--/
-lemma secondPart_range_interval (γ : Dipath x₀ x₁) {i n : ℕ} (hi : i < n) (hn : 0 < n):
-    (SecondPart γ (Fraction.ofPos (Nat.succ_pos n))) '' Icc
-      (Fraction hn (le_of_lt hi)) (Fraction hn (Nat.succ_le_of_lt hi)) =
-    γ ''  Icc (Fraction (Nat.succ_pos n) (show i+1 ≤ n+1 by exact (le_of_lt (Nat.succ_lt_succ hi))))
-              (Fraction (Nat.succ_pos n) (show i+2 ≤ n+1 by exact Nat.succ_lt_succ (Nat.succ_le_of_lt hi))) := by
-  apply interval_cast (secondPart_image γ (Fraction.ofPos (Nat.succ_pos n)) _ _
-    (le_of_lt (Fraction.lt_frac_succ hi)))
-  · apply Subtype.ext
-    simp only [Fraction.Fraction_coe, unitInterval.coe_symm_eq, Nat.cast_succ,
-      Nat.cast_zero, Nat.cast_one]
-    have hn0 : (n : ℝ) ≠ 0 := ne_of_gt (Nat.cast_pos.mpr hn)
-    have hn1 : (n : ℝ) + 1 ≠ 0 := ne_of_gt (add_pos (Nat.cast_pos.mpr hn) one_pos)
-    field_simp [hn0, hn1]
-    ring
-  · apply Subtype.ext
-    simp only [Fraction.Fraction_coe, unitInterval.coe_symm_eq, Nat.cast_succ,
-      Nat.cast_zero, Nat.cast_one]
-    have hn0 : (n : ℝ) ≠ 0 := ne_of_gt (Nat.cast_pos.mpr hn)
-    have hn1 : (n : ℝ) + 1 ≠ 0 := ne_of_gt (add_pos (Nat.cast_pos.mpr hn) one_pos)
-    field_simp [hn0, hn1]
-    ring
-
-/--
-  When γ is a dipath, an we split it on the intervals [0, 1/(n+1)] and [1/(n+1), 1], then the image of γ of
-  [(i+1)/(n+1), (i+2)/(n+1)] is equal to the image the second part of γ of [i/n, (i+1)/n].
-  Version with interval of real numbers
--/
-lemma secondPart_range_interval_coe (γ : Dipath x₀ x₁) {i n : ℕ} (hi : i < n) (hn : 0 < n):
-    (SecondPart γ (Fraction.ofPos (Nat.succ_pos n))).extend '' Icc (↑i/↑n) ((↑i+1)/↑n) =
-    γ.extend ''  Icc ((↑i+1)/(↑n+1)) ((↑i+1+1)/(↑n+1)) := by
-  have := secondPart_range_interval γ hi hn
-  rw [←Dipath.image_extend_eq_image] at this
-  rw [←Dipath.image_extend_eq_image] at this
-  convert this
-  exact (Nat.cast_succ i).symm
-  exact (Nat.cast_succ i).symm
-  exact (Nat.cast_succ n).symm
-  rw [←Nat.cast_succ i]
-  rw [←Nat.cast_succ i.succ]
-  exact (Nat.cast_succ n).symm
-
-/--
-  When γ is a dipath, an we split it on the intervals [0, (d+1)/(n+1)] and [(d+1)/(n+1), 1], then the image of γ of
-  [(i+d.succ)/(n+1), (i+d.succ+1)/(n+1)] is equal to the image the second part of γ of [(i/(n-d), (i+1)/(n-d)].
--/
-lemma secondPart_range_partial_interval (γ : Dipath x₀ x₁) {i d n : ℕ} (hd : d.succ < n.succ) (hi : i < n - d) :
-    (SecondPart γ (Fraction (Nat.succ_pos n) (le_of_lt hd))) '' Icc
-      (Fraction (Nat.sub_pos_of_lt (Nat.lt_of_succ_lt_succ hd)) (le_of_lt hi)) -- i/(n-d)
-      (Fraction (Nat.sub_pos_of_lt (Nat.lt_of_succ_lt_succ hd)) (Nat.succ_le_of_lt hi)) -- (i+1)/(n-d)
-      =
-    γ ''  Icc
-      (Fraction (Nat.succ_pos n) (show i+d.succ ≤ n.succ by
-        apply le_of_lt
-        have : i < n.succ - d.succ := (Nat.succ_sub_succ n d).symm ▸ hi
-        exact lt_tsub_iff_right.mp this
-      )) -- (i+d+1)/(n+1)
-      (Fraction (Nat.succ_pos n) (show i+d.succ + 1 ≤ n.succ by
-        apply Nat.succ_le_of_lt
-        have : i < n.succ - d.succ := (Nat.succ_sub_succ n d).symm ▸ hi
-        exact lt_tsub_iff_right.mp this
-      )) -- (i+d+2)/(n+1)
-    := by
-  apply interval_cast (secondPart_image γ (Fraction (Nat.succ_pos n) (le_of_lt hd)) _ _
-    (le_of_lt (Fraction.lt_frac_succ hi)))
-  · apply Subtype.ext
-    simp only [Fraction.Fraction_coe, Fraction.ofPos_coe, unitInterval.coe_symm_eq,
-      Nat.cast_add, Nat.cast_succ]
-    have : d < n := Nat.lt_of_succ_lt_succ hd
-    rw [Nat.cast_sub (le_of_lt this)]
-    have hdlt : (↑d : ℝ) < ↑n := Nat.cast_lt.mpr this
-    have hnd : (↑n - ↑d : ℝ) ≠ 0 := ne_of_gt (sub_pos.mpr hdlt)
-    have hnPos : 0 < n := lt_of_le_of_lt (Nat.zero_le d) (Nat.lt_of_succ_lt_succ hd)
-    have hn1 : (↑n : ℝ) + 1 ≠ 0 := ne_of_gt (add_pos (Nat.cast_pos.mpr hnPos) one_pos)
-    field_simp [hnd, hn1]
-    ring
-  · apply Subtype.ext
-    simp only [Fraction.Fraction_coe, Fraction.ofPos_coe, unitInterval.coe_symm_eq,
-      Nat.cast_add, Nat.cast_succ]
-    have : d < n := Nat.lt_of_succ_lt_succ hd
-    rw [Nat.cast_sub (le_of_lt this)]
-    have hdlt : (↑d : ℝ) < ↑n := Nat.cast_lt.mpr this
-    have hnd : (↑n - ↑d : ℝ) ≠ 0 := ne_of_gt (sub_pos.mpr hdlt)
-    have hnPos : 0 < n := lt_of_le_of_lt (Nat.zero_le d) (Nat.lt_of_succ_lt_succ hd)
-    have hn1 : (↑n : ℝ) + 1 ≠ 0 := ne_of_gt (add_pos (Nat.cast_pos.mpr hnPos) one_pos)
-    field_simp [hnd, hn1]
-    ring
-
-/--
-  When γ is a dipath, an we split it on the intervals [0, (d+1)/(n+1)] and [(d+1)/(n+1), 1], then the image of γ of
-  [(i+d.succ)/(n+1), (i+d.succ+1)/(n+1)] is equal to the image the second part of γ of [i/(n-d), (i+1)/(n-d)].
--/
-lemma secondPart_range_partial_interval_coe (γ : Dipath x₀ x₁) {i d n : ℕ} (hd : d.succ < n.succ) (hi : i < n - d) :
-  (SecondPart γ (Fraction (Nat.succ_pos n) (le_of_lt hd))).extend '' Icc (↑i/(↑n-↑d)) ((↑i+1)/(↑n-↑d))
-    = γ.extend ''  Icc ((↑(i+d.succ))/(↑n+1)) ((↑(i+d.succ) + 1)/(↑n+1)) := by
-  have := secondPart_range_partial_interval γ hd hi
-  rw [←Dipath.image_extend_eq_image] at this
-  rw [←Dipath.image_extend_eq_image] at this
-  convert this
-  · exact (Nat.cast_sub (le_of_lt $ Nat.lt_of_succ_lt_succ hd)).symm
-  · exact (Nat.cast_succ _).symm
-  · exact (Nat.cast_sub (le_of_lt $ Nat.lt_of_succ_lt_succ hd)).symm
-  · exact (Nat.cast_succ _).symm
-  · exact (Nat.cast_succ _).symm
-  · exact (Nat.cast_succ _).symm
-
-/-! ### Mixed Parts -/
-
-/--
-  Splitting a dipath `γ` at `[0, k/n]` and then at `[0, 1/k]` is the same as splitting it at `[0, 1/n]`.
--/
-lemma firstPart_of_firstPart (γ : Dipath x₀ x₁) {n k : ℕ} (hkn : k < n) (hk : 0 < k) :
-    FirstPart
-      (FirstPart γ (Fraction (lt_trans hk hkn) (le_of_lt hkn)))
-        (Fraction.ofPos hk) -- 1/k
-    = (FirstPart γ (Fraction.ofPos $ lt_trans hk hkn)).cast rfl
-      (show γ _ = γ _ by { congr 1; rw [←Fraction.mul_inv hk (le_of_lt hkn)]; rfl }) := by
-  ext x
-  show γ _ = γ _
-  congr 1
-  rw [←Fraction.mul_inv hk (le_of_lt hkn)]
-  simp
-  rw [mul_assoc]
-
-/--
-  Splitting a dipath `[0, (k+1)/(n+1)]` and then `[1/(k+1), 1]` is the same as
-  splitting it `[1/(n+1), 1]` and then `[0, k/n]`
--/
-lemma first_part_of_second_part (γ : Dipath x₀ x₁) {n k : ℕ} (hkn : k < n) (hk : 0 < k) :
-  SecondPart
-    (FirstPart γ (Fraction (Nat.succ_pos n) (le_of_lt $ Nat.succ_lt_succ hkn))) -- (k+1)/(n+1)
-    (Fraction.ofPos (Nat.succ_pos k)) -- 1/(k+1)
-  =
-  (FirstPart
-      (SecondPart γ (Fraction.ofPos (Nat.succ_pos n))) -- 1/(n+1)
-      (Fraction (lt_trans hk hkn) (le_of_lt hkn)) -- k/n
-  ).cast
-    (show γ _ = γ _ by congr 1; apply Subtype.coe_inj.mp; rw [←Fraction.mul_inv (Nat.succ_pos k) (le_of_lt (Nat.succ_lt_succ hkn))]; rfl)
-    (show γ _ = γ _ by
-      congr 1
-      apply Subtype.ext
-      simp only [Fraction.Fraction_coe, Fraction.ofPos_coe, unitInterval.coe_symm_eq,
-        Nat.cast_succ]
-      have hn0 : (n : ℝ) ≠ 0 := ne_of_gt (Nat.cast_pos.mpr (lt_trans hk hkn))
-      have hn1 : (n : ℝ) + 1 ≠ 0 := ne_of_gt (add_pos (Nat.cast_pos.mpr (lt_trans hk hkn)) one_pos)
-      field_simp [hn0, hn1]
-      ring)
-    := by
-  ext x
-  show γ _ = γ _
-  congr 1
-  simp
-  have : (k : ℝ) > 0 := Nat.cast_pos.mpr hk
-  have : (n : ℝ) > 0 := Nat.cast_pos.mpr (lt_trans hk hkn)
-  rw [←one_div]
-  rw [←one_div]
-  rw [FractionEqualities.one_sub_inverse_of_add_one _]
-  rw [FractionEqualities.one_sub_inverse_of_add_one _]
-  rw [mul_comm ((k : ℝ)/(↑k + 1)) (x : ℝ)]
-  rw [mul_div, ← add_div, FractionEqualities.frac_cancel']
-  rw [← mul_assoc ((n : ℝ) / (n+1 : ℝ)) (k/n : ℝ) (x : ℝ)]
-  rw [FractionEqualities.frac_cancel']
-  rw [mul_comm ((k : ℝ)/(↑n + 1)) (x : ℝ)]
-  rw [mul_div, ← add_div]
-  repeat { linarith }
-
-/--
-  Splitting a dipath [(k+2)/(n+2), 1] is the same as splitting it [1/(n+2), 1] and then [(k+1)/(n+1), 1]
--/
-lemma second_part_of_second_part (γ : Dipath x₀ x₁) {n k : ℕ} (hkn : k < n) :
-  SecondPart
-    (SecondPart γ (Fraction.ofPos (Nat.succ_pos n.succ))) -- 1/(n+2)
-    (Fraction (Nat.succ_pos n) (le_of_lt $ Nat.succ_lt_succ hkn)) -- (k+1)/(n+1)
-  =
-  (
-    SecondPart γ (Fraction (Nat.succ_pos n.succ) (le_of_lt $ Nat.succ_lt_succ (Nat.succ_lt_succ hkn))) -- (k+2)/(n+2)
-  ).cast
-    (show γ _ = γ _ by
-      congr 1
-      apply Subtype.ext
-      simp only [Fraction.Fraction_coe, Fraction.ofPos_coe, unitInterval.coe_symm_eq,
-        Nat.cast_succ, Nat.cast_zero, Nat.cast_one]
-      have hn : 0 < n := lt_of_le_of_lt (Nat.zero_le k) hkn
-      have hn1 : (n : ℝ) + 1 ≠ 0 := ne_of_gt (add_pos (Nat.cast_pos.mpr hn) one_pos)
-      have hn2 : (n : ℝ) + 2 ≠ 0 := ne_of_gt (by positivity)
-      field_simp [hn1, hn2]
-      ring
-    )
-    rfl := by
-  ext x
-  show γ _ = γ _
-  congr 1
-  simp
-  have : (n : ℝ) > 0 := Nat.cast_pos.mpr (lt_of_le_of_lt (Nat.zero_le k) hkn)
-  -- Rewrite left side to ... / (n+1+1)
-  rw [← one_div]
-  rw [FractionEqualities.one_sub_inverse_of_add_one _]
-  rw [FractionEqualities.one_sub_frac]
-  rw [FractionEqualities.one_sub_frac]
-  rw [mul_comm (((n : ℝ) - ↑k) / _) (x : ℝ)]
-  rw [mul_div]
-  rw [← add_div]
-  rw [FractionEqualities.frac_cancel']
-  rw [← add_div]
-  -- Rewrite right side to ... / (n+1+1)
-  rw [mul_comm _ (x : ℝ)]
-  rw [mul_div]
-  rw [← add_div]
-  -- Show that numerators are equal
-  congr 1
-  ring
-  repeat { linarith }
-
-/-! ### Trans Parts -/
-
-variable {x₂ : X}
-
-/--
-If `γ₁` and `γ₂` are two paths, then the first part of `γ₁.trans γ₂` split at `1/2` is `γ₁`
--/
-lemma first_part_trans (γ₁ : Dipath x₀ x₁) (γ₂ : Dipath x₁ x₂) :
-    (FirstPart (γ₁.trans γ₂) (Fraction.ofPos two_pos)) =
-      γ₁.cast rfl (Dipath.trans_eval_at_half γ₁ γ₂) := by
-  ext t
-  rw [first_part_apply, Dipath.trans_apply]
-  simp [t.2.2]
-
-/--
-If `γ₁` and `γ₂` are two paths, then the second part of `γ₁.trans γ₂` split at `1/2` is `γ₂`
--/
-lemma second_part_trans (γ₁ : Dipath x₀ x₁) (γ₂ : Dipath x₁ x₂) :
-    (SecondPart (γ₁.trans γ₂) (Fraction.ofPos two_pos)) =
-    γ₂.cast (Dipath.trans_eval_at_half γ₁ γ₂) rfl := by
-  ext t
-  rw [second_part_apply, Dipath.trans_apply]
-  have h_two : 2 * (2⁻¹ : ℝ) = 1 := by norm_num
-  have ht : 2 * (2⁻¹ * (t : ℝ) + 2⁻¹) - 1 = ↑t
-  · rw [mul_add]
-    rw [←mul_assoc]
-    rw [h_two]
-    ring
-  have : (1 - 2⁻¹ : ℝ) = 2⁻¹ := by norm_num
-  simp [this]
-  by_cases h : 2⁻¹ * (t : ℝ) ≤ 0
-  · have : t = 0 := Subtype.coe_inj.mp (show (t : ℝ) = 0 by linarith [t.2.1])
-    simp [h, this]
-  · simp [h, ht]
-
-/--
-If `γ₁` and `γ₂` are two paths, then the first part of `γ₁.trans γ₂` split at `1/(2n + 2)` is the
-same as `γ₁` split at `1/(n + 1)`.
--/
-lemma trans_first_part (γ₁: Dipath x₀ x₁) (γ₂ : Dipath x₁ x₂) (n : ℕ) (t : I) :
-    (FirstPart (γ₁.trans γ₂) (Fraction.ofPos (Nat.succ_pos (n + n).succ))) t =
-      (FirstPart γ₁ (Fraction.ofPos (Nat.succ_pos n))) t := by
-  rw [first_part_apply]
-  rw [first_part_apply]
-  rw [Dipath.trans_apply]
-  simp
-  have : (n + n + 1 + 1 : ℝ) ≥ 2
-  · rw [←Nat.cast_add]
-    have : (↑(n + n) : ℝ) ≥ 0 := Nat.cast_nonneg (n + n)
-    linarith
-
-  have h₁ : (n + n + 1 + 1 : ℝ)⁻¹ ≤ 2⁻¹ := (inv_le_inv₀ (by linarith) two_pos).2 this
-  have : (n + n + 1 + 1 : ℝ)⁻¹ * ↑t ≤ 2⁻¹
-  · rw [← mul_one (2⁻¹ : ℝ)]
-    apply mul_le_mul h₁ t.2.2 t.2.1
-    norm_num
-  rw [dif_pos this]
-  apply congr_arg
-  ext
-  simp
-  rw [←mul_assoc]
-  congr 1
-  have : (n + n + 1 + 1 : ℝ)  = (2 * (n + 1)) := by ring
-  rw [this]
-  rw [mul_inv]
-  rw [←mul_assoc]
-  norm_num
-
-namespace AuxEqualities
-
-lemma h₁ (t : I) : 0 ≤ (t : ℝ) := t.2.1
-lemma h₂ (n : ℕ) : 0 ≤ (n : ℝ) := Nat.cast_nonneg n
-lemma h₃ (n : ℕ) : (n + 1 + 1 : ℝ) ≠ 0 := by linarith [h₂ n]
-lemma h₄ (n : ℕ) : (↑n + ↑n + 1 + 1 + 1 + 1 : ℝ) > 0 := by linarith [h₂ n]
-lemma h₅ (n : ℕ) : (↑n + ↑n + 1 + 1 + 1 + 1 : ℝ) = 2 * (↑n + 1 + 1) := by ring
-lemma h₆ (n : ℕ) : (↑n + 1 + 1 : ℝ) / (↑n + ↑n + 1 + 1 + 1 + 1) = 2⁻¹ := by
-  rw [h₅ n]
-  rw [mul_comm]
-  rw [div_mul_eq_div_div]
-  rw [div_self (h₃ n)]
-  exact one_div _
-lemma h₇ (n : ℕ) : (n + n + 1 + 1 + 1: ℝ) ≠ 0 := by linarith [h₂ n]
-lemma h₈ (n : ℕ) : (↑n + 1 + (↑n + 1) + 1 + 1 : ℝ) = (↑n + ↑n + 1 + 1 + 1 + 1) := by ring
-
-lemma e₁ (n : ℕ) (t : I) :
-    (1 - (n + 1 : ℝ) / (↑n + 1 + 1)) * ↑t + (↑n + 1) / (↑n + 1 + 1) =
-    ((t : ℝ) + ↑n + 1) / (↑n + 1 + 1) := by
-  nth_rewrite 1 [←div_self (h₃ n)]
-  ring
-
-lemma e₂ (n : ℕ) (t : I) :
-    ((1 - (n + n + 1 + 1 : ℝ) / (↑n + ↑n + 1 + 1 + 1)) * ↑t + (↑n + ↑n + 1 + 1) / (↑n + ↑n + 1 + 1 + 1)) =
-    (↑t + ↑n + ↑n + 1 + 1) / (↑n + ↑n + 1 + 1 + 1) := by
-  nth_rewrite 1 [←div_self (h₇ n)]
-  ring
-
-lemma e₃ (n : ℕ) :
-    (1 - (n + 1 + (n + 1) + 1 + 1 : ℝ)⁻¹) =
-    (↑n + ↑n + 1 + 1 + 1) / (↑n + ↑n + 1 + 1 + 1 + 1) := by
-  nth_rewrite 1 [←div_self (ne_of_gt (h₄ n))]
-  ring_nf
-
-lemma e₄ (n : ℕ) (t : I) :
-    ((↑n + ↑n + 1 + 1 + 1 : ℝ) / (↑n + ↑n + 1 + 1 + 1 + 1) * ((↑t + ↑n + ↑n + 1 + 1) / (↑n + ↑n + 1 + 1 + 1))) =
-    (↑t + ↑n + ↑n + 1 + 1) / (↑n + ↑n + 1 + 1 + 1 + 1) := by
-  rw [mul_comm]
-  rw [div_mul_div_cancel₀ (h₇ n)]
-
-lemma e₅ (n : ℕ) (r : ℝ) :
-    2 * (r / (n + n + 1 + 1 + 1 + 1 : ℝ) + ((n : ℝ) + 1 + (↑n + 1) + 1 + 1)⁻¹) =
-    (r + 1) / (↑n + 1 + 1) := by
-  rw [h₈]
-  rw [← one_div]
-  rw [div_add_div_same]
-  rw [h₅]
-  rw [mul_div]
-  rw [mul_comm]
-  rw [← mul_div]
-  rw [div_mul_eq_div_div]
-  rw [div_self (show (2 : ℝ) ≠ 0 by norm_num)]
-  ring
-
-lemma e₆ (n : ℕ) (r : ℝ) :
-  (1 - (n + 1 + 1 : ℝ)⁻¹) * r + (n + 1 + 1 : ℝ)⁻¹ = ((n + 1) * r + 1) / (n + 1 + 1) := by
-  nth_rewrite 1 [←div_self (h₃ n)]
-  ring
-
-end AuxEqualities
-open AuxEqualities
-
-/--
-If `γ₁` and `γ₂` are two paths, then
-  `γ₁.trans γ₂` --> `[1/(2n + 4), 1]` --> `[0, (2n + 2)/(2n + 3)]` (so taking `[1/(2n + 4), (2n + 3)/(2n + 4)]`)
-is the same as
-  `γ₁` --> `[1/(n+2), 1]`, added to `γ₂` --> `[0, (n+1)/(n+2)]`
--/
-lemma trans_first_part_of_second_part (γ₁: Dipath x₀ x₁) (γ₂ : Dipath x₁ x₂) (n : ℕ) (t : I) :
-  (FirstPart
-    (SecondPart (γ₁.trans γ₂) (Fraction.ofPos $ Nat.succ_pos (n.succ + n.succ).succ))
-    (Fraction (Nat.succ_pos (n + n).succ.succ) (le_of_lt (Nat.lt_succ_self ((n + n).succ.succ))))
-   ) t
-  =
-  ((SecondPart γ₁ (Fraction.ofPos (Nat.succ_pos n.succ)))).trans
-   (FirstPart γ₂ (Fraction (Nat.succ_pos n.succ) (Nat.le_succ n.succ))) t := by
-  rw [first_part_apply, second_part_apply, Dipath.trans_apply, Dipath.trans_apply]
-  have : (n : ℝ) + ↑n + 2 + 1 = ↑n + ↑n + 1 + 1 + 1 := by ring
-  split_ifs with h ht ht
-  · rw [second_part_apply]
-    apply congr_arg
-    simp
-    rw [e₃, mul_comm _ (t : ℝ), mul_div]
-    rw [mul_comm (_/_) (_/_)]
-    rw [this]
-    rw [div_mul_div_cancel₀ (h₇ n)]
-    rw [e₆]
-    rw [e₅]
-    ring
-  · exfalso
-    revert h
-    apply not_le.mpr
-    simp
-    rw [e₃]
-    rw [mul_comm _ (t : ℝ)]
-    rw [mul_div]
-    rw [mul_comm (_/_) (_/_)]
-    rw [this]
-    rw [div_mul_div_cancel₀ (h₇ n)]
-    apply (mul_lt_mul_iff_of_pos_left (show 0 < (2 : ℝ) by norm_num)).mp
-    rw [e₅]
-    apply (lt_div_iff₀ (show (n + 1 + 1 : ℝ) > 0 by linarith [h₂ n])).mpr
-    norm_num
-    push_neg at ht
-    calc (n + 1 : ℝ)
-      _ = 1 * (n + 1 : ℝ) := by rw [one_mul]
-      _ = (2⁻¹ * 2) * (n + 1 : ℝ) := by norm_num
-      _ = 2⁻¹ * (n + n + 1 + 1 : ℝ) := by ring
-      _ = 1/2 * (n + n + 1 + 1 : ℝ) := by rw [one_div]
-      _ < t * (n + n + 1 + 1 : ℝ) := mul_lt_mul_of_pos_right ht (by linarith [h₂ n])
-  · exfalso
-    revert h
-    apply imp_false.mpr
-    apply not_not.mpr
-    simp
-    rw [e₃, mul_comm _ (t : ℝ), mul_div, mul_comm (_/_) (_/_)]
-    rw [this]
-    rw [div_mul_div_cancel₀ (h₇ n)]
-    apply (mul_le_mul_iff_of_pos_left (show 0 < (2 : ℝ) by norm_num)).mp
-    rw [e₅]
-    apply (div_le_iff₀ (show (n + 1 + 1 : ℝ) > 0 by linarith [h₂ n])).mpr
-    norm_num
-    calc ↑t * (n + n + 1 + 1 : ℝ)
-      _ ≤ 1/2 * (n + n + 1 + 1 : ℝ) := mul_le_mul_of_nonneg_right ht (le_of_lt (by linarith [h₂ n]))
-      _ = (1/2 * 2) * (n + 1 : ℝ)   := by ring
-      _ = 1 * (n + 1 : ℝ)           := by rw [div_mul_cancel₀ (1 : ℝ) (show (2 : ℝ) ≠ 0 by norm_num)]
-      _ = (n + 1 : ℝ)               := by rw [one_mul]
-  · rw [first_part_apply]
-    apply congr_arg
-    simp
-    rw [e₃]
-    rw [mul_comm _ (t : ℝ)]
-    rw [mul_div]
-    rw [mul_comm (_/_) (_/_)]
-    rw [this]
-    rw [div_mul_div_cancel₀ (h₇ n)]
-    rw [e₅]
-    nth_rewrite 6 [←div_self (h₃ n)]
-    ring
-
-/--
-If `γ₁` and `γ₂` are two paths, then
-  `γ₁.trans γ₂` --> `[1/(2n + 4), 1]` --> `[(2n+2)/(2n+3), 1]` (so to `[(2n+3)/(2n+4), 1]`)
-is the same as
-  `γ₂` --> `[(n+1)/(n+2), 1]`
--/
-lemma trans_second_part_second_part (γ₁: Dipath x₀ x₁) (γ₂ : Dipath x₁ x₂) (n : ℕ) (t : I) :
-  (SecondPart
-    (SecondPart (γ₁.trans γ₂) $ Fraction.ofPos $ Nat.succ_pos (n.succ + n.succ).succ)
-    (Fraction (Nat.succ_pos (n + n).succ.succ) (Nat.le_succ (n + n).succ.succ))
-   ) t
-  =
-    (SecondPart γ₂ (Fraction (Nat.succ_pos n.succ) (Nat.le_succ n.succ))) t := by
-  rw [second_part_apply]
-  rw [second_part_apply]
-  rw [second_part_apply]
-  rw [Dipath.trans_apply]
-  simp
-  have : (n : ℝ) + ↑n + 2 = ↑n + ↑n + 1 + 1 := by ring
-  split_ifs with h
-  · exfalso
-    rw [this] at h
-    rw [e₂] at h
-    rw [e₃] at h
-    rw [e₄] at h
-    rw [←one_div] at h
-    rw [h₈] at h
-    rw [div_add_div_same] at h
-    have : (↑n + 1 + 1 : ℝ) < (↑t + ↑n + ↑n + 1 + 1 + 1) := by linarith [h₂ n, h₁ t]
-    have := lt_of_lt_of_le ((div_lt_div_iff_of_pos_right (h₄ n)).2 this) h
-    rw [h₆] at this
-    exact lt_irrefl _ this
-  apply congr_arg
-  simp
-  rw [this]
-  rw [e₁, e₂, e₃, e₄, e₅]
-  nth_rewrite 6 [←div_self (h₃ n)]
-  rw [div_sub_div_same]
-  ring
-
-/--
-If `γ₁` and `γ₂` are two paths, then `γ₁.trans γ₂` evaluated at `1/(2n+2)` is the same as
-`γ₁` evaluated at `1/(n+1)`.
--/
-lemma trans_image_inv_eq_first (γ₁: Dipath x₀ x₁) (γ₂ : Dipath x₁ x₂) (n : ℕ) :
-    (γ₁.trans γ₂) (Fraction.ofPos (Nat.succ_pos (n + n).succ)) =
-      γ₁ (Fraction.ofPos (Nat.succ_pos n)) := by
-  have := trans_first_part γ₁ γ₂ n 1
-  rw [SplitDipath.first_part_apply] at this
-  rw [SplitDipath.first_part_apply] at this
-  convert this using 2 <;>
-    (apply Subtype.ext <;> simp [Fraction.ofPos_coe] <;> ring)
-
-/--
-If `γ₁` and `γ₂` are two paths, then `γ₁.trans γ₂` --> `[1/(2n+4), 1]` evaluated at `(2n+2)/(2n+3)` is the same as
-`γ₂` evaluated at `(n+1)/(n+2)`.
--/
-lemma second_part_trans_eval_at_end (γ₁: Dipath x₀ x₁) (γ₂ : Dipath x₁ x₂) (n : ℕ) :
-    (SecondPart (γ₁.trans γ₂) $ Fraction.ofPos $ Nat.succ_pos (n.succ + n.succ).succ)
-    (Fraction (Nat.succ_pos (n+n).succ.succ) (le_of_lt (Nat.lt_succ_self _)))
-    = γ₂ (Fraction (Nat.succ_pos (n.succ)) (le_of_lt (Nat.lt_succ_self _))) := by
-  rw [second_part_apply]
-  rw [Dipath.trans_apply]
-  have : (n : ℝ) + ↑n + 2 = ↑n + ↑n + 1 + 1 := by ring
-  rw [dif_neg]
-  · apply congr_arg
-    simp
-    apply Subtype.ext
-    simp only [unitInterval.coe_symm_eq]
-    rw [e₃]
-    rw [mul_comm (_ / _) (_ / _)]
-    rw [this]
-    rw [div_mul_div_cancel₀ (h₇ n)]
-    rw [e₅ n (↑n + ↑n + 1 + 1)]
-    nth_rewrite 6 [←div_self (h₃ n)]
-    field_simp [h₃ n]
-    push_cast
-    ring
-  simp
-  rw [e₃]
-  rw [mul_comm]
-  rw [this]
-  rw [div_mul_div_cancel₀ (h₇ n)]
-  rw [h₈]
-  rw [← one_div (n + n + 1 + 1 + 1 + 1 : ℝ)]
-  rw [div_add_div_same]
-  apply (lt_div_iff₀ (h₄ n)).mpr
-  rw [h₅]
-  rw [←mul_assoc]
-  norm_num
-  linarith [h₂ n]
-
-end SplitProperties
-
-
-
-
-
-end
-end Standalone_Lean4_SplitPath_split_properties
-
-/-! Source module: Lean4.path_cover -/
-section Standalone_Lean4_path_cover
-
-
-
-
-/-
-  This file contains the definition of a directed path being n-covered by two subspaces X₁ and X₂:
-  It maps any subinterval [i/n, (i+1)/n] into either X₁ or X₂.
-  We give this definition inductively.
-  This file contains properties about dipaths and parts of dipaths being n-covered.
--/
-
-open Set
-open scoped unitInterval
-
-noncomputable section
-
-namespace Dipath
-
-variable {X : dTopCat} {X₀ X₁ : Set X}
-
-def covered {x₀ x₁ : X} (_ : X₀ ∪ X₁ = univ) (γ : Dipath x₀ x₁) : Prop :=
-  (range γ ⊆ X₀) ∨ (range γ ⊆ X₁)
-
-namespace covered
-
-variable {x₀ x₁ : X}
-
-lemma covered_refl (x : X) (hX : X₀ ∪ X₁ = univ) : covered hX (Dipath.refl x) := by
-  cases ((Set.mem_union x X₀ X₁).mp (Filter.mem_top.mpr hX x))
-  case inl hx₀ => left; exact DiSubtype.range_refl_subset_of_mem hx₀
-  case inr hx₁ => right; exact DiSubtype.range_refl_subset_of_mem hx₁
-
-lemma covered_of_extended_image_subset (γ : Dipath x₀ x₁) (hX : X₀ ∪ X₁ = univ) (hγ : γ.extend '' I ⊆ X₀ ∨ γ.extend '' I ⊆ X₁) :
-    covered hX γ := by
-  rw [(Dipath.range_eq_image γ).symm] at hγ
-  exact hγ
-
-lemma covered_of_covered_trans {x₂ : X} {γ₁: Dipath x₀ x₁} {γ₂ : Dipath x₁ x₂}
-  {hX : X₀ ∪ X₁ = univ} (hγ : covered hX (γ₁.trans γ₂)):
-    (covered hX γ₁ ∧ covered hX γ₂) := by
-  unfold covered at *
-  rw [Dipath.trans_range _ _] at hγ
-  cases hγ
-  case inl h =>
-    constructor
-    · exact Or.inl $ subset_trans subset_union_left h
-    · exact Or.inl $ subset_trans subset_union_right h
-  case inr h =>
-    constructor
-    · exact Or.inr $ subset_trans subset_union_left h
-    · exact Or.inr $ subset_trans subset_union_right h
-
-lemma covered_subparam_of_covered {γ : Dipath x₀ x₁} {hX : X₀ ∪ X₁ = univ} (hγ : covered hX γ) (f : D(I, I)) :
-    covered hX (γ.subparam f) := by
-  cases hγ
-  case inl hγ =>
-    exact Or.inl (subset_trans (Dipath.subparam_range γ f) hγ)
-  case inr hγ =>
-    exact Or.inr (subset_trans (Dipath.subparam_range γ f) hγ)
-
-lemma covered_reparam_iff (γ : Dipath x₀ x₁) (hX : X₀ ∪ X₁ = univ) (f : D(I, I)) (hf₀ : f 0 = 0) (hf₁ : f 1 = 1) :
-    covered hX γ ↔ covered hX (γ.reparam f hf₀ hf₁) := by
-  unfold covered
-  rw [Dipath.range_reparam _ _]
-
-lemma covered_cast_iff {x₀' x₁' : X}  (γ : Dipath x₀ x₁) (hX : X₀ ∪ X₁ = univ) (hx₀ : x₀' = x₀) (hx₁ : x₁' = x₁) :
-    covered hX γ ↔ covered hX (γ.cast hx₀ hx₁) := by rfl
-
-/--
- If γ is a dipath that is covered, then by splitting it into two parts [0, T] and [T, 1], both parts remain covered
--/
-lemma covered_split_path {γ : Dipath x₀ x₁} {hX : X₀ ∪ X₁ = Set.univ} {T : I} (hT₀ : 0 < T) (hT₁ : T < 1) (hγ : covered hX γ):
-    covered hX (SplitDipath.FirstPart γ T) ∧ covered hX (SplitDipath.SecondPart γ T) := by
-  apply covered_of_covered_trans
-  apply (covered_reparam_iff _ hX (SplitDipath.trans_reparam_map hT₀ hT₁) _ _).mpr
-  rw [SplitDipath.first_trans_second_reparam_eq_self γ hT₀ hT₁] at hγ
-  exact hγ
-
-end covered
-
-open covered
-
-/--
-We say that `covered_partwise hX γ n` if a dipath γ can be split into n+1 parts, each of which is covered by `X₁` or `X₂`
--/
-def covered_partwise (hX : X₀ ∪ X₁ = Set.univ) {x y : X} (γ : Dipath x y) (n : ℕ) : Prop :=
-  match n with
-  | Nat.zero => covered hX γ
-  | Nat.succ n => covered hX (SplitDipath.FirstPart γ (Fraction.ofPos (show 0 < (n.succ + 1) by norm_num))) ∧
-      covered_partwise hX (SplitDipath.SecondPart γ (Fraction.ofPos (show 0 < (n.succ + 1) by norm_num))) n
-
-namespace covered_partwise
-
-lemma covered_partwise_of_equal (hX : X₀ ∪ X₁ = Set.univ) {x₀ x₁ : X} {γ₁ γ₂ : Dipath x₀ x₁} {n m : ℕ} (h : γ₁ = γ₂) (h' : n = m) (hγ₁ : covered_partwise hX γ₁ n) :
-  covered_partwise hX γ₂ m := by subst_vars; exact hγ₁
-
-/--
- If γ is a dipath that is fully covered, then it is also partwise covered for all n ∈ ℕ
--/
-lemma covered_partwise_of_covered {hX : X₀ ∪ X₁ = Set.univ} (n : ℕ) :
-    ∀ {x₀ x₁ : X} {γ : Dipath x₀ x₁}, covered hX γ → covered_partwise hX γ n := by
-  induction n
-
-  case zero =>
-    intros _ _ _ hγ
-    exact hγ
-
-  case succ n ih =>
-    intros x₀ x₁ γ hγ
-    constructor
-    · exact (covered_split_path (Fraction.ofPos_pos _) (Fraction.ofPos_lt_one (by norm_num)) hγ).left
-    · apply ih
-      exact (covered_split_path (Fraction.ofPos_pos _) (Fraction.ofPos_lt_one (by norm_num)) hγ).right
-
-lemma covered_partwise_cast_iff  (hX : X₀ ∪ X₁ = univ) {n : ℕ} :
-    ∀ {x₀ x₁ x₀' x₁' : X} (γ : Dipath x₀ x₁) (hx₀ : x₀' = x₀) (hx₁ : x₁' = x₁),
-    covered_partwise hX γ n ↔ covered_partwise hX (γ.cast hx₀ hx₁) n := by
-  induction n
-
-  case zero =>
-    intros x₀ x₁ x₀' x₁' γ hx₀ hx₁
-    exact covered_cast_iff _ _ _ _
-
-  case succ n ih =>
-    intros x₀ x₁ x₀' x₁' γ hx₀ hx₁
-    unfold covered_partwise
-    rw [SplitProperties.firstPart_cast, SplitProperties.secondPart_cast]
-    constructor
-    · rintro ⟨hγ₁, hγ₂⟩
-      constructor
-      · exact (covered_cast_iff _ _ _ _).mp hγ₁
-      · exact (ih _ _ _).mp hγ₂
-    · rintro ⟨hγ₁, hγ₂⟩
-      constructor
-      · exact (covered_cast_iff _ _ _ _).mpr hγ₁
-      · exact (ih _ _ _).mpr hγ₂
-
-/--
- A dipath γ that can be covered with n+1 intervals can satisfied `covered_partwise _ γ n`.
- This is the converse of `covered_by_intervals_of_covered_partwise`.
--/
-lemma covered_partwise_of_covered_by_intervals {hX : X₀ ∪ X₁ = Set.univ} (n : ℕ) :
-    ∀ {x₀ x₁ : X} {γ : Dipath x₀ x₁}, (∀ (i : ℕ) (h : i < (n+1)),
-      γ.extend '' Set.Icc ((↑i)/(↑n+1)) ((↑i+1)/(↑n+1)) ⊆ X₀ ∨
-      γ.extend '' Set.Icc ((↑i)/(↑n+1)) ((↑i+1)/(↑n+1)) ⊆ X₁) → covered_partwise hX γ n := by
-  induction n
-  case zero =>
-    intros x₀ x₁ γ hγ
-    have := hγ 0 (by linarith)
-    unfold covered_partwise covered
-    rw [Dipath.range_eq_image]
-    convert this <;> simp
-
-  case succ n ih =>
-    intros x₀ x₁ γ hγ
-    constructor
-    · unfold covered
-      rw [SplitProperties.firstPart_range_interval γ _, ←Dipath.image_extend_eq_image]
-      convert hγ 0 (by norm_num) <;> norm_num
-    · apply ih
-      intros i hi
-      have : i + 1 < n + 2 := by linarith
-      have h := hγ (i+1) (this)
-      suffices :
-        (SplitDipath.SecondPart γ _).extend '' Set.Icc (↑i/(↑(n+1))) ((↑i+1)/(↑(n+1))) ⊆ X₀ ∨
-        (SplitDipath.SecondPart γ _).extend '' Set.Icc (↑i/(↑(n+1))) ((↑i+1)/(↑(n+1))) ⊆ X₁
-      · convert this <;> exact (Nat.cast_succ n).symm
-
-      rw [SplitProperties.secondPart_range_interval_coe γ _ _]
-      convert h <;> exact (Nat.cast_succ i).symm
-      · exact hi
-      · exact Nat.succ_pos n
-
-
-/--
- A dipath γ that satisfies `covered_partwise _ γ n` can be covered with n+1 intervals.
- This is the converse of `covered_partwise_of_covered_by_intervals`.
--/
-lemma covered_by_intervals_of_covered_partwise {hX : X₀ ∪ X₁ = Set.univ} (n : ℕ) :
-    ∀ {x₀ x₁ : X} {γ : Dipath x₀ x₁}, covered_partwise hX γ n → (∀ (i : ℕ) (h : i < (n+1)),
-      γ.extend '' Set.Icc ((↑i)/(↑n+1)) ((↑i+1)/(↑n+1)) ⊆ X₀ ∨
-      γ.extend '' Set.Icc ((↑i)/(↑n+1)) ((↑i+1)/(↑n+1)) ⊆ X₁) := by
-  induction n
-  case zero =>
-    intros x₀ x₁ γ hγ i hi
-    rw [show i = 0 by linarith]
-    suffices : γ.extend '' I ⊆ X₀ ∨ γ.extend '' I ⊆ X₁
-    · convert this <;> simp
-    rw [←Dipath.range_eq_image γ]
-    exact hγ
-
-  case succ n ih =>
-    intros x₀ x₁ γ hγ i hi
-    by_cases h_i_eq_0 : i = 0
-    · have hγ_first_cov := hγ.left
-      rw [h_i_eq_0]
-      have := SplitProperties.firstPart_range_interval_coe γ (show 0 < n+2 by linarith)
-      unfold covered at hγ_first_cov
-      rw [this] at hγ_first_cov
-      convert hγ_first_cov <;> simp
-      ring
-      ring
-    · suffices : γ.extend '' Icc ((↑(i-1) + 1)/(↑(n.succ) + 1)) ((↑(i-1) + 1 + 1)/(↑(n.succ) + 1)) ⊆ X₀ ∨
-              γ.extend '' Icc ((↑(i-1) + 1)/(↑(n.succ) + 1)) ((↑(i-1) + 1 + 1)/(↑(n.succ) + 1)) ⊆ X₁
-      · convert this <;> rw [Nat.cast_sub (Nat.pos_of_ne_zero h_i_eq_0)] <;> simp
-
-      have : i - 1 < n.succ := Nat.lt_of_succ_lt_succ ((Nat.succ_pred_eq_of_pos (Nat.pos_of_ne_zero h_i_eq_0)).symm ▸ hi)
-      rw [←SplitProperties.secondPart_range_interval_coe γ (this) (by linarith)]
-      convert ih hγ.right (i-1) (this) <;> exact (Nat.cast_succ n)
-
-/--
-  Let γ be a dipath covered by n+1 parts. Let 0 < k < n+1 be given. Then the first part
-  of γ, split by k/(n+1) is covered by k parts.
-  Here, k = d.succ, so we don't need the requirement k > 0.
--/
-lemma covered_partwise_first_part_d (hX : X₀ ∪ X₁ = Set.univ) {n d : ℕ} (hd_n : d.succ < n.succ) :
-    ∀ {x₀ x₁ : X} {γ : Dipath x₀ x₁} (_ : covered_partwise hX γ n),
-      covered_partwise hX (SplitDipath.FirstPart γ $ Fraction (Nat.succ_pos n) (le_of_lt hd_n)) d := by
-  intro x y γ hγ
-  apply covered_partwise_of_covered_by_intervals
-  intro i hi
-  rw [SplitProperties.firstPart_range_interval_partial_coe γ hd_n hi]
-  exact covered_by_intervals_of_covered_partwise n hγ i (lt_trans hi hd_n)
-
-/--
-  Input: (d+1) < (n+1) --> split at (d+1)/(n+1)
-  Let γ be a dipath covered by n+1 parts. Let 0 < k < n+1 be given. Then the second part
-  of γ, split by k/(n+1) is covered by n+1-k parts.
-  Here, k = d.succ, so we don't need the requirement k > 0.
--/
-lemma covered_partwise_second_part_d (hX : X₀ ∪ X₁ = Set.univ) {n d : ℕ} (hd_n : d.succ < n.succ) :
-    ∀ {x₀ x₁ : X} {γ : Dipath x₀ x₁} (_ : covered_partwise hX γ n),
-    covered_partwise hX (SplitDipath.SecondPart γ $ Fraction (Nat.succ_pos n) (le_of_lt hd_n)) (n - d.succ) := by
-  intros x y γ hγ
-  apply covered_partwise_of_covered_by_intervals
-  intros i hi
-  rw [←Nat.cast_succ]
-  have hi_lt_n_sub_d : i < n - d := by
-    convert hi using 1
-    rw [Nat.sub_succ]
-    exact (Nat.succ_pred_eq_of_pos (Nat.sub_pos_of_lt (Nat.lt_of_succ_lt_succ hd_n))).symm
-  have : i + d.succ < n + 1 := by
-    rw [Nat.add_succ]
-    apply Nat.succ_lt_succ
-    exact lt_tsub_iff_right.mp hi_lt_n_sub_d
-  have := covered_by_intervals_of_covered_partwise n hγ (i + d.succ) this
-  rw [←SplitProperties.secondPart_range_partial_interval_coe γ hd_n hi_lt_n_sub_d] at this
-  have h : (n-d.succ).succ = n - d := by
-    rw [Nat.sub_succ]
-    exact Nat.succ_pred_eq_of_pos (Nat.sub_pos_of_lt (Nat.lt_of_succ_lt_succ hd_n))
-  convert this <;> rw [h] <;> exact Nat.cast_sub (le_of_lt $ Nat.lt_of_succ_lt_succ hd_n)
-
-/--
-  Let γ be a dipath covered by n+2 parts. Then the first part of γ, split by (n+1)/(n+2) is covered by n+1 parts.
--/
-lemma covered_partwise_first_part_end_split (hX : X₀ ∪ X₁ = Set.univ) {n : ℕ} {x₀ x₁ : X}
-  {γ : Dipath x₀ x₁} (hγ : covered_partwise hX γ n.succ) :
-    covered_partwise hX (SplitDipath.FirstPart γ $ Fraction (Nat.succ_pos n.succ) (Nat.le_succ n.succ)) n :=
-  covered_partwise_first_part_d hX (Nat.lt_succ_self _) hγ
-
-/--
-  Let γ be a dipath covered by n+2 parts. Then the second part of γ, split by (n+1)/(n+2) is covered
--/
-lemma covered_second_part_end_split (hX : X₀ ∪ X₁ = Set.univ) {n : ℕ} {x₀ x₁ : X}
-  {γ : Dipath x₀ x₁} (hγ : covered_partwise hX γ n.succ) :
-    covered hX (SplitDipath.SecondPart γ $ Fraction (Nat.succ_pos n.succ) (Nat.le_succ n.succ)) := by
-  have := covered_partwise_second_part_d hX (Nat.lt_succ_self n.succ) hγ
-  rw [Nat.sub_self n.succ] at this
-  exact this
-
-/--
-  Let γ be a dipath and n ≥ 2:
-  If the first part [0, 1/(n+1)] can be covered with k intervals and the second part [1/(n+1), 1] can be covered with k*n intervals,
-  then the entire path can be covered with k*(n+1) intervals.
--/
-lemma covered_partwise_of_parts (hX : X₀ ∪ X₁ = Set.univ) {n : ℕ} (hn : 0 < n) {k : ℕ} (hk : k > 0) :
-  Π {x₀ x₁ : X} {γ : Dipath x₀ x₁},
-    ((covered_partwise hX (SplitDipath.FirstPart γ (Fraction.ofPos (Nat.succ_pos n))) (k - 1)) ∧
-    (covered_partwise hX (SplitDipath.SecondPart γ (Fraction.ofPos (Nat.succ_pos n))) (n * k - 1))) →
-    (covered_partwise hX γ ((n + 1) * k - 1)) := by
-  rintro x₀ x₁ γ ⟨hγ_first, hγ_second⟩
-  apply covered_partwise_of_covered_by_intervals
-  intros i hi
-  have prod_pos : (n + 1) * k > 0 := mul_pos (Nat.succ_pos n) hk
-  set d' := k - 1 with d_def
-  set n' := (n + 1) * k - 1 with n_def
-  have hd_eq_k : d'.succ = k := by rw [d_def, ←Nat.pred_eq_sub_one, Nat.succ_pred_eq_of_pos hk]
-  have h₁ : d'.succ < n'.succ := by
-    rw [n_def, hd_eq_k, ←Nat.pred_eq_sub_one, Nat.succ_pred_eq_of_pos prod_pos]
-    nth_rewrite 1 [←one_mul k]
-    exact (mul_lt_mul_iff_of_pos_right hk).mpr (by linarith)
-
-  have : Fraction (Nat.succ_pos n') (le_of_lt h₁) = Fraction.ofPos (Nat.succ_pos n) := by
-    apply Subtype.ext
-    rw [Fraction.Fraction_coe, Fraction.ofPos_coe, hd_eq_k]
-    have hn'_succ : n'.succ = (n + 1) * k := by
-      rw [n_def, ← Nat.pred_eq_sub_one, Nat.succ_pred_eq_of_pos prod_pos]
-    rw [hn'_succ]
-    push_cast
-    have hk_real : (k : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr (ne_of_gt hk)
-    field_simp
-    <;> ring
-
-  have h₃ : (n' : ℝ) - (d' : ℝ) = (↑(n * k - 1) : ℝ) + 1 := by
-    rw [←Nat.cast_sub (le_of_lt $ Nat.lt_of_succ_lt_succ h₁), ←Nat.cast_succ, ← Nat.pred_eq_sub_one]
-    rw [Nat.succ_pred_eq_of_pos (Nat.mul_pos hn hk), n_def, d_def, Nat.sub_sub, add_comm 1 (k-1)]
-    rw [Nat.add_one (k-1), Nat.sub_one k, Nat.succ_pred_eq_of_pos hk, add_mul, one_mul]
-    rw [Nat.add_sub_assoc (le_refl k), Nat.sub_self]
-    rfl
-
-  by_cases h : i < k
-  · -- Use the covering of the first part of γ
-    have h₂ : i < d'.succ := by
-      rw [d_def, ←Nat.pred_eq_sub_one, Nat.succ_pred_eq_of_pos hk]
-      exact h
-    rw [←SplitProperties.firstPart_range_interval_partial_coe γ h₁ h₂]
-    convert (covered_by_intervals_of_covered_partwise (k-1) hγ_first i (by linarith))
-  · push_neg at h
-    set i' := i - d'.succ with i_def
-    have h₂ : i' < n' - d' := by
-      rw [i_def, ←Nat.succ_sub_succ n' d']
-      have : d'.succ ≤ i := hd_eq_k.symm ▸ h
-      apply (tsub_lt_tsub_iff_right this).mpr _
-      exact hi
-    have : i = i' + d'.succ := by
-      rw [i_def, Nat.sub_add_cancel]
-      exact hd_eq_k.symm ▸ h
-    rw [this]
-    have : i - k < n * k - 1 + 1 := by
-      rw [Nat.sub_one (n * k), Nat.add_one (n * k).pred, Nat.succ_pred_eq_of_pos (mul_pos hn hk)]
-      apply (tsub_lt_iff_right h).mpr _
-      nth_rewrite 2 [←one_mul k]
-      rw [←add_mul, ←Nat.succ_pred_eq_of_pos prod_pos]
-      convert hi using 1
-
-    rw [←SplitProperties.secondPart_range_partial_interval_coe γ h₁ h₂]
-    convert (covered_by_intervals_of_covered_partwise (n * k - 1) hγ_second (i - k) this)
-
-/--
-  If a dipath γ can be covered in n+1 parts, it can also be covered in (k+1) * (n+1) parts
--/
-lemma covered_partwise_refine (hX : X₀ ∪ X₁ = Set.univ) (n k : ℕ) :
-    Π {x₀ x₁ : X} {γ : Dipath x₀ x₁}, covered_partwise hX γ n → covered_partwise hX  γ ((n + 1) * (k + 1) - 1) := by
-  induction n
-  case zero =>
-    intros x₀ x₁ γ hγ
-    exact covered_partwise_of_covered ((0+1)*(k+1)-1) hγ
-
-  case succ n ih =>
-    rintro x₀ x₁ γ ⟨hγ_cov_first, hγ_split_cov_second⟩
-    apply covered_partwise_of_parts hX (Nat.succ_pos n) (Nat.succ_pos k)
-    constructor
-    · exact covered_partwise_of_covered k hγ_cov_first
-    · convert ih hγ_split_cov_second
-
-lemma covered_partwise_trans  {hX : X₀ ∪ X₁ = Set.univ} {n : ℕ} {x₀ x₁ x₂ : X} {γ₁ : Dipath x₀ x₁}
-  {γ₂ : Dipath x₁ x₂} (hγ₁ : covered_partwise hX γ₁ n) (hγ₂ : covered_partwise hX γ₂ n) :
-    covered_partwise hX (γ₁.trans γ₂) (n + n).succ := by
-  apply covered_partwise_of_covered_by_intervals
-  intros i hi
-  have h_lt : n.succ < (n + n).succ.succ := by linarith
-  have h₁ : Fraction (Nat.succ_pos (n + n).succ) (le_of_lt h_lt) = Fraction.ofPos two_pos := by
-    apply Subtype.ext
-    rw [Fraction.Fraction_coe, Fraction.ofPos_coe]
-    push_cast
-    field_simp
-    <;> ring
-
-  by_cases h : i < n.succ
-  · rw [←SplitProperties.firstPart_range_interval_partial_coe (γ₁.trans γ₂) h_lt h]
-    rw [SplitProperties.firstPart_eq_of_split_point_eq (γ₁.trans γ₂) h₁]
-    rw [SplitProperties.first_part_trans γ₁ γ₂]
-    rw [Dipath.cast_image, Dipath.cast_image]
-    exact covered_by_intervals_of_covered_partwise n hγ₁ i h
-  · set k := i - n.succ with k_def
-    push_neg at h
-    rw [show i = k + n.succ by rw [k_def, Nat.sub_add_cancel]; exact h]
-    have hn : (n + n).succ - n = n.succ := by rw [Nat.succ_sub, Nat.add_sub_cancel]; exact Nat.le_add_right n n
-    have hn' : (↑(n + n).succ : ℝ) - ↑n = ↑n + 1 := by
-      rw [←Nat.cast_succ n, ←hn, Nat.cast_sub]
-      exact le_of_lt (Nat.lt_of_succ_lt_succ h_lt)
-    have : i < n.succ + n.succ := by linarith
-    have hk : k < n.succ := k_def ▸ (tsub_lt_iff_left h).mpr this
-    have hk' : k < (n + n).succ - n := hn.symm ▸ hk
-    rw [←SplitProperties.secondPart_range_partial_interval_coe (γ₁.trans γ₂) h_lt hk']
-    rw [SplitProperties.secondPart_eq_of_split_point_eq (γ₁.trans γ₂) h₁]
-    rw [SplitProperties.second_part_trans γ₁ γ₂]
-    rw [Dipath.cast_image, Dipath.cast_image, hn']
-    exact covered_by_intervals_of_covered_partwise n hγ₂ k hk
-
-lemma has_interval_division {X₁ X₂ : Set X} (hX : X₁ ∪ X₂ = Set.univ) (X₁_open : IsOpen X₁)
-  (X₂_open : IsOpen X₂) (γ : Dipath x₀ x₁) :
-    ∃ (n : ℕ), (n > 0) ∧ ∀ (i : ℕ) (_ : i < n),
-      Set.Icc ((i:ℝ)/(n:ℝ)) ((i+1:ℝ)/(n:ℝ)) ⊆ γ.extend ⁻¹' X₁ ∨
-      Set.Icc ((i:ℝ)/(n:ℝ)) ((i+1:ℝ)/(n:ℝ)) ⊆ γ.extend ⁻¹' X₂ := by
-  set c : ℕ → Set ℝ := fun i => if i = 0 then γ.extend ⁻¹' X₁ else γ.extend ⁻¹'  X₂ with c_def
-  have h₁ : ∀ i, IsOpen (c i) := by
-    intro i
-    rw [c_def]
-    by_cases i = 0
-    case pos h =>
-      simp [h]
-      exact (Path.continuous_extend γ.toPath).isOpen_preimage X₁ X₁_open
-    case neg h =>
-      simp [h]
-      exact (Path.continuous_extend γ.toPath).isOpen_preimage X₂ X₂_open
-
-  have h₂ : I ⊆ ⋃ (i : ℕ), c i := by
-    intros x _
-    simp [c_def]
-    have : γ.extend x ∈ X₁ ∪ X₂ := hX.symm ▸ (Set.mem_univ $ γ.extend x)
-    cases this
-    case inl h => use 0; simp; exact h
-    case inr h => use 1; simp; exact h
-
-  rcases (lebesgue_number_lemma_unit_interval h₁ h₂) with ⟨n, n_pos, hn⟩
-  use n
-  constructor
-  · exact n_pos
-  · intros i hi
-    cases (hn i hi)
-    rename_i j hj
-    rw [c_def] at hj
-    simp at hj
-    by_cases j = 0
-    case pos h => left; convert hj; simp [h]
-    case neg h => right; convert hj; simp [h]
-
-/--
-  If `γ` is a dipath and a directed space `X` is covered by two opens `X₁` and `X₂`, then `γ` is n-covered for some `n`.
--/
-lemma has_subpaths {X₁ X₂ : Set X} (hX : X₁ ∪ X₂ = Set.univ) (X₁_open : IsOpen X₁)
-  (X₂_open : IsOpen X₂) (γ : Dipath x₀ x₁) :
-    ∃ (n : ℕ), covered_partwise hX γ n := by
-  have := has_interval_division hX X₁_open X₂_open γ
-  rcases this with ⟨n, n_pos, hn⟩
-  use n-1
-  apply covered_partwise_of_covered_by_intervals
-  simp
-  intros i hi
-  have h : n - 1 + 1 = n := Nat.succ_pred_eq_of_pos n_pos
-  have := hn i (by linarith)
-  convert this <;> nth_rewrite 2 [←h] <;> simp
-
-end covered_partwise
-end Dipath
-
-end
-end Standalone_Lean4_path_cover
-
-/-! Source module: Lean4.split_dihomotopy -/
-section Standalone_Lean4_split_dihomotopy
-
-
-
-
-/-
-  This file contains the definitions of splitting a (dipath) dihomotopy both vertically and horizontally.
-
-  Take a dihomotopy `F : f ~ g`, with `f g : D(I, X)`:
-   *----- g -----*
-   |             |
-   |             |
-   |             |
-   |             |
-   *----- f -----*
-
-  Splitting vertically at `T : I` gives us:
-    *----- g -----*
-    |             |
-    |             |
-    *-- F.eval T -*
-  and
-    *-- F.eval T -*
-    |             |
-    |             |
-    *----- f -----*
-
-  Splitting horizontally at `T : I` gives us:
-   *-- g₁ --*     *-- g₂ --*
-   |        |     |        |
-   |        | and |        |
-   |        |     |        |
-   |        |     |        |
-   *-- f₁ --*     *-- f₂ --*
-  Here f₁, f₂, g₁ and g₂ are obtained from f and g by splitting them at T : I.
-
-  In the case that F is a dipath dihomotopy (it fixes endpoints), then splitting it vertically gives two dipath dihomotopies.
--/
-
-open DirectedMap
-open scoped unitInterval
-
-namespace SplitDihomotopy
-
-
-variable {X : dTopCat}
-
-/--
-For any `T: I`, we have the directed map `I → I` given by `t ↦ t * T`.
-This is an interpolation from 0 to T
--/
-abbrev DirectedFst (T : I) : D(I, I) := directed_interpolate_const (unitIAux.zero_le T)
-
-@[simp]
-lemma directedFst_apply (T t : I) : DirectedFst T t = ⟨_, unitInterval.mul_mem T.2 t.2⟩ := by
-  apply Subtype.coe_inj.mp
-  show (σ t : ℝ) * 0 + t * T = T * t
-  ring
-
-
-/--
-For any `T : I` we have the directed map `I → I` given by `t ↦ (1 - t) * T + t`.
-This is an interpolation from T to 1
--/
-abbrev DirectedSnd (T : I) : D(I, I) := directed_interpolate_const (unitIAux.le_one T)
-
-@[simp]
-lemma directedSnd_apply (T t : I) : DirectedSnd T t = ⟨_, interp_left_mem_I T t⟩ := by
-  apply Subtype.coe_inj.mp
-  show (1 - t : ℝ) * T + t * 1 = (1 - T : ℝ) * t + T
-  ring
-
-/- Splitting a dipath-dihomotopy vertically -/
-def FirstPartVerticallyDihomotopy {x y : X} {γ₁ γ₂ : Dipath x y} (F : Dipath.Dihomotopy γ₁ γ₂) (T : I) :
-    Dipath.Dihomotopy γ₁ (F.eval T) where
-  toDirectedMap := F.toDirectedMap.comp (DirectedMap.prod_map_mk' (DirectedFst T) (DirectedMap.id I))
-  map_zero_left := fun x => by show F (DirectedFst T 0, x) = γ₁ x; simp
-  map_one_left := fun x => by show F (DirectedFst T 1, x) = F (T, x); simp
-  prop' := fun t z hz => F.prop' _ z hz
-
-lemma fpv_apply {x y : X} {γ₁ γ₂ : Dipath x y} (F : Dipath.Dihomotopy γ₁ γ₂) (T s t : I) :
-    FirstPartVerticallyDihomotopy F T (s, t) = F (T * s, t) := by
-  show F (DirectedFst T s, t) = F (T * s, t)
-  rw [directedFst_apply]
-  rfl
-
-/- Splitting a dipath-dihomotopy vertically -/
-def SecondPartVerticallyDihomotopy {x y : X} {γ₁ γ₂ : Dipath x y} (F : Dipath.Dihomotopy γ₁ γ₂) (T : I) :
-    Dipath.Dihomotopy (F.eval T) γ₂ where
-  toDirectedMap := F.toDirectedMap.comp (DirectedMap.prod_map_mk' (DirectedSnd T) (DirectedMap.id I))
-
-  map_zero_left := fun x => by show F (DirectedSnd T 0, x) = F (T, x); simp
-  map_one_left := fun x => by show F (DirectedSnd T 1, x) = γ₂ x; simp
-  prop' := fun t z hz => by
-      show F (DirectedSnd T t, z) = F (T, z)
-      have : F (T, z) = _ := (F.prop' T z hz)
-      rw [this]
-      exact (F.prop' _ z hz)
-
-lemma spv_apply {x y : X} {γ₁ γ₂ : Dipath x y} (F : Dipath.Dihomotopy γ₁ γ₂) (T s t : I) :
-    SecondPartVerticallyDihomotopy F T (s, t) = F (⟨_, interp_left_mem_I T s⟩, t) := by
-  show F (DirectedSnd T s, t) = F (_, t)
-  rw [directedSnd_apply]
-
-/- Splitting a dihomotopy horizontally -/
-def FirstPartHorizontallyDihomotopy {f g : D(I, X)} (F : Dihomotopy f g) (T : I) :
-    Dihomotopy (SplitDipath.FirstPart (Dipath.of_directedMap f) T).toDirectedMap
-               (SplitDipath.FirstPart (Dipath.of_directedMap g) T).toDirectedMap where
-  toDirectedMap := F.toDirectedMap.comp (DirectedMap.prod_map_mk' (DirectedMap.id I) (DirectedFst T))
-  map_zero_left := fun x => by
-    show F (0, DirectedFst T x) = SplitDipath.FirstPart (Dipath.of_directedMap f) T x
-    simp
-    rfl
-  map_one_left := fun x => by
-    show F (1, DirectedFst T x) = SplitDipath.FirstPart (Dipath.of_directedMap g) T x
-    simp
-    rfl
-
-
-lemma fph_apply {f g : D(I, X)} (F : Dihomotopy f g) (T s t : I) :
-    FirstPartHorizontallyDihomotopy F T (s, t) = F (s, T * t) := by
-  show F (s, DirectedFst T t) = F (s, _)
-  rw [directedFst_apply]
-  rfl
-
-/- Splitting a dihomotopy horizontally -/
-def SecondPartHorizontallyDihomotopy {f g : D(I, X)} (F : Dihomotopy f g) (T : I) :
-    Dihomotopy (SplitDipath.SecondPart (Dipath.of_directedMap f) T).toDirectedMap
-               (SplitDipath.SecondPart (Dipath.of_directedMap g) T).toDirectedMap where
-  toDirectedMap := F.toDirectedMap.comp (DirectedMap.prod_map_mk' (DirectedMap.id I) (DirectedSnd T))
-  map_zero_left := fun x => by
-    show F (0, DirectedSnd T x) = SplitDipath.SecondPart (Dipath.of_directedMap f) T x
-    simp
-    rfl
-  map_one_left := fun x => by
-    show F (1, DirectedSnd T x) = SplitDipath.SecondPart (Dipath.of_directedMap g) T x
-    simp
-    rfl
-
-lemma sph_apply {f g : D(I, X)} (F : Dihomotopy f g) (T s t : I) :
-    SecondPartHorizontallyDihomotopy F T (s, t) = F (s, ⟨_, interp_left_mem_I T t⟩) := by
-  show F (s, DirectedSnd T t) = F (s, _)
-  rw [directedSnd_apply]
-
-lemma fph_eval_0 {f g : D(I, X)} (F : Dihomotopy f g) (T : I) :
-    (FirstPartHorizontallyDihomotopy F T).eval_at_right 0 = (F.eval_at_right 0).cast (by simp) (by simp) := by
-  ext t
-  show F (t, DirectedFst T 0) = F (t, 0)
-  simp
-
-lemma fph_eval_1 {f g : D(I, X)} (F : Dihomotopy f g) (T : I) :
-    (FirstPartHorizontallyDihomotopy F T).eval_at_right 1 = (F.eval_at_right T).cast (by { simp; rfl }) (by { simp; rfl }) := by
-  ext t
-  show F (t, DirectedFst T 1) = F (t, T)
-  simp
-
-lemma sph_eval_0 {f g : D(I, X)} (F : Dihomotopy f g) (T : I) :
-    (SecondPartHorizontallyDihomotopy F T).eval_at_right 0 = (F.eval_at_right T).cast (by { simp; rfl }) (by { simp; rfl }) := by
-  ext t
-  show F (t, DirectedSnd T 0) = F (t, T)
-  simp
-
-lemma sph_eval_1 {f g : D(I, X)} (F : Dihomotopy f g) (T : I) :
-    (SecondPartHorizontallyDihomotopy F T).eval_at_right 1 = (F.eval_at_right 1).cast (by simp) (by simp) := by
-  ext t
-  show F (t, DirectedSnd T 1) = F (t, 1)
-  simp
-
-end SplitDihomotopy
-end Standalone_Lean4_split_dihomotopy
-
-/-! Source module: Lean4.dihomotopy_cover -/
-section Standalone_Lean4_dihomotopy_cover
-
-
-
-
-/-
-  This file contains the definition of a (n, m)-covered (dipath) dihomotopy, covered by X₁ and X₂:
-      It maps all subrectangles  [i/n, (i+1)/n] × [j/m, (j+1)/m] into either X₁ or X₂
-
-  Conditions for being (n, m)-covered are given.
-
-  Two paths are called (n, m)-dihomotopic if a (n, m)-covered path dihomotopy between them exists.
--/
-
-open Set DirectedMap
-open scoped unitInterval
-
-noncomputable section
-
-namespace DirectedMap
-namespace Dihomotopy
-
-variable {X : dTopCat} {f g : D(I, X)} {X₀ X₁ : Set X}
-
-/--
-  A dihomotopy of directed maps is covered if its image lies entirely in X₀ or in X₁.
--/
-def covered (F : Dihomotopy f g) (_ : X₀ ∪ X₁ = univ) : Prop := range F ⊆ X₀ ∨ range F ⊆ X₁
-
-/--
-  A dihomotopy of directed maps is covered partwise n m if it can be covered by
-  rectangles (n+1 vertically, m+1 horizontally) such that each rectangle is covered by either X₀ or X₁
--/
-def coveredPartwise (_ : X₀ ∪ X₁ = univ) (F : Dihomotopy f g) (n m : ℕ) : Prop :=
-  ∀ (i j : ℕ) (hi : i < n.succ) (hj : j < m.succ),
-    F '' (UnitSubrectangle hi hj) ⊆ X₀ ∨ F '' (UnitSubrectangle hi hj) ⊆ X₁
-
-/--
-  A dihomotopy that can be covered partwise by `1 × 1` squares is covered.
--/
-lemma covered_of_coveredPartwise {F : Dihomotopy f g} {hX : X₀ ∪ X₁ = univ} (hF : coveredPartwise hX F 0 0) :
-    covered F hX := by
-  unfold covered
-  cases hF 0 0 zero_lt_one zero_lt_one
-  case inl h =>
-    left
-    rintro x ⟨⟨t₀, t₁⟩, ht⟩
-    rw [←ht]
-    exact h ⟨(t₀, t₁), UnitSubrectangle.mem_unitSquare _, rfl⟩
-  case inr h =>
-    right
-    rintro x ⟨⟨t₀, t₁⟩, ht⟩
-    rw [←ht]
-    exact h ⟨(t₀, t₁), UnitSubrectangle.mem_unitSquare _, rfl⟩
-
-/--
-If `F : f ∼ g` is a dihomotopy of directed maps, then the image of `f` restricted to `[i/(m+1), (i+1)/(m+1)]`
-is contained in the image of `F` restricted to `[0, 1/(n+1)] × [i/(m+1), (i+1)/(m+1)]`.
--/
-lemma left_path_image_interval_subset_of_dihomotopy_subset (F : Dihomotopy f g) (n : ℕ) {i m : ℕ} (hi : i < m.succ) :
-    (Dipath.of_directedMap f).toPath.extend '' Icc (↑i / (↑m + 1)) ((↑i + 1) / (↑m + 1)) ⊆
-      F ''  UnitSubrectangle (Nat.succ_pos n) hi := by
-  rintro x ⟨t, ⟨ht, rfl⟩⟩
-  have tI : t ∈ I := UnitIntervalSub.mem_I_of_mem_interval_coed hi ht
-  rw [Path.extend_extends (Dipath.of_directedMap f).toPath tI]
-  use (0, ⟨t, tI⟩)
-  constructor
-  · apply UnitSubrectangle.mem_unitSubrectangle
-    constructor
-    · norm_num
-    · apply div_nonneg
-      · norm_num
-      · exact Nat.cast_nonneg _
-    · convert ht <;> exact Nat.cast_succ _
-  · simp; rfl
-
-/--
-If `F : f ∼ g` is a dihomotopy of directed maps, and `F` is `n × m`-covered, then `f` is `m`-covered.
--/
-lemma path_covered_partiwse_of_dihomotopy_coveredPartwise_left {F : Dihomotopy f g} {hX : X₀ ∪ X₁ = univ}
-  {n m : ℕ} (hF : coveredPartwise hX F n m) :
-    Dipath.covered_partwise hX (Dipath.of_directedMap f) m := by
-  apply Dipath.covered_partwise.covered_partwise_of_covered_by_intervals
-  intros i hi
-  cases hF 0 i (Nat.succ_pos n) hi
-  case inl h =>
-    left
-    exact subset_trans (left_path_image_interval_subset_of_dihomotopy_subset F n hi) h
-  case inr h =>
-    right
-    exact subset_trans (left_path_image_interval_subset_of_dihomotopy_subset F n hi) h
-
-/--
-If `F : f ∼ g` is a dihomotopy of directed maps, then the image of `g` restricted to `[i/(m+1), (i+1)/(m+1)]`
-is contained in the image of `F` restricted to `[n/(n+1), 1] × [i/(m+1), (i+1)/(m+1)]`.
--/
-lemma right_path_image_interval_subset_of_dihomotopy_subset (F : Dihomotopy f g) (n : ℕ) {i m : ℕ} (hi : i < m.succ) :
-    (Dipath.of_directedMap g).toPath.extend '' Icc (↑i / (↑m + 1)) ((↑i + 1) / (↑m + 1)) ⊆
-      F ''  UnitSubrectangle (Nat.lt_succ_self n) hi := by
-  rintro x ⟨t, ⟨ht, rfl⟩⟩
-  have tI : t ∈ I := UnitIntervalSub.mem_I_of_mem_interval_coed hi ht
-  rw [Path.extend_extends (Dipath.of_directedMap g).toPath tI]
-  use (1, ⟨t, tI⟩)
-  constructor
-  · apply UnitSubrectangle.mem_unitSubrectangle
-    · constructor
-      · exact (div_le_one (show (n.succ : ℝ) > 0 by
-          exact Nat.cast_pos.mpr (Nat.succ_pos n))).mpr (Nat.cast_le.mpr (Nat.le_succ n))
-      · rw [div_self]
-        exact Nat.cast_ne_zero.mpr (ne_of_gt (Nat.succ_pos n))
-    · convert ht <;> exact Nat.cast_succ _
-  · simp; rfl
-
-/--
-If `F : f ∼ g` is a dihomotopy of directed maps, and `F` is `n × m`-covered, then `g` is `m`-covered.
--/
-lemma path_covered_partiwse_of_dihomotopy_coveredPartwise_right {F : Dihomotopy f g}
-  {hX : X₀ ∪ X₁ = univ} {n m : ℕ} (hF : coveredPartwise hX F n m) :
-    Dipath.covered_partwise hX (Dipath.of_directedMap g) m := by
-  apply Dipath.covered_partwise.covered_partwise_of_covered_by_intervals
-  intros i hi
-  cases hF n i (Nat.lt_succ_self n) hi
-  case inl h =>
-    left
-    exact subset_trans (right_path_image_interval_subset_of_dihomotopy_subset F n hi) h
-  case inr h =>
-    right
-    exact subset_trans (right_path_image_interval_subset_of_dihomotopy_subset F n hi) h
-
-/--
-If `F : f ∼ g` is a dihomotopy of directed maps, there exist `n m : ℕ` such that `F` is `n × m`-covered.
--/
-lemma coveredPartwise_exists (F : Dihomotopy f g) (hX : X₀ ∪ X₁ = univ) (X₀_open : IsOpen X₀) (X₁_open : IsOpen X₁) :
-    ∃ (n m : ℕ), coveredPartwise hX F n m := by
-  set c : ℕ → Set (I × I) := fun i => if i = 0 then F ⁻¹' X₀ else F ⁻¹'  X₁ with c_def
-  have h₁ : ∀ i, IsOpen (c i) := by
-    intro i
-    by_cases i = 0
-    case pos  h =>
-      simp [c_def, h]
-      exact F.continuous_toFun.isOpen_preimage X₀ X₀_open
-    case neg h =>
-      simp [c_def, h]
-      exact F.continuous_toFun.isOpen_preimage X₁ X₁_open
-
-  have h₂ : UnitSquare ⊆ (⋃ (i : ℕ), c i) := by
-    intro x _
-    rw [Set.mem_iUnion]
-    have hx : F x ∈ X₀ ∪ X₁ := hX.symm ▸ (Set.mem_univ $ F x)
-    rcases hx with hx | hx
-    · exact ⟨0, by simpa [c_def] using hx⟩
-    · exact ⟨1, by simpa [c_def] using hx⟩
-
-  rcases (lebesgue_number_lemma_unit_square h₁ h₂) with ⟨n, hn⟩
-  use n
-  use n
-  intros i j hi hj
-  cases (hn i j hi hj)
-  case h.intro ι hι =>
-    rw [c_def] at hι
-    simp at hι
-    by_cases ι = 0
-    case pos h => left; simp [h] at hι; exact Set.image_subset_iff.mpr hι
-    case neg h => right; simp [h] at hι; exact Set.image_subset_iff.mpr hι
-
-/--
-  The image of a dihomotopy F of the subrectangles `[0, 1/(n+2)] × [j/(m+1), (j+1)/(m+1)]`
-  contains the image of the first part of F, split at `1/(n+2)`, of `[0, 1] × [j/(m+1), (j+1)/(m+1)]`.
--/
-lemma fpv_subrectangle {x y : X} {γ₁ γ₂ : Dipath x y} {F : Dipath.Dihomotopy γ₁ γ₂} {n m j : ℕ} (hj : j < m.succ) :
-    (SplitDihomotopy.FirstPartVerticallyDihomotopy F (Fraction.ofPos (Nat.succ_pos n.succ))).toDihomotopy ''
-    (UnitSubrectangle zero_lt_one hj) ⊆ F '' (UnitSubrectangle (Nat.zero_lt_succ n.succ) hj) := by
-  rintro z ⟨⟨t₀, t₁⟩, ⟨tI, ht⟩⟩
-  have : ((SplitDihomotopy.FirstPartVerticallyDihomotopy F _).toDihomotopy) (t₀, t₁) =
-    (SplitDihomotopy.FirstPartVerticallyDihomotopy F (Fraction.ofPos (Nat.succ_pos n.succ))) (t₀, t₁) := rfl
-  rw [this, SplitDihomotopy.fpv_apply] at ht
-  show ∃ a, a ∈ UnitSubrectangle _ hj ∧ F a = z
-  refine' ⟨_, _, ht⟩
-  constructor
-  constructor
-  · rw [Fraction.eq_zero]
-    unit_interval
-  · exact unitInterval.mul_le_left
-  · exact tI.2
-
-/--
-  If F is `(n+1) × m`-covered, then the first part of F, split at `T = 1/(n+2)` is `0 x m`-covered.
--/
-lemma coveredPartwise_first_vpart {x y : X} {γ₁ γ₂ : Dipath x y} {F : Dipath.Dihomotopy γ₁ γ₂}
-  {hX : X₀ ∪ X₁ = univ} {n m : ℕ} (hF : coveredPartwise hX F.toDihomotopy n.succ m) :
-    coveredPartwise hX (SplitDihomotopy.FirstPartVerticallyDihomotopy F
-      (Fraction.ofPos (Nat.succ_pos n.succ))).toDihomotopy 0 m := by
-  unfold coveredPartwise at hF
-  unfold coveredPartwise
-  intros i j hi hj
-  obtain ⟨rfl⟩ : i = 0 := by linarith
-  cases (hF 0 j (Nat.succ_pos n.succ) hj)
-  case inl h => left; exact subset_trans (fpv_subrectangle _) h
-  case inr h => right; exact subset_trans (fpv_subrectangle _) h
-
-/--
-  If `i/(n+1) ≤ t`, then `(i+1)/(n+2) ≤ (σ q) * t + q`, where `q = 1/(n+2)`
--/
-lemma spv_aux₁_coed {t : ℝ} {n i : ℕ} (_ : i < n.succ) (ht : (i : ℝ)/(n.succ : ℝ) ≤ t) :
-    (i+1 : ℝ) / (n+2 : ℝ) ≤ (1 - 1/(n+1+1)) * t + (1/(n+1+1)) := by
-  have h₀ : 0 ≤ (i : ℝ)/(n.succ : ℝ) := by
-    apply div_nonneg
-    exact Nat.cast_nonneg i
-    exact Nat.cast_nonneg n.succ
-  have h₁ : 0 ≤ t := le_trans h₀ ht
-  have h₂ : (n.succ : ℝ) > 0 := Nat.cast_pos.mpr (Nat.succ_pos n)
-  have h₃ : 0 ≤ (n : ℝ) + 1 := by
-    apply le_of_lt
-    rw [Nat.cast_succ _] at h₂
-    exact h₂
-
-  rw [FractionEqualities.one_sub_inverse_of_add_one (by positivity), mul_comm, mul_div, div_add_div_same]
-
-  apply div_le_div₀
-  · linarith [mul_nonneg h₁ h₃]
-  · apply add_le_add_left
-    calc (i : ℝ)
-      _ = ↑i * 1                      := by rw [mul_one]
-      _ = ↑i * ((↑n.succ)/(↑n.succ))  := by rw [div_self (ne_of_gt h₂)]
-      _ = ↑i/(↑n.succ) * (↑n.succ)    := by ring
-      _ ≤ t * (↑n.succ)               := mul_le_mul_of_nonneg_right ht (le_of_lt h₂)
-      _ = t * (↑n+1)                  := by rw [Nat.cast_succ]
-  · positivity
-  · exact le_of_eq (by ring)
-
-/--
-  If `i/(n+1) ≤ t`, then `(i+1)/(n+2) ≤ (σ q) * t + q`, where `q = 1/(n+2)`
--/
-lemma spv_aux₁ {t : I} {n i : ℕ} (hi : i < n.succ) (ht : Fraction (Nat.succ_pos n) (le_of_lt hi) ≤ t) :
-  Fraction (Nat.succ_pos n.succ) (le_of_lt (Nat.succ_lt_succ hi)) ≤
-    (⟨_, interp_left_mem_I (Fraction (Nat.succ_pos n.succ) (Nat.succ_le_succ (Nat.zero_le n.succ))) t⟩ : I) := by
-  apply Subtype.coe_le_coe.mp
-  convert spv_aux₁_coed hi ht using 1
-  rw [Fraction.Fraction_coe]
-  congr 1 <;> simp; ring
-  simp
-
-/--
-  If `t ≤ (i+1)/(n+1)`, then `(σ q) * t + q ≤ (i+2)/(n+2)`, where `q = 1/(n+2)`
--/
-lemma spv_aux₂_coed {t : ℝ} {n i : ℕ} (_ : i < n.succ) (ht₀ : 0 ≤ t) (ht : t ≤ (i.succ : ℝ)/(n.succ : ℝ)) :
-    (1 - 1/(n+1+1 : ℝ)) * t + (1/(n+1+1 : ℝ)) ≤ (i+2 : ℝ) / (n+2 : ℝ) := by
-  have h₀ : (n.succ : ℝ) > 0 := Nat.cast_pos.mpr (Nat.succ_pos n)
-  have h₁ : (n : ℝ) ≥ 0 := Nat.cast_nonneg n
-  have h₂ : (i : ℝ) ≥ 0 := Nat.cast_nonneg i
-  rw [FractionEqualities.one_sub_inverse_of_add_one (by positivity), mul_comm, mul_div, div_add_div_same]
-  apply div_le_div₀ <;> try linarith
-  · rw [←one_add_one_eq_two, ←add_assoc]
-    apply add_le_add_left
-    calc t * (n + 1 : ℝ)
-      _ = t * (↑n.succ)                   := by rw [Nat.cast_succ]
-      _ ≤ (↑i.succ)/(↑n.succ) * (↑n.succ) := mul_le_mul_of_nonneg_right ht (le_of_lt h₀)
-      _ = (↑n.succ)/(↑n.succ) * (↑i.succ) := by ring
-      _ = 1 * (↑i.succ)                   := by rw [div_self (ne_of_gt h₀)]
-      _ = (↑i.succ)                       := one_mul _
-      _ = (↑i + 1)                        := by rw [Nat.cast_succ]
-
-/--
-  If `t ≤ (i+1)/(n+1)`, then `(σ q) * t + q ≤ (i+2)/(n+2)`, where `q = 1/(n+2)`
--/
-lemma spv_aux₂ {t : I} {n i : ℕ} (hi : i < n.succ) (ht : t ≤ Fraction (Nat.succ_pos n) (Nat.succ_le_of_lt hi)) :
-    (⟨_, interp_left_mem_I (Fraction (Nat.succ_pos n.succ) (Nat.succ_le_succ (Nat.zero_le n.succ))) t⟩ : I) ≤
-      Fraction (Nat.succ_pos n.succ) (Nat.succ_le_of_lt (Nat.succ_lt_succ hi)) := by
-  apply Subtype.coe_le_coe.mp
-  convert spv_aux₂_coed hi t.2.1 ht using 1
-  simp
-  rw [Fraction.Fraction_coe]
-  congr 1 <;> rw [Nat.cast_succ, Nat.cast_succ] <;> linarith
-
-/--
-  The image of a dihomotopy F of the subrectangle `[(i+1)/(n+2), (i+2)/(n+2)] × [j/(m+1), (j+1)/(m+1)]`
-  contains the image of the second part of F, split at `1/(n+2)`, of `[i/(n+1), (i+1)/(n+1)] × [j/(m+1), (j+1)/(m+1)]`.
--/
-lemma spv_subrectangle {x y : X} {γ₁ γ₂ : Dipath x y} {F : Dipath.Dihomotopy γ₁ γ₂} {n m i j : ℕ}
-  (hi : i < n.succ) (hj : j < m.succ) :
-    (SplitDihomotopy.SecondPartVerticallyDihomotopy F (Fraction.ofPos (Nat.succ_pos n.succ))).toDihomotopy ''
-    (UnitSubrectangle hi hj) ⊆ F '' (UnitSubrectangle (Nat.succ_lt_succ hi) hj) := by
-  rintro z ⟨⟨t₀, t₁⟩, ⟨tI, ht⟩⟩
-  have : ((SplitDihomotopy.SecondPartVerticallyDihomotopy F _).toDihomotopy) (t₀, t₁) =
-          (SplitDihomotopy.SecondPartVerticallyDihomotopy F (Fraction.ofPos (Nat.succ_pos n.succ))) (t₀, t₁) := rfl
-  rw [this, SplitDihomotopy.spv_apply] at ht
-  show ∃ a, a ∈ UnitSubrectangle _ hj ∧ F a = z
-  refine' ⟨_, _, ht⟩
-  constructor
-  constructor
-  · exact spv_aux₁ hi tI.1.1
-  · exact spv_aux₂ hi tI.1.2
-  · exact tI.2
-
-/--
-  If F is  `(n + 1) × m`-covered, then the second part of F, split at `T = 1/(n+1)` is `n × m`-covered.
--/
-lemma coveredPartwise_second_vpart {x y : X} {γ₁ γ₂ : Dipath x y} {F : Dipath.Dihomotopy γ₁ γ₂}
-  {hX : X₀ ∪ X₁ = univ} {n m : ℕ} (hF : coveredPartwise hX F.toDihomotopy n.succ m) :
-    coveredPartwise hX (SplitDihomotopy.SecondPartVerticallyDihomotopy F
-      (Fraction.ofPos (Nat.succ_pos n.succ))).toDihomotopy n m := by
-  unfold coveredPartwise at hF
-  unfold coveredPartwise
-  intros i j hi hj
-  cases (hF i.succ j (Nat.succ_lt_succ hi) hj)
-  case inl h => left; exact subset_trans (spv_subrectangle _ _) h
-  case inr h => right; exact subset_trans (spv_subrectangle _ _) h
-
-/--
-  The image of a dihomotopy F of the rectangle `[i/(n+1), (i+1)/(n+1)] × [0, 1/(m+2)]`
-  contains the image of the first part of F, split at `1/(m+2)`, of `[i/(n+1), (i+1)/(n+1)] × [0, 1]`.
--/
-lemma fph_subrectangle {f g : D(I, X)} {F : Dihomotopy f g} {n m i : ℕ} (hi : i < n.succ) :
-    (SplitDihomotopy.FirstPartHorizontallyDihomotopy F (Fraction.ofPos (Nat.succ_pos m.succ))) ''
-      (UnitSubrectangle hi zero_lt_one) ⊆ F '' (UnitSubrectangle hi (Nat.succ_pos m.succ)) := by
-  rintro z ⟨⟨t₀, t₁⟩, ⟨tI, ht⟩⟩
-  rw [SplitDihomotopy.fph_apply] at ht
-  show ∃ a, a ∈ UnitSubrectangle hi _ ∧ F a = z
-  refine' ⟨_, _, ht⟩
-  constructor
-  · exact tI.1
-  · constructor
-    · rw [Fraction.eq_zero]
-      unit_interval
-    · exact unitInterval.mul_le_left
-
-/--
-  If `F` is `n × (m+1)`-covered, then the first part of `F`, split at `T = 1/(m+2)`, is `n × 0`-covered.
--/
-lemma coveredPartwise_first_hpart {f g : D(I, X)} {F : Dihomotopy f g} {hX : X₀ ∪ X₁ = univ} {n m : ℕ}
-  (hF : coveredPartwise hX F n m.succ) :
-    coveredPartwise hX (SplitDihomotopy.FirstPartHorizontallyDihomotopy F
-      (Fraction.ofPos (Nat.succ_pos m.succ))) n 0 := by
-  unfold coveredPartwise at hF
-  unfold coveredPartwise
-  intros i j hi hj
-  obtain ⟨rfl⟩ : j = 0 := by linarith
-  cases (hF i 0 hi (Nat.succ_pos m.succ))
-  case inl h => left; exact subset_trans (fph_subrectangle _) h
-  case inr h => right; exact subset_trans (fph_subrectangle _) h
-
-/--
-  The image of a dihomotopy F of the rectangle `[i/(n+1), (i+1)/(n+1)] × [(j+1)/(m+2), (j+2)/(m+2)]`
-  contains the image of the second part of F, split at `1/(m+2)`, of
-  `[i/(n+1), (i+1)/(n+1)] × [j/(m+1), (j+1)/(m+1)]`.
--/
-lemma sph_subrectangle {f g : D(I, X)} {F : Dihomotopy f g} {n m i j : ℕ} (hi : i < n.succ) (hj : j < m.succ) :
-    (SplitDihomotopy.SecondPartHorizontallyDihomotopy F (Fraction.ofPos (Nat.succ_pos m.succ))) ''
-      (UnitSubrectangle hi hj) ⊆ F '' (UnitSubrectangle hi (Nat.succ_lt_succ hj)) := by
-  rintro z ⟨⟨t₀, t₁⟩, ⟨tI, ht⟩⟩
-  rw [SplitDihomotopy.sph_apply] at ht
-  show ∃ a, a ∈ UnitSubrectangle hi _ ∧ F a = z
-  refine' ⟨_, _, ht⟩
-  constructor
-  · exact tI.1
-  · constructor
-    · exact spv_aux₁ hj tI.2.1
-    · exact spv_aux₂ hj tI.2.2
-
-/--
-  If `F` is `n × (m+1)`-covered, then the second part of `F`, split at at `T = 1/(n+1)` is `n × m`-covered.
--/
-lemma coveredPartwise_second_hpart {f g : D(I, X)} {F : Dihomotopy f g} {hX : X₀ ∪ X₁ = univ} {n m : ℕ}
-  (hF : coveredPartwise hX F n m.succ) :
-    coveredPartwise hX (SplitDihomotopy.SecondPartHorizontallyDihomotopy F
-      (Fraction.ofPos (Nat.succ_pos m.succ))) n m := by
-  unfold coveredPartwise at hF
-  unfold coveredPartwise
-  intros i j hi hj
-  cases (hF i j.succ hi (Nat.succ_lt_succ hj))
-  case inl h => left; exact subset_trans (sph_subrectangle _ _) h
-  case inr h => right; exact subset_trans (sph_subrectangle _ _) h
-
-end Dihomotopy
-end DirectedMap
-
-namespace Dipath
-namespace Dihomotopy
-
-variable {X : dTopCat} {X₀ X₁ : Set X} {x y : X} {γ₁ γ₂ : Dipath x y}
-
-lemma range_left_subset (F : Dihomotopy γ₁ γ₂) : range γ₁ ⊆ range F :=
-  fun _ ⟨t, ht⟩ => ⟨(0 , t), ht ▸ F.map_zero_left t⟩
-
-lemma range_right_subset (F : Dihomotopy γ₁ γ₂) : range γ₂ ⊆ range F :=
-  fun _ ⟨t, ht⟩ => ⟨(1 , t), ht ▸ F.map_one_left t⟩
-
-/--
-  A dihomotopy of directed paths is covered if its image lies entirely in X₀ or in X₁.
--/
-def covered (_ : X₀ ∪ X₁ = univ) (F : Dihomotopy γ₁ γ₂) : Prop := range F ⊆ X₀ ∨ range F ⊆ X₁
-
-/--
-If `F : γ₁ ∼ γ₂` is a dihomotopy of directed paths, and `F` is covered, then `γ₁` is covered.
--/
-lemma covered_left_of_covered {F : Dihomotopy γ₁ γ₂} {hX : X₀ ∪ X₁ = univ} (hF : covered hX F) :
-    Dipath.covered hX γ₁ :=
-  Or.elim hF
-    (fun hF => Or.inl (subset_trans (range_left_subset F) hF))
-    (fun hF => Or.inr (subset_trans (range_left_subset F) hF))
-
-/--
-If `F : γ₁ ∼ γ₂` is a dihomotopy of directed paths, and `F` is covered, then `γ₂` is covered.
--/
-lemma covered_right_of_covered {F : Dihomotopy γ₁ γ₂} {hX : X₀ ∪ X₁ = univ} (hF : covered hX F) :
-    Dipath.covered hX γ₂ :=
-  Or.elim hF
-    (fun hF => Or.inl (subset_trans (range_right_subset F) hF))
-    (fun hF => Or.inr (subset_trans (range_right_subset F) hF))
-
-/--
-  Two paths are `m × n`-dihomotopic if there is a dihomotopy between them that can be covered by `m × n` rectangles.
--/
-def dihomotopicCovered (hX : X₀ ∪ X₁ = univ) (γ₁ γ₂ : Dipath x y) (n m : ℕ) : Prop :=
-  ∃ (F : Dihomotopy γ₁ γ₂), DirectedMap.Dihomotopy.coveredPartwise hX F.toDihomotopy n m
-
-/--
-  If `γ₁` and `γ₂` are two paths connected by a path-dihomotopy `F` that is covered by `m × (n + 1)` rectangles,
-  then `γ₁` and `F.eval (1/(n+2))` are `m × 0`-dihomotopic and `F.eval (1/(n+2))` and `γ₂` are `m × n`-dihomotopic.
--/
-lemma dihomotopicCovered_split {F : Dihomotopy γ₁ γ₂} (hX : X₀ ∪ X₁ = univ) {n m : ℕ}
-  (hF : DirectedMap.Dihomotopy.coveredPartwise hX F.toDihomotopy n.succ m) :
-    dihomotopicCovered hX γ₁ (F.eval (Fraction.ofPos (Nat.succ_pos n.succ))) 0 m ∧
-    dihomotopicCovered hX (F.eval (Fraction.ofPos (Nat.succ_pos n.succ))) γ₂ n m := by
-  constructor
-  · exact ⟨_, DirectedMap.Dihomotopy.coveredPartwise_first_vpart hF⟩
-  · exact ⟨_, DirectedMap.Dihomotopy.coveredPartwise_second_vpart hF⟩
-
-/--
-  If `γ₁` and `γ₂` are two directed paths paths such that there is some dihomotopy between them,
-  then there are `n m : ℕ` such that `γ₁` and `γ₂` are `n × m`-dihomotopicCovered.
--/
-lemma dihomotopicCovered_exists_of_preDihomotopic (hX : X₀ ∪ X₁ = univ) (h : γ₁.PreDihomotopic γ₂)
-  (X₀_open : IsOpen X₀) (X₁_open : IsOpen X₁) :
-    ∃ (n m : ℕ), dihomotopicCovered hX γ₁ γ₂ n m := by
-  rcases (DirectedMap.Dihomotopy.coveredPartwise_exists h.some.toDihomotopy hX X₀_open X₁_open) with ⟨n, m, hnm⟩
-  exact ⟨n, m, h.some, hnm⟩
-
-
-end Dihomotopy
-end Dipath
-
-end
-end Standalone_Lean4_dihomotopy_cover

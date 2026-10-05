@@ -1,0 +1,92 @@
+{
+  "status": "pass",
+  "negative_control": false,
+  "source_sha256": "6ca5faef5b964e41aa2c45e343160218d5cdeb2f0fe73c72bec1a978b07b2446",
+  "lean_version": "Lean (version 4.35.0-rc2, x86_64-w64-windows-gnu, commit 11acb17ec6b07a8f9e9173e6845197929540936b, Release)",
+  "compiler_launcher": "C:\\Users\\arfreita\\.elan\\bin\\lean.exe",
+  "resolved_compiler": "C:\\Users\\arfreita\\.elan\\toolchains\\leanprover--lean4---v4.35.0-rc2\\bin\\lean.exe",
+  "lean_binary_sha256": "16e2c9c597d71fbbadd2b909c3fad5ea7830a4b7aa0123b93e0f3b19de7b959e",
+  "dependency_manifest_sha256": "03253a6f6c196aaed8f3b45bd0ad436660fcde25b8f25778ec220ccdacb92301",
+  "module_name": "CanonicalChallenge_cec46d5b08b7414abe9a3353506358d5",
+  "command": [
+    "C:\\Users\\arfreita\\.elan\\toolchains\\leanprover--lean4---v4.35.0-rc2\\bin\\lean.exe",
+    "-j1",
+    "-M6144",
+    "-o",
+    "CanonicalChallenge_cec46d5b08b7414abe9a3353506358d5.olean",
+    "CanonicalChallenge_cec46d5b08b7414abe9a3353506358d5.lean"
+  ],
+  "exit_code": 0,
+  "lean_path": [
+    "C:\\Users\\arfreita\\Documents\\Codex\\2026-10-05\\task\\pc\\repair\\.lake\\packages\\mathlib\\.lake\\build\\lib\\lean",
+    "C:\\Users\\arfreita\\Documents\\Codex\\2026-10-05\\task\\pc\\repair\\.lake\\packages\\plausible\\.lake\\build\\lib\\lean",
+    "C:\\Users\\arfreita\\Documents\\Codex\\2026-10-05\\task\\pc\\repair\\.lake\\packages\\LeanSearchClient\\.lake\\build\\lib\\lean",
+    "C:\\Users\\arfreita\\Documents\\Codex\\2026-10-05\\task\\pc\\repair\\.lake\\packages\\importGraph\\.lake\\build\\lib\\lean",
+    "C:\\Users\\arfreita\\Documents\\Codex\\2026-10-05\\task\\pc\\repair\\.lake\\packages\\proofwidgets\\.lake\\build\\lib\\lean",
+    "C:\\Users\\arfreita\\Documents\\Codex\\2026-10-05\\task\\pc\\repair\\.lake\\packages\\aesop\\.lake\\build\\lib\\lean",
+    "C:\\Users\\arfreita\\Documents\\Codex\\2026-10-05\\task\\pc\\repair\\.lake\\packages\\Qq\\.lake\\build\\lib\\lean",
+    "C:\\Users\\arfreita\\Documents\\Codex\\2026-10-05\\task\\pc\\repair\\.lake\\packages\\batteries\\.lake\\build\\lib\\lean"
+  ],
+  "omitted_manifest_packages": [
+    {
+      "package": {
+        "url": "https://github.com/leanprover/lean4-cli",
+        "type": "git",
+        "subDir": null,
+        "scope": "leanprover",
+        "rev": "2842b9871b04862f944c032e34052cb9448ccb71",
+        "name": "Cli",
+        "manifestFile": "lake-manifest.json",
+        "inputRev": "v4.35.0-rc2",
+        "inherited": true,
+        "configFile": "lakefile.toml"
+      },
+      "reason": "Unused Lake CLI dependency; successful canonical elaboration establishes that no Cli artifact is required"
+    }
+  ],
+  "repository_builds_excluded": true,
+  "fresh_working_directory": true,
+  "output": "CanonicalChallenge_cec46d5b08b7414abe9a3353506358d5.lean:760:12: warning: Variable name `S` is not explicitly referenced.\n\nHint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:\n  [apply] _S\n\nNote: This linter can be disabled with `set_option linter.unusedVariables false`\nCanonicalChallenge_cec46d5b08b7414abe9a3353506358d5.lean:1342:48: warning: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead\n\nHint: Replace the deprecated name:\n  m\u0335e\u0335m\u0335_\u0335s\u0335e\u0335t\u0335O\u0335f\u0335_\u0335e\u0335q\u0335m\u0332e\u0332m\u0332_\u0332o\u0332f\u0332P\u0332r\u0332e\u0332d\u0332_\u0332e\u0332q\u0332\nCanonicalChallenge_cec46d5b08b7414abe9a3353506358d5.lean:1350:2: warning: Try this: \n  letI\u0335\n\nThe goal is a proposition, so `let` is preferred over `letI`.\nThe difference between `let` and `letI` is that `letI` inlines the value.\nBut this is not relevant for proofs because of proof irrelevance.\n\nNote: This linter can be disabled with `set_option linter.style.haveILetI false`\nCanonicalChallenge_cec46d5b08b7414abe9a3353506358d5.lean:1683:8: warning: declaration uses `sorry`\nCanonicalChallenge_cec46d5b08b7414abe9a3353506358d5.lean:1685:8: warning: declaration uses `sorry`\n",
+  "scope": "Renamed canonical Challenge elaboration only; not hosted protocol or Comparator acceptance",
+  "comparison_solution_artifacts": {
+    "Solution.olean": "dd0243803f7de680c3e1cb08916fa281b3bcb519d86539de00d6071e593c7a49",
+    "PresentationPackage\\Construction.olean": "6e5a4b84d1e648dbc20fd29316a30e85ee1de954e74306deb8c8139c8987c0d3",
+    "PresentationPackage\\Proof1.olean": "fb9ceffd529ba7b8a438788b9f214235a42c2f18a4cf6ad2bbfa3cbe38d44d9f",
+    "PresentationPackage\\Proof2.olean": "96feafa34accd319681013ad737c9f1c9865a40549ec8c3c0f3d8d7f2e2a1b0f",
+    "PresentationPackage\\Proof3.olean": "0d5b9ddf1a33bb2651c6edf76bb2aea16df5bf60c74001baae8541bc3010c34e"
+  },
+  "comparison_solution_sources": {
+    "Solution.lean": "ad35d43b3fe740210c7d937e1f927e21f939f1b1e4b2620cf9726109e3ab0f1c",
+    "PresentationPackage\\Construction.lean": "8a80b1ea4f9b163cd28f2e3ee33a437afc279eaad2396ba1332b3dc6045a7fa8",
+    "PresentationPackage\\Proof1.lean": "4adcbc16fd92c4fd76d173e582ca24c266e82d765fdad48ab213d4e42987458c",
+    "PresentationPackage\\Proof2.lean": "ec590d4f90d8cd001c4a2b5e6ea3db0d16d504081727a3a4578c8a430dede468",
+    "PresentationPackage\\Proof3.lean": "60281d13e68bfbaad28c5c3cc23078d09cd1ec63e8d940a9890f7a28e3815c1f"
+  },
+  "expression_comparison": {
+    "status": "pass",
+    "extractions": [
+      {
+        "module": "CanonicalChallenge_cec46d5b08b7414abe9a3353506358d5",
+        "exit_code": 0,
+        "output": "Mapped private auxiliary: _private.CanonicalChallenge_cec46d5b08b7414abe9a3353506358d5.0.FiniteGraphFreeGroup.graphRealizationEndpointLabel.match_1.eq_1 -> _private.CanonicalChallenge_cec46d5b08b7414abe9a3353506358d5.0.FiniteGraphFreeGroup.graphRealizationEndpointLabel.match_1.eq_1\nMapped private auxiliary: _private.CanonicalChallenge_cec46d5b08b7414abe9a3353506358d5.0.FiniteGraphFreeGroup.graphRealizationEndpointLabel.match_1.eq_2 -> _private.CanonicalChallenge_cec46d5b08b7414abe9a3353506358d5.0.FiniteGraphFreeGroup.graphRealizationEndpointLabel.match_1.eq_2\nMapped private auxiliary: _private.CanonicalChallenge_cec46d5b08b7414abe9a3353506358d5.0.FiniteGraphFreeGroup.graphRealizationEndpointLabel.match_1.splitter -> _private.CanonicalChallenge_cec46d5b08b7414abe9a3353506358d5.0.FiniteGraphFreeGroup.graphRealizationEndpointLabel.match_1.splitter\nMapped private auxiliary: _private.CanonicalChallenge_cec46d5b08b7414abe9a3353506358d5.0.PresentationComplex.wordLoop.match_1.eq_1 -> _private.CanonicalChallenge_cec46d5b08b7414abe9a3353506358d5.0.PresentationComplex.wordLoop.match_1.eq_1\nMapped private auxiliary: _private.CanonicalChallenge_cec46d5b08b7414abe9a3353506358d5.0.PresentationComplex.wordLoop.match_1.eq_2 -> _private.CanonicalChallenge_cec46d5b08b7414abe9a3353506358d5.0.PresentationComplex.wordLoop.match_1.eq_2\nMapped private auxiliary: _private.CanonicalChallenge_cec46d5b08b7414abe9a3353506358d5.0.PresentationComplex.wordLoop.match_1.splitter -> _private.CanonicalChallenge_cec46d5b08b7414abe9a3353506358d5.0.PresentationComplex.wordLoop.match_1.splitter\nPrivate auxiliary mapping: four equation theorems and two splitter definitions; public declarations have no private references\nExtracted 252 declaration types and 94 definition bodies from CanonicalChallenge_cec46d5b08b7414abe9a3353506358d5\n"
+      },
+      {
+        "module": "Solution",
+        "exit_code": 0,
+        "output": "Mapped private auxiliary: _private.CanonicalChallenge_cec46d5b08b7414abe9a3353506358d5.0.FiniteGraphFreeGroup.graphRealizationEndpointLabel.match_1.eq_1 -> _private.PresentationPackage.Construction.0.FiniteGraphFreeGroup.graphRealizationEndpointLabel.match_1.eq_1\nMapped private auxiliary: _private.CanonicalChallenge_cec46d5b08b7414abe9a3353506358d5.0.FiniteGraphFreeGroup.graphRealizationEndpointLabel.match_1.eq_2 -> _private.PresentationPackage.Construction.0.FiniteGraphFreeGroup.graphRealizationEndpointLabel.match_1.eq_2\nMapped private auxiliary: _private.CanonicalChallenge_cec46d5b08b7414abe9a3353506358d5.0.FiniteGraphFreeGroup.graphRealizationEndpointLabel.match_1.splitter -> _private.PresentationPackage.Construction.0.FiniteGraphFreeGroup.graphRealizationEndpointLabel.match_1.splitter\nMapped private auxiliary: _private.CanonicalChallenge_cec46d5b08b7414abe9a3353506358d5.0.PresentationComplex.wordLoop.match_1.eq_1 -> _private.PresentationPackage.Construction.0.PresentationComplex.wordLoop.match_1.eq_1\nMapped private auxiliary: _private.CanonicalChallenge_cec46d5b08b7414abe9a3353506358d5.0.PresentationComplex.wordLoop.match_1.eq_2 -> _private.PresentationPackage.Construction.0.PresentationComplex.wordLoop.match_1.eq_2\nMapped private auxiliary: _private.CanonicalChallenge_cec46d5b08b7414abe9a3353506358d5.0.PresentationComplex.wordLoop.match_1.splitter -> _private.PresentationPackage.Construction.0.PresentationComplex.wordLoop.match_1.splitter\nPrivate auxiliary mapping: four equation theorems and two splitter definitions; public declarations have no private references\nExtracted 252 declaration types and 94 definition bodies from Solution\n"
+      }
+    ],
+    "mismatch_lines": [],
+    "snapshots": {
+      "canonical.jsonl": {
+        "bytes": 953035,
+        "sha256": "86d9df194e5ccc40242681860324d041ab4ba0386b6ad21fe2f89a37e317174a"
+      },
+      "solution.jsonl": {
+        "bytes": 953035,
+        "sha256": "86d9df194e5ccc40242681860324d041ab4ba0386b6ad21fe2f89a37e317174a"
+      }
+    },
+    "scope": "Byte equality of deterministic alpha-normalized Lean expression DAGs, with only six explicit compiler-private auxiliary names mapped bijectively; public declarations reference no private names; separate processes; not sandboxed Comparator"
+  }
+}

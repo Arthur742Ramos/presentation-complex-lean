@@ -224,6 +224,6 @@ THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR I
 -/
 module
 
-public import PresentationPackage.Proof2
+public import PresentationPackage.Proof3
 
 @[expose] public section

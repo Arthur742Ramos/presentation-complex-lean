@@ -24,7 +24,7 @@ for name in ['Lean4','ClassicalSVK','FiniteGraphFreeGroup','CellAttachment','Pre
 env={**os.environ,'LEAN_NUM_THREADS':'1'}
 for i,name in enumerate(order,1):
     print(f'NORMAL LAKE [{i}/{len(order)}] {name}',flush=True)
-    subprocess.run(['lake','build','+'+name+':olean'],cwd=root,env=env,check=True)
+    subprocess.run(['lake','--no-cache','build','+'+name+':olean'],cwd=root,env=env,check=True)
 print('NORMAL LAKE AGGREGATE',flush=True)
-subprocess.run(['lake','build'],cwd=root,env=env,check=True)
+subprocess.run(['lake','--no-cache','build'],cwd=root,env=env,check=True)
 print('PASS: normal serial and aggregate Lake builds',flush=True)

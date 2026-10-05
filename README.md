@@ -1,7 +1,7 @@
 # Fundamental groups of arbitrary presentation complexes
 
-**Canonical Challenge repair: dependency-only compilation and supplemental type/body comparison passed; official Comparator remains unverified.**
-See [the current verification matrix](reports/CURRENT_VERIFICATION.md). Historical proof checks apply to the byte-identical Solution package; the repaired Challenge has separate hash-bound evidence.
+**Compact Challenge desktop validation: fresh local source, axiom, export and direct-checker gates pass; independent review remains pending.**
+See [the current verification matrix](reports/CURRENT_VERIFICATION.md). Older pass records apply only to their recorded source hashes; the compact package has fresh receipts.
 
 ## Start here
 
@@ -9,7 +9,7 @@ The small review interface is:
 
 - [Challenge.lean](Challenge.lean): two theorem targets and their inlined, dependency-only
   construction, with exactly two intended theorem holes
-- [PresentationPackage/](PresentationPackage/): Solution construction and two bounded proof modules
+- [PresentationPackage/](PresentationPackage/): Solution construction and three bounded proof modules
 - [Solution.lean](Solution.lean): the public-import proof entrypoint, with no intended admissions
 - [comparator.json](comparator.json): both theorem targets; no definition holes
 - [formalization.yaml](formalization.yaml): scope, attribution, and status

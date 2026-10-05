@@ -127,11 +127,11 @@ def main() -> None:
     for name, content in outputs.items():
         path = ROOT / name
         if args.check:
-            if not path.is_file() or path.read_text(encoding='utf-8') != content:
+            if not path.is_file() or path.read_bytes() != content.encode('utf-8'):
                 raise SystemExit(f'STALE: {name}; rerun metadata derivation')
         else:
             path.parent.mkdir(parents=True, exist_ok=True)
-            path.write_text(content, encoding='utf-8')
+            path.write_text(content, encoding='utf-8', newline='\n')
     print(f"{'CHECKED' if args.check else 'PREPARED'} verification metadata from exact Lake.Check source")
 
 

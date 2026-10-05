@@ -27,6 +27,8 @@ jobs:
         run: |
           python3 scripts/generate_standalone.py --check
           python3 scripts/audit_sources.py
+      - name: Test project-sensitive compiler launcher resolution
+        run: python3 scripts/test_canonical_toolchain_resolution.py
       - name: Normal serial and aggregate Lake builds
         run: python3 scripts/build_lake_serial.py
       - name: Compile renamed canonical Challenge without repository imports

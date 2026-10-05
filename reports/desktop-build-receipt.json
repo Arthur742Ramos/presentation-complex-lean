@@ -1,0 +1,145 @@
+{
+  "root": "C:\\Users\\arfreita\\Documents\\Codex\\2026-10-05\\task\\pc\\repair",
+  "source_sha256": {
+    ".github/workflows/ci.yml": "c54d8a626787b4223515c434f7408e2e597e003bdb24fd189aa80d316c6ba672",
+    "Challenge.lean": "6ca5faef5b964e41aa2c45e343160218d5cdeb2f0fe73c72bec1a978b07b2446",
+    "PresentationComplex/Bouquet.lean": "3bc6cda06d99c0f58d4b5eb771fa19b668f597a5ae049ef8fd21b77416e2a1ea",
+    "PresentationComplex/BouquetConstruction.lean": "744285251789c80d5ebbcec686c0bcea6478bef86a2befccfc3d7ab68f2e73d0",
+    "PresentationComplex/EveryGroupConstruction.lean": "b65a7720b88822e1ed10cc4c76e647e96e9a94c87699f1d154e8f63163368f22",
+    "PresentationComplex/RelatorConstruction.lean": "64d47c7b5e7e7e285f65e30c062f8c4b89a8169a819a91e55d2f68ea1c7010c5",
+    "PresentationComplex/Relators.lean": "868b4f441028ad2d0bd06abe7763a780e5b9c61fca1101cd0365813a2258c812",
+    "PresentationComplex/WordLoopConstruction.lean": "76f2f15e55fa4673e705b22473509db704a37b0455769f0e9da07f4e993533a2",
+    "PresentationComplex/WordLoops.lean": "4996c64c77a90d781d76fbe156a5c10b86fa5007aedd18fd648d5a6110e3408c",
+    "PresentationPackage/Construction.lean": "8a80b1ea4f9b163cd28f2e3ee33a437afc279eaad2396ba1332b3dc6045a7fa8",
+    "PresentationPackage/Proof1.lean": "4adcbc16fd92c4fd76d173e582ca24c266e82d765fdad48ab213d4e42987458c",
+    "PresentationPackage/Proof2.lean": "ec590d4f90d8cd001c4a2b5e6ea3db0d16d504081727a3a4578c8a430dede468",
+    "PresentationPackage/Proof3.lean": "60281d13e68bfbaad28c5c3cc23078d09cd1ec63e8d940a9890f7a28e3815c1f",
+    "Solution.lean": "ad35d43b3fe740210c7d937e1f927e21f939f1b1e4b2620cf9726109e3ab0f1c",
+    "lake-manifest.json": "03253a6f6c196aaed8f3b45bd0ad436660fcde25b8f25778ec220ccdacb92301",
+    "lakefile.toml": "106eb926f41e871edddcee00b44584c557eef162ae4de8e57a4839595745b80c",
+    "scripts/CompareCanonical.lean": "523bbc2f9a3b75ef4a759ad6e9f97c469ca12dc87c002116e0b94b71bb1a1b9d",
+    "scripts/audit_sources.py": "e53efdfbd2aebf492d8c0503a8d395ed219fe756588110265bdb35186e94f2f0",
+    "scripts/build_lake_serial.py": "d81aaf57cf7d299d4ac672b4f7b502a24dd9af25ae58943045a91ce6cf9907af",
+    "scripts/build_module_closure.py": "2c2763edf892a5e2164602a62e708ed01826d9ec934a08720459b950442c985b",
+    "scripts/build_sources.py": "eee163a80e8c38934910ca16d690596cd9ebc6295eb1498dc3516d5e50ac7cb9",
+    "scripts/check_canonical_challenge.py": "7d575974e5e6a29f2a850c72fd5b9801ce0e0d4e63eeba70557e3e74ca72c601",
+    "scripts/generate_standalone.py": "050bdc63320f271eab6ac59f56e9e01e57c4021fc891a137192132392ee667fb",
+    "scripts/test_canonical_toolchain_resolution.py": "572afd37ee06f2647b34f0da27740853662a03c3a9cae1818d38e77826f19ce7"
+  },
+  "limits": {
+    "cpu_indices": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "job_memory_bytes": 25769803776,
+    "stage_seconds": 5400,
+    "free_ram_floor_bytes": 17179869184
+  },
+  "stages": [
+    {
+      "name": "normal-modular-root",
+      "command": [
+        "C:\\Users\\arfreita\\.elan\\toolchains\\leanprover--lean4---v4.35.0-rc2\\bin\\lake.exe",
+        "--no-cache",
+        "build",
+        "+PresentationComplex:olean"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 1104.22,
+      "peak_job_commit_bytes": 3633733632,
+      "stop_reason": null,
+      "log": "C:\\Users\\arfreita\\Documents\\Codex\\2026-10-05\\task\\reports\\desktop-validation-attempt2\\normal-modular-root.log"
+    },
+    {
+      "name": "normal-challenge-root",
+      "command": [
+        "C:\\Users\\arfreita\\.elan\\toolchains\\leanprover--lean4---v4.35.0-rc2\\bin\\lake.exe",
+        "--no-cache",
+        "build",
+        "+Challenge:olean"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 38.01,
+      "peak_job_commit_bytes": 3587342336,
+      "stop_reason": null,
+      "log": "C:\\Users\\arfreita\\Documents\\Codex\\2026-10-05\\task\\reports\\desktop-validation-attempt2\\normal-challenge-root.log"
+    },
+    {
+      "name": "normal-solution-root",
+      "command": [
+        "C:\\Users\\arfreita\\.elan\\toolchains\\leanprover--lean4---v4.35.0-rc2\\bin\\lake.exe",
+        "--no-cache",
+        "build",
+        "+Solution:olean"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 202.05,
+      "peak_job_commit_bytes": 4102242304,
+      "stop_reason": null,
+      "log": "C:\\Users\\arfreita\\Documents\\Codex\\2026-10-05\\task\\reports\\desktop-validation-attempt2\\normal-solution-root.log"
+    },
+    {
+      "name": "normal-aggregate",
+      "command": [
+        "C:\\Users\\arfreita\\.elan\\toolchains\\leanprover--lean4---v4.35.0-rc2\\bin\\lake.exe",
+        "--no-cache",
+        "build"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 16.02,
+      "peak_job_commit_bytes": 1037209600,
+      "stop_reason": null,
+      "log": "C:\\Users\\arfreita\\Documents\\Codex\\2026-10-05\\task\\reports\\desktop-validation-attempt2\\normal-aggregate.log"
+    },
+    {
+      "name": "canonical-comparison",
+      "command": [
+        "C:/Users/arfreita/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe",
+        "scripts/check_canonical_challenge.py",
+        "--lean-bin",
+        "C:/Users/arfreita/.elan/bin/lean.exe",
+        "--compare-solution-dir",
+        ".lake/build/lib/lean",
+        "--report",
+        "reports/desktop-canonical-challenge.json"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 148.05,
+      "peak_job_commit_bytes": 5548380160,
+      "stop_reason": null,
+      "log": "C:\\Users\\arfreita\\Documents\\Codex\\2026-10-05\\task\\reports\\desktop-validation-attempt2\\canonical-comparison.log"
+    },
+    {
+      "name": "every-source-replay",
+      "command": [
+        "C:/Users/arfreita/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe",
+        "scripts/build_sources.py"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 2238.45,
+      "peak_job_commit_bytes": 5503279104,
+      "stop_reason": null,
+      "log": "C:\\Users\\arfreita\\Documents\\Codex\\2026-10-05\\task\\reports\\desktop-validation-attempt2\\every-source-replay.log"
+    },
+    {
+      "name": "axiom-audit",
+      "command": [
+        "C:\\Users\\arfreita\\.elan\\toolchains\\leanprover--lean4---v4.35.0-rc2\\bin\\lake.exe",
+        "env",
+        "lean",
+        "-j1",
+        "-M6144",
+        "reports/AuditSolution.lean"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 22.02,
+      "peak_job_commit_bytes": 4906631168,
+      "stop_reason": null,
+      "log": "C:\\Users\\arfreita\\Documents\\Codex\\2026-10-05\\task\\reports\\desktop-validation-attempt2\\axiom-audit.log"
+    }
+  ],
+  "official_acceptance": false,
+  "status": "all planned local stages passed"
+}

@@ -1,27 +1,43 @@
 {
+  "challenge_byte_cap": {
+    "maximum": 102400,
+    "actual": 74913,
+    "basis": "user-reported actual canonical intake gate"
+  },
   "generated_modules": {
     "PresentationPackage/Construction.lean": {
-      "sha256": "5cb3f7a01e2e273639ad073688ee58439c8a2762385c188b63f170dd8d870b60",
-      "lines": 5877
+      "sha256": "8a80b1ea4f9b163cd28f2e3ee33a437afc279eaad2396ba1332b3dc6045a7fa8",
+      "lines": 1655
     },
     "PresentationPackage/Proof1.lean": {
-      "sha256": "b23564f5231a5dc8754271e5d92799132b691ed7210a8427ca94e93c680df04f",
-      "lines": 7996
+      "sha256": "4adcbc16fd92c4fd76d173e582ca24c266e82d765fdad48ab213d4e42987458c",
+      "lines": 7984
     },
     "PresentationPackage/Proof2.lean": {
-      "sha256": "9d98b83606e7b405f525e7e8c8057abbeec3154493c16b6ddd987ac06444c366",
-      "lines": 4236
+      "sha256": "ec590d4f90d8cd001c4a2b5e6ea3db0d16d504081727a3a4578c8a430dede468",
+      "lines": 7959
+    },
+    "PresentationPackage/Proof3.lean": {
+      "sha256": "60281d13e68bfbaad28c5c3cc23078d09cd1ec63e8d940a9890f7a28e3815c1f",
+      "lines": 799
     }
   },
   "proof_chunks": [
     {
       "module": "PresentationPackage.Proof1",
       "source_modules": [
+        "FiniteGraphFreeGroup.Cover",
+        "FiniteGraphFreeGroup.TopologicalCover",
+        "FiniteGraphFreeGroup.TreeContraction",
+        "FiniteGraphFreeGroup.TopologicalComparison",
+        "PresentationComplex.Bouquet",
         "PresentationComplex.GraphCells",
         "PresentationComplex.Characteristic",
         "PresentationComplex.IntervalCharts",
         "PresentationComplex.BouquetCells",
         "PresentationComplex.CellCharts",
+        "PresentationComplex.WordLoops",
+        "PresentationComplex.Relators",
         "CellAttachment.NormalForm",
         "CellAttachment.OpenCover",
         "CellAttachment.Embeddings",
@@ -36,7 +52,12 @@
         "Lean4.constructions",
         "Lean4.directed_unit_interval",
         "Lean4.unit_interval_aux",
-        "Lean4.dipath",
+        "Lean4.dipath"
+      ]
+    },
+    {
+      "module": "PresentationPackage.Proof2",
+      "source_modules": [
         "Lean4.dTop",
         "Lean4.interpolate",
         "Lean4.SplitPath.split_path",
@@ -51,12 +72,7 @@
         "Lean4.SplitPath.split_properties",
         "Lean4.path_cover",
         "Lean4.split_dihomotopy",
-        "Lean4.dihomotopy_cover"
-      ]
-    },
-    {
-      "module": "PresentationPackage.Proof2",
-      "source_modules": [
+        "Lean4.dihomotopy_cover",
         "Lean4.pushout_alternative",
         "Lean4.dihomotopy_flip",
         "Lean4.dihomotopy_to_path_dihomotopy",
@@ -76,7 +92,12 @@
         "CellAttachment.HomotopyPi1",
         "CellAttachment.NeighborhoodPi1",
         "CellAttachment.GeometricPushout",
-        "CellAttachment.RelatorTransport",
+        "CellAttachment.RelatorTransport"
+      ]
+    },
+    {
+      "module": "PresentationPackage.Proof3",
+      "source_modules": [
         "CellAttachment.EquivalenceExactness",
         "CellAttachment.Main",
         "PresentationComplex.FundamentalGroup",
@@ -96,20 +117,13 @@
   "challenge_construction_root": "PresentationComplex.EveryGroupConstruction",
   "statement_source": "PresentationComplex/Main.lean:completeStatement",
   "statement_sha256": "61e023318353ab21fab0ad4c6eba85c652f656a72c4ae7565ac6272ef895645d",
-  "solution_sha256": "da98d4236ce51347bfcf0ef21592c4de1010ab3639a1eb993ffcbe26d70b25a0",
-  "challenge_sha256": "2690aaf4e12651244f880bf4e5ed6c57d3cf8dd089a97afdad079e88e476a270",
+  "solution_sha256": "ad35d43b3fe740210c7d937e1f927e21f939f1b1e4b2620cf9726109e3ab0f1c",
+  "challenge_sha256": "6ca5faef5b964e41aa2c45e343160218d5cdeb2f0fe73c72bec1a978b07b2446",
   "solution_local_modules": [
     {
       "module": "FiniteGraphFreeGroup.Proof",
       "path": "FiniteGraphFreeGroup/Proof.lean",
       "source_sha256": "8b2f31c52c583e259c26621631e90c32cb99f103abecb724ccd02f294d3d51fe",
-      "eof_scopes_closed": 1,
-      "private_modifiers_removed": 0
-    },
-    {
-      "module": "FiniteGraphFreeGroup.Cover",
-      "path": "FiniteGraphFreeGroup/Cover.lean",
-      "source_sha256": "92dd499d839ae926e3ef58f9a39c96bde29d7d18b816e8f7822bfea528289215",
       "eof_scopes_closed": 1,
       "private_modifiers_removed": 0
     },
@@ -121,37 +135,16 @@
       "private_modifiers_removed": 0
     },
     {
-      "module": "FiniteGraphFreeGroup.TopologicalCover",
-      "path": "FiniteGraphFreeGroup/TopologicalCover.lean",
-      "source_sha256": "d704b95fa2222de399e27f4e4eee5a57907b25c18b96d8b3471126f693becce5",
+      "module": "PresentationComplex.BouquetConstruction",
+      "path": "PresentationComplex/BouquetConstruction.lean",
+      "source_sha256": "744285251789c80d5ebbcec686c0bcea6478bef86a2befccfc3d7ab68f2e73d0",
       "eof_scopes_closed": 1,
       "private_modifiers_removed": 0
     },
     {
-      "module": "FiniteGraphFreeGroup.TreeContraction",
-      "path": "FiniteGraphFreeGroup/TreeContraction.lean",
-      "source_sha256": "c13c6a045e47dc785f790127c76e3610b1f49ed11f514fb4a2c9c47168d44bbc",
-      "eof_scopes_closed": 1,
-      "private_modifiers_removed": 0
-    },
-    {
-      "module": "FiniteGraphFreeGroup.TopologicalComparison",
-      "path": "FiniteGraphFreeGroup/TopologicalComparison.lean",
-      "source_sha256": "08bce6dc5869ede10309b8daceeb8b384f383a600c601e4359fd3939ee5e8c84",
-      "eof_scopes_closed": 1,
-      "private_modifiers_removed": 0
-    },
-    {
-      "module": "PresentationComplex.Bouquet",
-      "path": "PresentationComplex/Bouquet.lean",
-      "source_sha256": "fb554ea90966f39e0860443b2ac1ed272e8a7606916d927bb99f5b7650b08c2c",
-      "eof_scopes_closed": 1,
-      "private_modifiers_removed": 0
-    },
-    {
-      "module": "PresentationComplex.WordLoops",
-      "path": "PresentationComplex/WordLoops.lean",
-      "source_sha256": "638538fe08cf97c1eb856b477c1036d98d7ca0e217e8ffbe4cbc61b70e004ae4",
+      "module": "PresentationComplex.WordLoopConstruction",
+      "path": "PresentationComplex/WordLoopConstruction.lean",
+      "source_sha256": "76f2f15e55fa4673e705b22473509db704a37b0455769f0e9da07f4e993533a2",
       "eof_scopes_closed": 1,
       "private_modifiers_removed": 0
     },
@@ -198,16 +191,51 @@
       "private_modifiers_removed": 0
     },
     {
-      "module": "PresentationComplex.Relators",
-      "path": "PresentationComplex/Relators.lean",
-      "source_sha256": "694b72637583332534104c6219581799708deb955eeda182d8073b5ca842ee89",
+      "module": "PresentationComplex.RelatorConstruction",
+      "path": "PresentationComplex/RelatorConstruction.lean",
+      "source_sha256": "64d47c7b5e7e7e285f65e30c062f8c4b89a8169a819a91e55d2f68ea1c7010c5",
       "eof_scopes_closed": 1,
-      "private_modifiers_removed": 1
+      "private_modifiers_removed": 0
     },
     {
       "module": "PresentationComplex.EveryGroupConstruction",
       "path": "PresentationComplex/EveryGroupConstruction.lean",
-      "source_sha256": "b9d6494b6a0949d670a5668da8427dc753ab074e11f04990fa3ab7c24ce2a5dd",
+      "source_sha256": "b65a7720b88822e1ed10cc4c76e647e96e9a94c87699f1d154e8f63163368f22",
+      "eof_scopes_closed": 1,
+      "private_modifiers_removed": 0
+    },
+    {
+      "module": "FiniteGraphFreeGroup.Cover",
+      "path": "FiniteGraphFreeGroup/Cover.lean",
+      "source_sha256": "92dd499d839ae926e3ef58f9a39c96bde29d7d18b816e8f7822bfea528289215",
+      "eof_scopes_closed": 1,
+      "private_modifiers_removed": 0
+    },
+    {
+      "module": "FiniteGraphFreeGroup.TopologicalCover",
+      "path": "FiniteGraphFreeGroup/TopologicalCover.lean",
+      "source_sha256": "d704b95fa2222de399e27f4e4eee5a57907b25c18b96d8b3471126f693becce5",
+      "eof_scopes_closed": 1,
+      "private_modifiers_removed": 0
+    },
+    {
+      "module": "FiniteGraphFreeGroup.TreeContraction",
+      "path": "FiniteGraphFreeGroup/TreeContraction.lean",
+      "source_sha256": "c13c6a045e47dc785f790127c76e3610b1f49ed11f514fb4a2c9c47168d44bbc",
+      "eof_scopes_closed": 1,
+      "private_modifiers_removed": 0
+    },
+    {
+      "module": "FiniteGraphFreeGroup.TopologicalComparison",
+      "path": "FiniteGraphFreeGroup/TopologicalComparison.lean",
+      "source_sha256": "08bce6dc5869ede10309b8daceeb8b384f383a600c601e4359fd3939ee5e8c84",
+      "eof_scopes_closed": 1,
+      "private_modifiers_removed": 0
+    },
+    {
+      "module": "PresentationComplex.Bouquet",
+      "path": "PresentationComplex/Bouquet.lean",
+      "source_sha256": "3bc6cda06d99c0f58d4b5eb771fa19b668f597a5ae049ef8fd21b77416e2a1ea",
       "eof_scopes_closed": 1,
       "private_modifiers_removed": 0
     },
@@ -245,6 +273,20 @@
       "source_sha256": "562c2ffe2b067102e8d94d131cf7f4ef846584f91f1297aa301dee0823d3804c",
       "eof_scopes_closed": 1,
       "private_modifiers_removed": 3
+    },
+    {
+      "module": "PresentationComplex.WordLoops",
+      "path": "PresentationComplex/WordLoops.lean",
+      "source_sha256": "4996c64c77a90d781d76fbe156a5c10b86fa5007aedd18fd648d5a6110e3408c",
+      "eof_scopes_closed": 1,
+      "private_modifiers_removed": 0
+    },
+    {
+      "module": "PresentationComplex.Relators",
+      "path": "PresentationComplex/Relators.lean",
+      "source_sha256": "868b4f441028ad2d0bd06abe7763a780e5b9c61fca1101cd0365813a2258c812",
+      "eof_scopes_closed": 1,
+      "private_modifiers_removed": 1
     },
     {
       "module": "CellAttachment.NormalForm",
@@ -648,13 +690,6 @@
       "private_modifiers_removed": 0
     },
     {
-      "module": "FiniteGraphFreeGroup.Cover",
-      "path": "FiniteGraphFreeGroup/Cover.lean",
-      "source_sha256": "92dd499d839ae926e3ef58f9a39c96bde29d7d18b816e8f7822bfea528289215",
-      "eof_scopes_closed": 1,
-      "private_modifiers_removed": 0
-    },
-    {
       "module": "FiniteGraphFreeGroup.Realization",
       "path": "FiniteGraphFreeGroup/Realization.lean",
       "source_sha256": "6a55ec8937640623b848b72ebf50c135afc87cd5f6d6160f49167ccef1f4e268",
@@ -662,37 +697,16 @@
       "private_modifiers_removed": 0
     },
     {
-      "module": "FiniteGraphFreeGroup.TopologicalCover",
-      "path": "FiniteGraphFreeGroup/TopologicalCover.lean",
-      "source_sha256": "d704b95fa2222de399e27f4e4eee5a57907b25c18b96d8b3471126f693becce5",
+      "module": "PresentationComplex.BouquetConstruction",
+      "path": "PresentationComplex/BouquetConstruction.lean",
+      "source_sha256": "744285251789c80d5ebbcec686c0bcea6478bef86a2befccfc3d7ab68f2e73d0",
       "eof_scopes_closed": 1,
       "private_modifiers_removed": 0
     },
     {
-      "module": "FiniteGraphFreeGroup.TreeContraction",
-      "path": "FiniteGraphFreeGroup/TreeContraction.lean",
-      "source_sha256": "c13c6a045e47dc785f790127c76e3610b1f49ed11f514fb4a2c9c47168d44bbc",
-      "eof_scopes_closed": 1,
-      "private_modifiers_removed": 0
-    },
-    {
-      "module": "FiniteGraphFreeGroup.TopologicalComparison",
-      "path": "FiniteGraphFreeGroup/TopologicalComparison.lean",
-      "source_sha256": "08bce6dc5869ede10309b8daceeb8b384f383a600c601e4359fd3939ee5e8c84",
-      "eof_scopes_closed": 1,
-      "private_modifiers_removed": 0
-    },
-    {
-      "module": "PresentationComplex.Bouquet",
-      "path": "PresentationComplex/Bouquet.lean",
-      "source_sha256": "fb554ea90966f39e0860443b2ac1ed272e8a7606916d927bb99f5b7650b08c2c",
-      "eof_scopes_closed": 1,
-      "private_modifiers_removed": 0
-    },
-    {
-      "module": "PresentationComplex.WordLoops",
-      "path": "PresentationComplex/WordLoops.lean",
-      "source_sha256": "638538fe08cf97c1eb856b477c1036d98d7ca0e217e8ffbe4cbc61b70e004ae4",
+      "module": "PresentationComplex.WordLoopConstruction",
+      "path": "PresentationComplex/WordLoopConstruction.lean",
+      "source_sha256": "76f2f15e55fa4673e705b22473509db704a37b0455769f0e9da07f4e993533a2",
       "eof_scopes_closed": 1,
       "private_modifiers_removed": 0
     },
@@ -739,36 +753,36 @@
       "private_modifiers_removed": 0
     },
     {
-      "module": "PresentationComplex.Relators",
-      "path": "PresentationComplex/Relators.lean",
-      "source_sha256": "694b72637583332534104c6219581799708deb955eeda182d8073b5ca842ee89",
+      "module": "PresentationComplex.RelatorConstruction",
+      "path": "PresentationComplex/RelatorConstruction.lean",
+      "source_sha256": "64d47c7b5e7e7e285f65e30c062f8c4b89a8169a819a91e55d2f68ea1c7010c5",
       "eof_scopes_closed": 1,
-      "private_modifiers_removed": 1
+      "private_modifiers_removed": 0
     },
     {
       "module": "PresentationComplex.EveryGroupConstruction",
       "path": "PresentationComplex/EveryGroupConstruction.lean",
-      "source_sha256": "b9d6494b6a0949d670a5668da8427dc753ab074e11f04990fa3ab7c24ce2a5dd",
+      "source_sha256": "b65a7720b88822e1ed10cc4c76e647e96e9a94c87699f1d154e8f63163368f22",
       "eof_scopes_closed": 1,
       "private_modifiers_removed": 0
     }
   ],
   "solution_external_imports": [
-    "Mathlib.Topology.Covering.Basic",
-    "Mathlib.Topology.Homotopy.Lifting",
-    "Mathlib.GroupTheory.FreeGroup.Reduce",
-    "Mathlib.Combinatorics.Quiver.Covering",
-    "Mathlib.CategoryTheory.Groupoid.FreeGroupoid",
-    "Mathlib.CategoryTheory.Endomorphism",
-    "Mathlib.Combinatorics.Quiver.Arborescence",
-    "Mathlib.GroupTheory.FreeGroup.NielsenSchreier",
     "Mathlib.AlgebraicTopology.FundamentalGroupoid.FundamentalGroup",
     "Mathlib.AlgebraicTopology.FundamentalGroupoid.InducedMaps",
     "Mathlib.Topology.Connected.PathConnected",
     "Mathlib.Topology.Constructions",
     "Mathlib.Topology.Order",
-    "Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected",
+    "Mathlib.CategoryTheory.Groupoid.FreeGroupoid",
+    "Mathlib.CategoryTheory.Endomorphism",
+    "Mathlib.Combinatorics.Quiver.Arborescence",
+    "Mathlib.GroupTheory.FreeGroup.NielsenSchreier",
     "Mathlib.CategoryTheory.SingleObj",
+    "Mathlib.Topology.Covering.Basic",
+    "Mathlib.Topology.Homotopy.Lifting",
+    "Mathlib.GroupTheory.FreeGroup.Reduce",
+    "Mathlib.Combinatorics.Quiver.Covering",
+    "Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected",
     "Mathlib.Topology.Homeomorph.Lemmas",
     "Mathlib.Topology.CWComplex.Classical.Basic",
     "Mathlib.Topology.UnitInterval",
@@ -805,21 +819,21 @@
     "Mathlib.Topology.Separation.Hausdorff"
   ],
   "challenge_external_imports": [
-    "Mathlib.Topology.Covering.Basic",
-    "Mathlib.Topology.Homotopy.Lifting",
-    "Mathlib.GroupTheory.FreeGroup.Reduce",
-    "Mathlib.Combinatorics.Quiver.Covering",
-    "Mathlib.CategoryTheory.Groupoid.FreeGroupoid",
-    "Mathlib.CategoryTheory.Endomorphism",
-    "Mathlib.Combinatorics.Quiver.Arborescence",
-    "Mathlib.GroupTheory.FreeGroup.NielsenSchreier",
     "Mathlib.AlgebraicTopology.FundamentalGroupoid.FundamentalGroup",
     "Mathlib.AlgebraicTopology.FundamentalGroupoid.InducedMaps",
     "Mathlib.Topology.Connected.PathConnected",
     "Mathlib.Topology.Constructions",
     "Mathlib.Topology.Order",
-    "Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected",
+    "Mathlib.CategoryTheory.Groupoid.FreeGroupoid",
+    "Mathlib.CategoryTheory.Endomorphism",
+    "Mathlib.Combinatorics.Quiver.Arborescence",
+    "Mathlib.GroupTheory.FreeGroup.NielsenSchreier",
     "Mathlib.CategoryTheory.SingleObj",
+    "Mathlib.Topology.Covering.Basic",
+    "Mathlib.Topology.Homotopy.Lifting",
+    "Mathlib.GroupTheory.FreeGroup.Reduce",
+    "Mathlib.Combinatorics.Quiver.Covering",
+    "Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected",
     "Mathlib.Topology.Homeomorph.Lemmas",
     "Mathlib.Topology.CWComplex.Classical.Basic",
     "Mathlib.Topology.UnitInterval",
@@ -856,22 +870,19 @@
     "Mathlib.Topology.Separation.Hausdorff"
   ],
   "challenge_minimal_construction_imports": [
-    "Mathlib.Topology.Covering.Basic",
-    "Mathlib.Topology.Homotopy.Lifting",
-    "Mathlib.GroupTheory.FreeGroup.Reduce",
-    "Mathlib.Combinatorics.Quiver.Covering",
-    "Mathlib.CategoryTheory.Groupoid.FreeGroupoid",
-    "Mathlib.CategoryTheory.Endomorphism",
-    "Mathlib.Combinatorics.Quiver.Arborescence",
-    "Mathlib.GroupTheory.FreeGroup.NielsenSchreier",
     "Mathlib.AlgebraicTopology.FundamentalGroupoid.FundamentalGroup",
     "Mathlib.AlgebraicTopology.FundamentalGroupoid.InducedMaps",
     "Mathlib.Topology.Connected.PathConnected",
     "Mathlib.Topology.Constructions",
     "Mathlib.Topology.Order",
-    "Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected",
+    "Mathlib.CategoryTheory.Groupoid.FreeGroupoid",
+    "Mathlib.CategoryTheory.Endomorphism",
+    "Mathlib.Combinatorics.Quiver.Arborescence",
+    "Mathlib.GroupTheory.FreeGroup.NielsenSchreier",
     "Mathlib.CategoryTheory.SingleObj",
+    "Mathlib.GroupTheory.FreeGroup.Reduce",
     "Mathlib.Topology.Covering.AddCircle",
+    "Mathlib.Topology.Homotopy.Lifting",
     "Mathlib.Topology.Instances.ZMultiples",
     "Mathlib.Analysis.Convex.Contractible",
     "Mathlib.Analysis.SpecialFunctions.Complex.Circle",
@@ -882,20 +893,16 @@
   ],
   "shared_construction_prefix": [
     "FiniteGraphFreeGroup.Proof",
-    "FiniteGraphFreeGroup.Cover",
     "FiniteGraphFreeGroup.Realization",
-    "FiniteGraphFreeGroup.TopologicalCover",
-    "FiniteGraphFreeGroup.TreeContraction",
-    "FiniteGraphFreeGroup.TopologicalComparison",
-    "PresentationComplex.Bouquet",
-    "PresentationComplex.WordLoops",
+    "PresentationComplex.BouquetConstruction",
+    "PresentationComplex.WordLoopConstruction",
     "CellAttachment.CircleGenerator",
     "PresentationComplex.LoopCircle",
     "CellAttachment.Adjunction",
     "PresentationComplex.Connected",
     "CellAttachment.GroupQuotient",
     "CellAttachment.Statement",
-    "PresentationComplex.Relators",
+    "PresentationComplex.RelatorConstruction",
     "PresentationComplex.EveryGroupConstruction"
   ],
   "shared_environment_note": "Challenge inlines the exact generated Construction source, with only pinned external imports; Solution imports that same source as a module. Stable public helper names and identical declaration order preserve common construction bodies across module names. Proof chunks preserve original module/declaration order.",
