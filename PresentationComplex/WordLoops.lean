@@ -20,17 +20,24 @@ def wordLoop : List (S × Bool) → Path (base S) (base S)
   | l :: w => (wordLoop w).trans (signedEdgeLoop l)
 
 theorem freeGroupEquiv_mk_wordLoop (w : List (S × Bool)) :
-    freeGroupEquiv S (FreeGroup.mk w) = Quotient.mk (wordLoop w) := by
+    freeGroupEquiv S (FreeGroup.mk w) = Path.Homotopic.Quotient.mk (wordLoop w) := by
   induction w with
-  | nil => simp [wordLoop,FreeGroup.one_eq_mk]
+  | nil =>
+    change freeGroupEquiv S 1 = (1 : FundamentalGroup (Bouquet S) (base S))
+    exact (freeGroupEquiv S).map_one
   | cons l w ih =>
     rw [show FreeGroup.mk (l :: w) = FreeGroup.mk [l] * FreeGroup.mk w from
-      (FreeGroup.mul_mk).symm, map_mul, ih]
-    cases l with
-    | mk s b =>
-      cases b <;> simp [signedEdgeLoop,wordLoop,FreeGroup.of,
-        FreeGroup.inv_mk,FreeGroup.invRev,FundamentalGroup.mul_def,FundamentalGroup.inv_def,
-        freeGroupEquiv_of]
+      rfl, map_mul, ih]
+    have hsigned : freeGroupEquiv S (FreeGroup.mk [l]) = Path.Homotopic.Quotient.mk (signedEdgeLoop l) := by
+      cases l with
+      | mk s b =>
+        cases b
+        · rw [show FreeGroup.mk [(s,false)] = (FreeGroup.of s)⁻¹ from rfl,
+            map_inv,freeGroupEquiv_of]
+          rfl
+        · exact freeGroupEquiv_of s
+    rw [hsigned]
+    rfl
 
 /-- The canonical finite representative chosen with classical equality internally. -/
 def relatorWord (g : FreeGroup S) : List (S × Bool) := by
@@ -43,7 +50,7 @@ def relatorLoop (g : FreeGroup S) : Path (base S) (base S) := by
   exact wordLoop (relatorWord g)
 
 theorem freeGroupEquiv_relatorLoop (g : FreeGroup S) :
-    freeGroupEquiv S g = Quotient.mk (relatorLoop g) := by
+    freeGroupEquiv S g = Path.Homotopic.Quotient.mk (relatorLoop g) := by
   classical
   simpa only [FreeGroup.mk_toWord,relatorLoop,relatorWord] using
     freeGroupEquiv_mk_wordLoop (FreeGroup.toWord g)

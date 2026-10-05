@@ -43,7 +43,7 @@ theorem loopCircleMap_generator (p : Path x₀ x₀) (t : I) :
     simp
 
 @[simp] theorem loopCircleMap_one (p : Path x₀ x₀) : loopCircleMap p 1 = x₀ := by
-  simpa only [Path.source,CellAttachment.circleGenerator] using loopCircleMap_generator p 0
+  simpa only [Path.source] using loopCircleMap_generator p 0
 
 end PresentationComplex
 

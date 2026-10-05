@@ -66,17 +66,17 @@ def edgeEnd {S : Type u} (s : S) : bouquetVertexGroup S :=
     (show (default : Vertex S) ⟶ (default : Vertex S) from s)
 
 /-- The label map into the one-object groupoid of the free group. -/
-def labelPrefunctor (S : Type u) : Vertex S ⥤q SingleObj (FreeGroup S) where
-  obj _ := SingleObj.star _
+def labelPrefunctor (S : Type u) : Vertex S ⥤q CategoryTheory.SingleObj (FreeGroup S) where
+  obj _ := CategoryTheory.SingleObj.star _
   map s := FreeGroup.of s
 
 /-- Its unique extension to the free groupoid. -/
-def labelFunctor (S : Type u) : Quiver.FreeGroupoid (Vertex S) ⥤ SingleObj (FreeGroup S) :=
+def labelFunctor (S : Type u) : Quiver.FreeGroupoid (Vertex S) ⥤ CategoryTheory.SingleObj (FreeGroup S) :=
   Quiver.FreeGroupoid.lift (labelPrefunctor S)
 
 /-- Read a free-group word from a combinatorial loop. -/
 def vertexGroupToFree (S : Type u) : bouquetVertexGroup S →* FreeGroup S :=
-  (SingleObj.toEnd (FreeGroup S)).symm.toMonoidHom.comp
+  (CategoryTheory.SingleObj.toEnd (FreeGroup S)).symm.toMonoidHom.comp
     ((labelFunctor S).mapEnd ((Quiver.FreeGroupoid.of (Vertex S)).obj default))
 
 /-- Realize a free-group word as a combinatorial loop. -/
@@ -86,7 +86,7 @@ def freeToVertexGroup (S : Type u) : FreeGroup S →* bouquetVertexGroup S :=
 @[simp]
 theorem vertexGroupToFree_edgeEnd {S : Type u} (s : S) :
     vertexGroupToFree S (edgeEnd s) = FreeGroup.of s := by
-  have h := Quiver.Prefunctor.congr_hom
+  have h := Prefunctor.congr_hom
     (Quiver.FreeGroupoid.lift_spec (labelPrefunctor S))
     (show (default : Vertex S) ⟶ (default : Vertex S) from s)
   exact h
@@ -110,10 +110,14 @@ theorem vertexGroupToFree_freeToVertexGroup (S : Type u) (w : FreeGroup S) :
 /-- The same inverse equation on the free groupoid follows from its universal property. -/
 theorem freeToVertexGroup_vertexGroupToFree (S : Type u) (g : bouquetVertexGroup S) :
     freeToVertexGroup S (vertexGroupToFree S g) = g := by
-  let E := labelFunctor S ⋙ SingleObj.functor (freeToVertexGroup S)
+  let E : Quiver.FreeGroupoid (Vertex S) ⥤ Quiver.FreeGroupoid (Vertex S) :=
+    labelFunctor S ⋙ CategoryTheory.SingleObj.functor
+      (C := Quiver.FreeGroupoid (Vertex S))
+      (X := (Quiver.FreeGroupoid.of (Vertex S)).obj (default : Vertex S))
+      (freeToVertexGroup S)
   have hrest : Quiver.FreeGroupoid.of (Vertex S) ⋙q E.toPrefunctor =
       Quiver.FreeGroupoid.of (Vertex S) := by
-    apply Quiver.Prefunctor.ext
+    apply Prefunctor.ext
       (fun x => by cases x; rfl)
     intro x y s
     cases x
@@ -127,7 +131,7 @@ theorem freeToVertexGroup_vertexGroupToFree (S : Type u) (g : bouquetVertexGroup
     (Quiver.FreeGroupoid.lift_unique (Quiver.FreeGroupoid.of (Vertex S)) E hrest).trans
       (Quiver.FreeGroupoid.lift_unique (Quiver.FreeGroupoid.of (Vertex S))
         (𝟭 _) rfl).symm
-  have h := Quiver.Prefunctor.congr_hom (congrArg Functor.toPrefunctor hE) g
+  have h := Prefunctor.congr_hom (congrArg Functor.toPrefunctor hE) g
   exact h
 
 /-- The universe-correct one-vertex free groupoid is the free group on its edge labels. -/
@@ -153,7 +157,7 @@ theorem freeGroupEquiv_of {S : Type u} (s : S) :
   change FiniteGraphFreeGroup.graphCombinatorialToTopological (default : Vertex S)
     (freeToVertexGroup S (FreeGroup.of s)) = _
   rw [freeToVertexGroup_of]
-  have h := Quiver.Prefunctor.congr_hom
+  have h := Prefunctor.congr_hom
     (FiniteGraphFreeGroup.graphFreeGroupoidToTopological_restrict (V := Vertex S))
     (show (default : Vertex S) ⟶ (default : Vertex S) from s)
   exact h

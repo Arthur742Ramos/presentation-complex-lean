@@ -38,17 +38,17 @@ def anchorPath (r : R → FreeGroup S) (i : R) :
 private theorem based_attaching_class {X : Type*} [TopologicalSpace X] {x₀ : X}
     (f : C(Circle,X)) (h : f 1 = x₀) (p : Path x₀ x₀)
     (hp : ∀ t, f (CellAttachment.circleGenerator t) = p t) :
-    Quotient.mk (((Path.refl x₀).cast rfl h).trans
+    Path.Homotopic.Quotient.mk (((Path.refl x₀).cast rfl h).trans
       (((CellAttachment.circleGenerator.map f.continuous)).trans
-        ((Path.refl x₀).cast rfl h).symm)) = Quotient.mk p := by
+        ((Path.refl x₀).cast rfl h).symm)) = Path.Homotopic.Quotient.mk p := by
   cases h
   have heq : CellAttachment.circleGenerator.map f.continuous = p := by
     apply Path.ext
     funext t
     exact hp t
   rw [heq]
-  simp only [Path.cast_rfl_rfl,Path.symm_refl,Quotient.mk_trans,Quotient.mk_refl,
-    Quotient.refl_trans,Quotient.trans_refl]
+  simp only [Path.cast_rfl_rfl,Path.refl_symm,Path.Homotopic.Quotient.mk_trans,Path.Homotopic.Quotient.mk_refl,
+    Path.Homotopic.Quotient.refl_trans,Path.Homotopic.Quotient.trans_refl]
 
 /-- Exact relator compatibility, including constant anchors rather than an assumed oracle. -/
 theorem attachingLoopClass_eq (r : R → FreeGroup S) (i : R) :

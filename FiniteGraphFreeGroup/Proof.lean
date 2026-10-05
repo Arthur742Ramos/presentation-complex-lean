@@ -27,8 +27,9 @@ lemma no_reverse_edges {V : Type u} [Quiver.{u} V]
   let g : @Quiver.Hom T T.quiver b a := ⟨Sum.inr e, h₂⟩
   have hpq : q = p.cons f := ((hT.uniquePath b).uniq _).symm
   have hqp : p = q.cons g := ((hT.uniquePath a).uniq _).symm
-  have hpq_len := congrArg Path.length hpq
-  have hqp_len := congrArg Path.length hqp
-  simp [p, q, f, g] at hpq_len hqp_len
+  have hpq_len : q.length = p.length + 1 :=
+    congrArg (@Quiver.Path.length T T.quiver hT.root b) hpq
+  have hqp_len : p.length = q.length + 1 :=
+    congrArg (@Quiver.Path.length T T.quiver hT.root a) hqp
   omega
 end FiniteGraphFreeGroup
