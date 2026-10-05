@@ -23,27 +23,27 @@ namespace PresentationComplex
 def planeCoordinates : (Fin 2 → ℝ) ≃L[ℝ] ℂ :=
   (ContinuousLinearEquiv.finTwoArrow ℝ ℝ).trans Complex.equivRealProdCLM.symm
 
-private def square : Set ℂ :=
+def square : Set ℂ :=
   planeCoordinates '' (closedBall (0 : Fin 2 → ℝ) 1)
 
-private theorem square_compact : IsCompact square :=
+theorem square_compact : IsCompact square :=
   (isCompact_closedBall (0 : Fin 2 → ℝ) 1).image planeCoordinates.continuous
 
-private theorem square_interior : interior square =
+theorem square_interior : interior square =
     planeCoordinates '' (ball (0 : Fin 2 → ℝ) 1) := by
   change interior (planeCoordinates.toHomeomorph '' closedBall 0 1) =
     planeCoordinates.toHomeomorph '' ball 0 1
   rw [← planeCoordinates.toHomeomorph.image_interior]
   rw [interior_closedBall _ (by norm_num : (1 : ℝ) ≠ 0)]
 
-private theorem square_frontier : frontier square =
+theorem square_frontier : frontier square =
     planeCoordinates '' (sphere (0 : Fin 2 → ℝ) 1) := by
   change frontier (planeCoordinates.toHomeomorph '' closedBall 0 1) =
     planeCoordinates.toHomeomorph '' sphere 0 1
   rw [← planeCoordinates.toHomeomorph.image_frontier]
   rw [frontier_closedBall _ (by norm_num : (1 : ℝ) ≠ 0)]
 
-private theorem rescale_exists : ∃ h : ℂ ≃ₜ ℂ,
+theorem rescale_exists : ∃ h : ℂ ≃ₜ ℂ,
     h '' interior square = ball 0 1 ∧
     h '' closure square = closedBall 0 1 ∧
     h '' frontier square = sphere 0 1 := by

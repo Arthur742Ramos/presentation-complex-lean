@@ -20,22 +20,22 @@ open FiniteGraphFreeGroup
 universe u v
 namespace PresentationComplex
 
-private def Separated {X : Type*} [TopologicalSpace X] (x y : X) : Prop :=
+def Separated {X : Type*} [TopologicalSpace X] (x y : X) : Prop :=
   ∃ A B : Set X, IsOpen A ∧ IsOpen B ∧ x ∈ A ∧ y ∈ B ∧ Disjoint A B
 
-private theorem Separated.symm {X : Type*} [TopologicalSpace X] {x y : X}
+theorem Separated.symm {X : Type*} [TopologicalSpace X] {x y : X}
     (h : Separated x y) : Separated y x := by
   rcases h with ⟨A,B,hA,hB,hx,hy,hd⟩
   exact ⟨B,A,hB,hA,hy,hx,hd.symm⟩
 
-private theorem separated_continuous {X Y : Type*} [TopologicalSpace X]
+theorem separated_continuous {X Y : Type*} [TopologicalSpace X]
     [TopologicalSpace Y] [T2Space Y] (f : C(X,Y)) {x y : X} (h : f x ≠ f y) :
     Separated x y := by
   rcases t2_separation h with ⟨A,B,hA,hB,hx,hy,hd⟩
   exact ⟨f ⁻¹' A,f ⁻¹' B,hA.preimage f.continuous,hB.preimage f.continuous,
     hx,hy,hd.preimage _⟩
 
-private theorem separated_openEmbedding {X Y : Type*} [TopologicalSpace X]
+theorem separated_openEmbedding {X Y : Type*} [TopologicalSpace X]
     [TopologicalSpace Y] [T2Space X] (f : X → Y) (hf : Topology.IsOpenEmbedding f)
     {x y : X} (h : x ≠ y) : Separated (f x) (f y) := by
   rcases t2_separation h with ⟨A,B,hA,hB,hx,hy,hd⟩
@@ -50,11 +50,11 @@ private theorem separated_openEmbedding {X Y : Type*} [TopologicalSpace X]
 section Bouquet
 variable (S : Type u)
 
-private def rawBouquetHeight : graphRealizationPre (Vertex S) → ℝ
+def rawBouquetHeight : graphRealizationPre (Vertex S) → ℝ
   | Sum.inl _ => 0
   | Sum.inr z => min z.2.val (1-z.2.val)
 
-private theorem rawBouquetHeight_respects {x y : graphRealizationPre (Vertex S)}
+theorem rawBouquetHeight_respects {x y : graphRealizationPre (Vertex S)}
     (h : Relation.EqvGen (graphRealizationGenerator (V := Vertex S)) x y) :
     rawBouquetHeight S x = rawBouquetHeight S y := by
   induction h with
@@ -77,14 +77,14 @@ def bouquetHeight : C(Bouquet S,ℝ) where
         exact continuous_subtype_val.min (continuous_const.sub continuous_subtype_val)
     exact hc.congr (fun z => by cases z <;> rfl)
 
-private def bouquetAllInteriors : C((Σ _ : S, Ioo (0 : I) 1),Bouquet S) where
+def bouquetAllInteriors : C((Σ _ : S, Ioo (0 : I) 1),Bouquet S) where
   toFun p := edgeInterior ((edgeIndexEquiv S).symm p.1) p.2
   continuous_toFun := by
     apply continuous_sigma
     intro s
     exact (edgeInterior ((edgeIndexEquiv S).symm s)).continuous
 
-private theorem bouquetAllInteriors_isOpenEmbedding :
+theorem bouquetAllInteriors_isOpenEmbedding :
     Topology.IsOpenEmbedding (bouquetAllInteriors S) := by
   apply Topology.IsOpenEmbedding.of_continuous_injective_isOpenMap
   · exact (bouquetAllInteriors S).continuous
@@ -100,7 +100,7 @@ private theorem bouquetAllInteriors_isOpenEmbedding :
     simpa only [bouquetAllInteriors,ContinuousMap.coe_mk] using
       (edgeInterior_isOpenEmbedding ((edgeIndexEquiv S).symm s)).isOpenMap
 
-private theorem bouquet_point_cases (x : Bouquet S) :
+theorem bouquet_point_cases (x : Bouquet S) :
     x = base S ∨ ∃ p, bouquetAllInteriors S p = x := by
   obtain ⟨a,rfl⟩ := Quotient.mk'_surjective x
   cases a with
@@ -128,7 +128,7 @@ private theorem bouquet_point_cases (x : Bouquet S) :
       rw [(edgeIndexEquiv S).symm_apply_apply]
       rfl
 
-private theorem bouquet_base_interior_separated (p : Σ _ : S, Ioo (0 : I) 1) :
+theorem bouquet_base_interior_separated (p : Σ _ : S, Ioo (0 : I) 1) :
     Separated (base S) (bouquetAllInteriors S p) := by
   apply separated_continuous (bouquetHeight S)
   dsimp only [bouquetHeight,ContinuousMap.coe_mk,bouquetAllInteriors,edgeInterior,
@@ -157,7 +157,7 @@ end Bouquet
 section Attachment
 variable {X : Type u} [TopologicalSpace X] {R : Type v}
 
-private def rawDiskRadius : CellAttachment.Raw X R → ℝ
+def rawDiskRadius : CellAttachment.Raw X R → ℝ
   | Sum.inl _ => 1
   | Sum.inr p => ‖p.2.val‖
 
@@ -178,7 +178,7 @@ def attachmentRadius (f : R → C(Circle,X)) : C(CellAttachment.Space f,ℝ) whe
         exact continuous_subtype_val.norm
     exact hc.congr (fun z => by cases z <;> rfl)
 
-private theorem attachment_point_cases (f : R → C(Circle,X)) (z : CellAttachment.Space f) :
+theorem attachment_point_cases (f : R → C(Circle,X)) (z : CellAttachment.Space f) :
     (∃ x, CellAttachment.inclusion f x = z) ∨
       ∃ p : Σ _ : R, CellAttachment.OpenDisk, CellAttachment.interiorMap f p = z := by
   obtain ⟨a,rfl⟩ := (CellAttachment.quotientMap_isQuotientMap f).surjective z
@@ -192,7 +192,7 @@ private theorem attachment_point_cases (f : R → C(Circle,X)) (z : CellAttachme
     · have hz' : ‖z.val‖ < 1 := lt_of_le_of_ne z.property hz
       exact Or.inr ⟨⟨i,⟨z.val,hz'⟩⟩,rfl⟩
 
-private theorem attachment_old_points_separated [T2Space X]
+theorem attachment_old_points_separated [T2Space X]
     (f : R → C(Circle,X)) (x₀ x y : X) (hxy : x ≠ y) :
     Separated (CellAttachment.inclusion f x) (CellAttachment.inclusion f y) := by
   let r := CellAttachment.neighborhoodRetraction f x₀
@@ -208,7 +208,7 @@ private theorem attachment_old_points_separated [T2Space X]
   subst b
   exact disjoint_left.mp hd ha hb
 
-private theorem attachment_old_interior_separated (f : R → C(Circle,X))
+theorem attachment_old_interior_separated (f : R → C(Circle,X))
     (x : X) (p : Σ _ : R, CellAttachment.OpenDisk) :
     Separated (CellAttachment.inclusion f x) (CellAttachment.interiorMap f p) := by
   apply separated_continuous (attachmentRadius f)

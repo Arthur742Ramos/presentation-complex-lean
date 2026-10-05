@@ -130,9 +130,9 @@
     {
       "module": "FiniteGraphFreeGroup.TreeContraction",
       "path": "FiniteGraphFreeGroup/TreeContraction.lean",
-      "source_sha256": "2fff607dbaa13606c012f7673a5ccb3d7e408d728f5b1974cafc772dce47acdb",
+      "source_sha256": "c13c6a045e47dc785f790127c76e3610b1f49ed11f514fb4a2c9c47168d44bbc",
       "eof_scopes_closed": 1,
-      "private_modifiers_removed": 1
+      "private_modifiers_removed": 0
     },
     {
       "module": "FiniteGraphFreeGroup.TopologicalComparison",
@@ -165,9 +165,9 @@
     {
       "module": "PresentationComplex.LoopCircle",
       "path": "PresentationComplex/LoopCircle.lean",
-      "source_sha256": "af0e59f6973a5fd8b080fa2e1c3128f3f911f93b0977a73e392d862064fb0c0b",
+      "source_sha256": "b3a0527aa25dd8d72f4a1db6569760dcb8b261c4647a0b022b89bea371797d2f",
       "eof_scopes_closed": 1,
-      "private_modifiers_removed": 2
+      "private_modifiers_removed": 0
     },
     {
       "module": "CellAttachment.Adjunction",
@@ -179,9 +179,9 @@
     {
       "module": "PresentationComplex.Connected",
       "path": "PresentationComplex/Connected.lean",
-      "source_sha256": "53d5cd452944bc098633a948fb2a86e67c3bc2487ea229bddc7b183efb4aa6db",
+      "source_sha256": "00c81c76e755080a7b3d28c0710d6887becb3596d12036ed48ee4883863a17b2",
       "eof_scopes_closed": 1,
-      "private_modifiers_removed": 1
+      "private_modifiers_removed": 0
     },
     {
       "module": "CellAttachment.GroupQuotient",
@@ -200,9 +200,9 @@
     {
       "module": "PresentationComplex.Relators",
       "path": "PresentationComplex/Relators.lean",
-      "source_sha256": "694b72637583332534104c6219581799708deb955eeda182d8073b5ca842ee89",
+      "source_sha256": "e6f90835fc9440a9b207c0be3ae81a7a7e0947b05c822900a4f10b301d18fd35",
       "eof_scopes_closed": 1,
-      "private_modifiers_removed": 1
+      "private_modifiers_removed": 0
     },
     {
       "module": "PresentationComplex.EveryGroupConstruction",
@@ -214,9 +214,9 @@
     {
       "module": "PresentationComplex.GraphCells",
       "path": "PresentationComplex/GraphCells.lean",
-      "source_sha256": "789edce5022d7ef8665292bfdd791880d928dd2d8c751e64adde036c2b503725",
+      "source_sha256": "0604d0faa2d1a013d5fe98e3b7522903c04413bc52a30fe00cf61ace8c6bc7b1",
       "eof_scopes_closed": 1,
-      "private_modifiers_removed": 3
+      "private_modifiers_removed": 0
     },
     {
       "module": "PresentationComplex.Characteristic",
@@ -228,9 +228,9 @@
     {
       "module": "PresentationComplex.IntervalCharts",
       "path": "PresentationComplex/IntervalCharts.lean",
-      "source_sha256": "17f2a0841a7a3dec55aca835cc3ebcbf12174266a486916b27188c8b0a72c456",
+      "source_sha256": "eb73ce4c51c284eeeeadd2baaf5264b246c085481af226eb9b76d557faac9c5e",
       "eof_scopes_closed": 1,
-      "private_modifiers_removed": 1
+      "private_modifiers_removed": 0
     },
     {
       "module": "PresentationComplex.BouquetCells",
@@ -242,9 +242,9 @@
     {
       "module": "PresentationComplex.CellCharts",
       "path": "PresentationComplex/CellCharts.lean",
-      "source_sha256": "72c4338a3f6805abba137f0b4297484f00fe9f202942ac6471fde570c30f51d7",
+      "source_sha256": "98ce74163a7378b750eda1ac389c7fa068e6141976e4635173e61d51c354afd4",
       "eof_scopes_closed": 1,
-      "private_modifiers_removed": 5
+      "private_modifiers_removed": 0
     },
     {
       "module": "CellAttachment.NormalForm",
@@ -270,9 +270,9 @@
     {
       "module": "PresentationComplex.CW",
       "path": "PresentationComplex/CW.lean",
-      "source_sha256": "9a18ed6b4ed132e9eae6d9e45252904e18210e3acee37152a3360ac58113e4f5",
+      "source_sha256": "4fe9e3c6bd7c607781c7ff9ed429f74c5f48931e848928755e2d17f88b547044",
       "eof_scopes_closed": 1,
-      "private_modifiers_removed": 14
+      "private_modifiers_removed": 0
     },
     {
       "module": "CellAttachment.GroupoidQuotient",
@@ -627,9 +627,9 @@
     {
       "module": "PresentationComplex.Hausdorff",
       "path": "PresentationComplex/Hausdorff.lean",
-      "source_sha256": "1b01654ea1d06cd36cabf803b4cbc3e21e3c6f538d1b19b7882be04e60eec8be",
+      "source_sha256": "318708b9772dc84fba6259a29574a2366658a82630541634efffb8809e75e75c",
       "eof_scopes_closed": 1,
-      "private_modifiers_removed": 14
+      "private_modifiers_removed": 0
     },
     {
       "module": "PresentationComplex.Main",
@@ -671,9 +671,9 @@
     {
       "module": "FiniteGraphFreeGroup.TreeContraction",
       "path": "FiniteGraphFreeGroup/TreeContraction.lean",
-      "source_sha256": "2fff607dbaa13606c012f7673a5ccb3d7e408d728f5b1974cafc772dce47acdb",
+      "source_sha256": "c13c6a045e47dc785f790127c76e3610b1f49ed11f514fb4a2c9c47168d44bbc",
       "eof_scopes_closed": 1,
-      "private_modifiers_removed": 1
+      "private_modifiers_removed": 0
     },
     {
       "module": "FiniteGraphFreeGroup.TopologicalComparison",
@@ -706,9 +706,9 @@
     {
       "module": "PresentationComplex.LoopCircle",
       "path": "PresentationComplex/LoopCircle.lean",
-      "source_sha256": "af0e59f6973a5fd8b080fa2e1c3128f3f911f93b0977a73e392d862064fb0c0b",
+      "source_sha256": "b3a0527aa25dd8d72f4a1db6569760dcb8b261c4647a0b022b89bea371797d2f",
       "eof_scopes_closed": 1,
-      "private_modifiers_removed": 2
+      "private_modifiers_removed": 0
     },
     {
       "module": "CellAttachment.Adjunction",
@@ -720,9 +720,9 @@
     {
       "module": "PresentationComplex.Connected",
       "path": "PresentationComplex/Connected.lean",
-      "source_sha256": "53d5cd452944bc098633a948fb2a86e67c3bc2487ea229bddc7b183efb4aa6db",
+      "source_sha256": "00c81c76e755080a7b3d28c0710d6887becb3596d12036ed48ee4883863a17b2",
       "eof_scopes_closed": 1,
-      "private_modifiers_removed": 1
+      "private_modifiers_removed": 0
     },
     {
       "module": "CellAttachment.GroupQuotient",
@@ -741,9 +741,9 @@
     {
       "module": "PresentationComplex.Relators",
       "path": "PresentationComplex/Relators.lean",
-      "source_sha256": "694b72637583332534104c6219581799708deb955eeda182d8073b5ca842ee89",
+      "source_sha256": "e6f90835fc9440a9b207c0be3ae81a7a7e0947b05c822900a4f10b301d18fd35",
       "eof_scopes_closed": 1,
-      "private_modifiers_removed": 1
+      "private_modifiers_removed": 0
     },
     {
       "module": "PresentationComplex.EveryGroupConstruction",

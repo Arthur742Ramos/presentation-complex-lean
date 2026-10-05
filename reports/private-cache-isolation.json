@@ -1,4 +1,53 @@
 {
-  "status": "not_run",
-  "scope": "Bounded module packaging repair; previous results archived under history/pre-bounded-a4e65503"
+  "status": "pass",
+  "all_dependency_pins_match": {
+    "mathlib": {
+      "actual": "065356127b1dc0016f66b7283ce0ce2c4055aa55",
+      "expected": "065356127b1dc0016f66b7283ce0ce2c4055aa55",
+      "matches": true
+    },
+    "plausible": {
+      "actual": "e50948299c4dc4a4c21b1c34b6a6a4fddc19f912",
+      "expected": "e50948299c4dc4a4c21b1c34b6a6a4fddc19f912",
+      "matches": true
+    },
+    "LeanSearchClient": {
+      "actual": "95e037bfdc31d3916ac615446847fb01960e2719",
+      "expected": "95e037bfdc31d3916ac615446847fb01960e2719",
+      "matches": true
+    },
+    "importGraph": {
+      "actual": "10930f8138f0462dbd744a91fc03a16fae0e046f",
+      "expected": "10930f8138f0462dbd744a91fc03a16fae0e046f",
+      "matches": true
+    },
+    "proofwidgets": {
+      "actual": "4c70ac059693669e5756e32a7a94b57ee1e99dc5",
+      "expected": "4c70ac059693669e5756e32a7a94b57ee1e99dc5",
+      "matches": true
+    },
+    "aesop": {
+      "actual": "75d936c7af167cc93fac0d31237682fc2204591d",
+      "expected": "75d936c7af167cc93fac0d31237682fc2204591d",
+      "matches": true
+    },
+    "Qq": {
+      "actual": "786b7acdca7eb4e9c76c5d1d5bd810e7e5c56334",
+      "expected": "786b7acdca7eb4e9c76c5d1d5bd810e7e5c56334",
+      "matches": true
+    },
+    "batteries": {
+      "actual": "ed9b316aabe389fec1ef43c3326ab48c7e59be42",
+      "expected": "ed9b316aabe389fec1ef43c3326ab48c7e59be42",
+      "matches": true
+    },
+    "Cli": {
+      "actual": "2842b9871b04862f944c032e34052cb9448ccb71",
+      "expected": "2842b9871b04862f944c032e34052cb9448ccb71",
+      "matches": true
+    }
+  },
+  "external_symlinks": [],
+  "cache_root": "/workspace/shared/presentation-intake-packaging-repair/.lake",
+  "copy_method": "cp -a --reflink=auto; removed unused copied packages.shared-link"
 }

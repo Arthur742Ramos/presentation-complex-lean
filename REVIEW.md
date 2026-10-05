@@ -79,3 +79,5 @@ ignored local caches and build outputs are outside the review interface.
 ## Bounded module package
 
 Include `PresentationPackage/Construction.lean`, `Proof1.lean`, and `Proof2.lean` with both entrypoints. Construction contains no selected headline proof and imports no proof chunk. Every active Lean source, including the audit harness, has a module header and at most 10,000 lines. This cap is conservatively enforced from the user-provided intake constraint; current official policy has not been independently re-read. Generation partitions only at original module boundaries, retaining scope closure, helper names, notices, and declaration order.
+
+The module port exposes 42 existing helpers used by public theorem signatures. Lean 4.35 module visibility prohibits using private names in these public signatures. Their bodies are unchanged, and generated-package names already had this stable public form.

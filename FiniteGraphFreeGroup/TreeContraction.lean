@@ -58,7 +58,7 @@ theorem graphTreeRootPath_cons {a b : V} (e : a ⟶ b) :
   rw [h]
   rfl
 
-private def treeContractionCoordinate (t s : I) : I :=
+def treeContractionCoordinate (t s : I) : I :=
   ⟨(1 - (s : ℝ)) * ((1 + (t : ℝ)) / 2), by
     have hs : 0 ≤ 1 - (s : ℝ) := by linarith [s.2.2]
     have hs' : 1 - (s : ℝ) ≤ 1 := by linarith [s.2.1]

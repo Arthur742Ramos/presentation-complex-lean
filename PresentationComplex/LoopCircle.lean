@@ -12,7 +12,7 @@ universe u
 namespace PresentationComplex
 variable {X : Type u} [TopologicalSpace X] {x₀ : X}
 
-private def circleFromPeriod : AddCircle (1 : ℝ) ≃ₜ Circle :=
+def circleFromPeriod : AddCircle (1 : ℝ) ≃ₜ Circle :=
   AddCircle.homeomorphCircle one_ne_zero
 
 /-- The endpoint-identified interval descent, transported to the actual complex unit circle. -/
@@ -22,7 +22,7 @@ def loopCircleMap (p : Path x₀ x₀) : C(Circle, X) where
     (AddCircle.liftIco_zero_continuous (by simp) p.continuous_extend.continuousOn).comp
       circleFromPeriod.symm.continuous
 
-private theorem circleFromPeriod_generator (t : I) :
+theorem circleFromPeriod_generator (t : I) :
     circleFromPeriod (t.val : AddCircle (1 : ℝ)) = CellAttachment.circleGenerator t := by
   rw [circleFromPeriod, AddCircle.homeomorphCircle_apply, AddCircle.toCircle_apply_mk,
     CellAttachment.circleGenerator_apply]

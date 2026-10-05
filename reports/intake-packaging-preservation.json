@@ -90,5 +90,6 @@
     "PresentationComplex/WordLoops.lean": true
   },
   "all_77_generated_source_sections_preserved": true,
-  "status": "static pass; no new compilation asserted"
+  "status": "static pass; no new compilation asserted",
+  "visibility_port": "42 private helpers used by exported declaration signatures are made public under exposed sections; bodies and generated names unchanged"
 }

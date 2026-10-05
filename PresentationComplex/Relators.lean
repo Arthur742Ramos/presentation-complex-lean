@@ -39,7 +39,7 @@ def anchorPath (r : R → FreeGroup S) (i : R) :
     Path (base S) (relatorMap r i 1) :=
   (Path.refl (base S)).cast rfl (relatorMap_one r i)
 
-private theorem based_attaching_class {X : Type*} [TopologicalSpace X] {x₀ : X}
+theorem based_attaching_class {X : Type*} [TopologicalSpace X] {x₀ : X}
     (f : C(Circle,X)) (h : f 1 = x₀) (p : Path x₀ x₀)
     (hp : ∀ t, f (CellAttachment.circleGenerator t) = p t) :
     Path.Homotopic.Quotient.mk (((Path.refl x₀).cast rfl h).trans

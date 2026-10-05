@@ -18,15 +18,15 @@ def edgeInterior (e : Quiver.Total V) : C(Ioo (0 : I) 1, graphRealization V) whe
   toFun t := graphEdgePath e t
   continuous_toFun := (graphEdgePath e).continuous.comp continuous_subtype_val
 
-private def rawEdgeInterior (e : Quiver.Total V) (t : Ioo (0 : I) 1) :
+def rawEdgeInterior (e : Quiver.Total V) (t : Ioo (0 : I) 1) :
     graphRealizationPre V :=
   Sum.inr ⟨graphDiscreteEdge e,t.val⟩
 
-private theorem rawEdgeInterior_isOpenMap (e : Quiver.Total V) :
+theorem rawEdgeInterior_isOpenMap (e : Quiver.Total V) :
     IsOpenMap (rawEdgeInterior e) :=
   isOpenMap_inr.comp (isOpenMap_sigmaMk.comp isOpen_Ioo.isOpenMap_subtype_val)
 
-private theorem rawEdgeInterior_image_saturated (e : Quiver.Total V)
+theorem rawEdgeInterior_image_saturated (e : Quiver.Total V)
     (A : Set (Ioo (0 : I) 1)) {x y : graphRealizationPre V}
     (h : Relation.EqvGen (graphRealizationGenerator (V := V)) x y) :
     x ∈ rawEdgeInterior e '' A ↔ y ∈ rawEdgeInterior e '' A := by
