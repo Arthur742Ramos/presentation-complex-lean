@@ -1,5 +1,7 @@
 {
   "unexpected_generated_modules": [],
+  "challenge_repository_import_failures": [],
+  "challenge_identical_construction_prefix": true,
   "packaging_module_header_failures": [],
   "packaging_line_cap_failures": [],
   "packaging_line_cap_basis": "Conservative user-provided 10,000 lines/file; current official policy not re-read",
@@ -91,9 +93,10 @@
     "CellAttachment.lean": 6,
     "ClassicalSVK.lean": 4,
     "Lean4.lean": 4,
-    "Challenge.lean": 265,
+    "Challenge.lean": 5913,
     "Solution.lean": 229,
-    "reports/AuditSolution.lean": 33
+    "reports/AuditSolution.lean": 33,
+    "scripts/CompareCanonical.lean": 137
   },
   "challenge_proof_dependency_failures": [],
   "construction_headline_leaks": [],

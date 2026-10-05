@@ -1,0 +1,49 @@
+{
+  "status": "pass",
+  "negative_control": true,
+  "source_sha256": "29f92f55295b947be8562d805a0793441f18c7c6aadab87a08d247e5473a6068",
+  "lean_version": "Lean (version 4.35.0-rc2, x86_64-unknown-linux-gnu, commit 11acb17ec6b07a8f9e9173e6845197929540936b, Release)",
+  "lean_binary_sha256": "bf8d54e4714cc4b03d3f6bb34c83b7202b87e49c8bfcbff6895c085bb90ceb38",
+  "dependency_manifest_sha256": "03253a6f6c196aaed8f3b45bd0ad436660fcde25b8f25778ec220ccdacb92301",
+  "module_name": "CanonicalChallenge_dbbc38c26b404ffa895669aa3a46d8e3",
+  "command": [
+    "/workspace/shared/higher-cell-tools/lean-4.35.0-rc2-linux/bin/lean",
+    "-j1",
+    "-M6144",
+    "-o",
+    "CanonicalChallenge_dbbc38c26b404ffa895669aa3a46d8e3.olean",
+    "CanonicalChallenge_dbbc38c26b404ffa895669aa3a46d8e3.lean"
+  ],
+  "exit_code": 1,
+  "lean_path": [
+    "/workspace/shared/presentation-intake-packaging-repair/.lake/packages/mathlib/.lake/build/lib/lean",
+    "/workspace/shared/presentation-intake-packaging-repair/.lake/packages/plausible/.lake/build/lib/lean",
+    "/workspace/shared/presentation-intake-packaging-repair/.lake/packages/LeanSearchClient/.lake/build/lib/lean",
+    "/workspace/shared/presentation-intake-packaging-repair/.lake/packages/importGraph/.lake/build/lib/lean",
+    "/workspace/shared/presentation-intake-packaging-repair/.lake/packages/proofwidgets/.lake/build/lib/lean",
+    "/workspace/shared/presentation-intake-packaging-repair/.lake/packages/aesop/.lake/build/lib/lean",
+    "/workspace/shared/presentation-intake-packaging-repair/.lake/packages/Qq/.lake/build/lib/lean",
+    "/workspace/shared/presentation-intake-packaging-repair/.lake/packages/batteries/.lake/build/lib/lean"
+  ],
+  "omitted_manifest_packages": [
+    {
+      "package": {
+        "url": "https://github.com/leanprover/lean4-cli",
+        "type": "git",
+        "subDir": null,
+        "scope": "leanprover",
+        "rev": "2842b9871b04862f944c032e34052cb9448ccb71",
+        "name": "Cli",
+        "manifestFile": "lake-manifest.json",
+        "inputRev": "v4.35.0-rc2",
+        "inherited": true,
+        "configFile": "lakefile.toml"
+      },
+      "reason": "Unused Lake CLI dependency; successful canonical elaboration establishes that no Cli artifact is required"
+    }
+  ],
+  "repository_builds_excluded": true,
+  "fresh_working_directory": true,
+  "output": "CanonicalChallenge_dbbc38c26b404ffa895669aa3a46d8e3.lean:225:0: error: unknown module prefix 'PresentationPackage'\n\nNo directory 'PresentationPackage' or file 'PresentationPackage.olean' in the search path entries:\n/workspace/shared/presentation-intake-packaging-repair/.lake/packages/mathlib/.lake/build/lib/lean\n/workspace/shared/presentation-intake-packaging-repair/.lake/packages/plausible/.lake/build/lib/lean\n/workspace/shared/presentation-intake-packaging-repair/.lake/packages/LeanSearchClient/.lake/build/lib/lean\n/workspace/shared/presentation-intake-packaging-repair/.lake/packages/importGraph/.lake/build/lib/lean\n/workspace/shared/presentation-intake-packaging-repair/.lake/packages/proofwidgets/.lake/build/lib/lean\n/workspace/shared/presentation-intake-packaging-repair/.lake/packages/aesop/.lake/build/lib/lean\n/workspace/shared/presentation-intake-packaging-repair/.lake/packages/Qq/.lake/build/lib/lean\n/workspace/shared/presentation-intake-packaging-repair/.lake/packages/batteries/.lake/build/lib/lean\n/workspace/shared/higher-cell-tools/lean-4.35.0-rc2-linux/lib/lean\n",
+  "scope": "Renamed canonical Challenge elaboration only; not hosted protocol or Comparator acceptance"
+}

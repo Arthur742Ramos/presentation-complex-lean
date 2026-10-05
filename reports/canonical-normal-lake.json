@@ -1,0 +1,135 @@
+{
+  "status": "pass",
+  "exit_code": 0,
+  "scope": "Normal Lake builds, Solution axiom audit and repaired Challenge export; not official Comparator or registry acceptance",
+  "build_jobs": [
+    "3149",
+    "3152",
+    "3234"
+  ],
+  "challenge_sha256": "2690aaf4e12651244f880bf4e5ed6c57d3cf8dd089a97afdad079e88e476a270",
+  "solution_sha256": "da98d4236ce51347bfcf0ef21592c4de1010ab3639a1eb993ffcbe26d70b25a0",
+  "source_package_sha256": {
+    "PresentationPackage/Construction.lean": "5cb3f7a01e2e273639ad073688ee58439c8a2762385c188b63f170dd8d870b60",
+    "PresentationPackage/Proof1.lean": "b23564f5231a5dc8754271e5d92799132b691ed7210a8427ca94e93c680df04f",
+    "PresentationPackage/Proof2.lean": "9d98b83606e7b405f525e7e8c8057abbeec3154493c16b6ddd987ac06444c366"
+  },
+  "compiled_entrypoints": {
+    "Challenge": "4c6e60db30b1ecc8a89923c493eae49257ff61f6fe4366289d4f55db000940de",
+    "Solution": "9004bfd649daf0848b805be10668949e58b07251888a92507e34b29214f3c224"
+  },
+  "axiom_targets_checked": 21,
+  "axiom_closures": {
+    "PresentationComplex.presentation_complex": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "PresentationComplex.every_group_fundamental_group": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "PresentationComplex.presentationPi1Equiv": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "PresentationComplex.presentationPi1Equiv_inclusion": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "PresentationComplex.presentationPi1Equiv_generator": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "PresentationComplex.presentationMap_exact": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "PresentationComplex.bouquetEquiv": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "PresentationComplex.bouquetEquiv_edgeLoop": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "PresentationComplex.attachingLoopClass_eq": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "PresentationComplex.presentationCW": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "PresentationComplex.presentationCW_generatorCells": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "PresentationComplex.presentationCW_relatorCells": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "PresentationComplex.presentationCW_noHigherCells": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "PresentationComplex.presentation_t2Space": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "PresentationComplex.everyGroupPi1Equiv": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "PresentationComplex.everyGroupPi1Equiv_generator": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "PresentationComplex.everyGroupCW_hasTwoCell": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "PresentationComplex.groupPresentationEquiv": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "PresentationComplex.groupPresentationEquiv_generator": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "CellAttachment.cell_attachment_exact": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "FiniteGraphFreeGroup.graphCombinatorialToTopologicalEquiv": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ]
+  },
+  "challenge_export": {
+    "bytes": 87726933,
+    "sha256": "6090fe454adbad445a994fa95bf79a4f97a1ade5b7d8d210ed0f4132636e0dbf",
+    "targets_sha256": "6a0caa18a367f1e22675087053a856136c0453f5b914311807456237be110ffa"
+  },
+  "log_sha256": "4554c377e7d76e1255919a6ed803a10de09dd786cc903304b24d9c62ae7eda8c"
+}

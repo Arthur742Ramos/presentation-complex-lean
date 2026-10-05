@@ -1,35 +1,62 @@
-# Current bounded-module verification
+# Current canonical Challenge repair
 
-Verified proof-source commit: `29ab34cb685371dbe71dfd669c3a090e9a5e7e7d`. Later evidence/documentation commits do not change Lean inputs.
-Base: merged main `a4e65503a5ac5e6255ba8eed23542d5b35a16e67`, exact tree of reviewed `8d28fa01d660ce8ade2d49c9bc4306b20b1df83d`.
+The user-reported canonical build excludes repository-generated oleans. The old
+Challenge imported `PresentationPackage.Construction`, so its earlier ordinary
+package-build pass did not test that boundary. The repair inlines exactly the
+same construction source and leaves Solution and all three package modules
+byte-for-byte unchanged.
 
 | Gate | Result |
 | --- | --- |
-| Deterministic generation and static audit | PASS: all 90 active Lean files have module headers and at most 10,000 lines; exactly two Challenge holes; no proof dependency or selected-headline leak |
-| Source preservation | PASS: 84 original declaration bodies and all 77 original generated source sections preserved, modulo module/import/visibility commands and blank lines |
-| Isolated complete source replay | PASS: all 87 original/generated modules on the exact pin; frozen fingerprint unchanged |
-| Fresh package compilation | PASS: Construction, Proof1, Proof2, Solution, Challenge |
-| Standard-only axiom audit | PASS: all 21 selected/supplemental targets |
-| Exact exports | PASS: Challenge and Solution, byte-bound in stage record |
-| Direct kernels | PASS: leanchecker, leanchecker-paranoid, nanoda, con-ron |
-| Normal Lake | PASS: 89 serial targets and aggregate 3,234 jobs, private cache |
-| Independent source review | PASS before compilation; final publication consistency review pending |
-| Supported local type/body Comparator | BLOCKED: unchanged sandbox cannot create NETLINK_ROUTE socket; no semantic comparison verdict |
-| Old Challenge/new Solution Comparator | NOT RUN after same sandbox blocker; no bypass attempted |
-| Remote ordinary CI for this repair | PENDING publication |
-| Official hosted verification / trusted rendering | NOT RUN |
-| Registry submission / acceptance | NOT SUBMITTED / NOT ACCEPTED |
+| Historical negative control | PASS: renamed old Challenge fails at line 225 with unknown module prefix `PresentationPackage` in the dependency-only environment |
+| Renamed canonical Challenge | PASS: fresh unique module and empty working directory, eight pinned dependency build paths plus standard library; no repository/generated-package oleans |
+| Supplemental expression comparison | PASS: 550 declaration types and 169 definition bodies, including both headline types; equal serialized bytes |
+| Compiler-private auxiliary handling | Exactly nine names mapped bijectively: six equation theorems and three splitter definitions; kinds checked; no other names normalized |
+| Public declaration comparison | All 541 public declaration types and 166 definition bodies match without private-name mapping; no public type/body references a private constant or projection |
+| Deterministic generation and static audit | PASS: module headers and fewer than 10,000 lines for every active Lean source, including the comparison harness; exactly two Challenge holes |
+| Proof source preservation | PASS: Solution, Construction, Proof1, Proof2 unchanged from the reviewed bounded package |
+| Normal Lake and fresh audit/export | PASS: Challenge 3,149 jobs; Solution 3,152; aggregate 3,234; all 21 Solution audit targets standard-only; fresh repaired Challenge export |
+| Historical Solution replay / axioms / direct kernels | Passes apply to unchanged, hash-bound Solution package only; see the preserved pre-canonical report |
+| Official sandboxed Comparator | No new verdict; previously blocked by host NETLINK_ROUTE restriction; no bypass or retry |
+| Remote ordinary CI | PENDING publication |
+| Hosted canonical acceptance / rendering | NOT RUN for this repair |
+| Registry submission | No new submission authorized or performed |
+
+## Evidence and limits
+
+- [Canonical compile and comparison receipt](canonical-challenge.json)
+- [Historical failure reproduction](canonical-challenge-negative-control.json)
+- [Source preservation](canonical-source-preservation.json)
+- [Static audit](static-source-audit.json)
+- [Normal builds, audit and export](canonical-normal-lake.json)
+- [Historical proof and package evidence](history/pre-canonical-a209b96/README.md)
+
+The supplemental checker extracts one environment per process. It compares exact
+bytes of deterministic Lean expression DAGs, ignoring binder names/annotations
+and metadata, and rewriting only nine explicitly listed compiler-private names.
+It preserves constant names, levels, expressions, let flags, and definition
+values otherwise. Both 2,153,939-byte snapshots have SHA-256
+`16358cb422a8e8e207eebb09fcfd5841bbc8f7d0559f417030af036eb38519ba`.
+This is additional local evidence, not the official sandboxed Comparator.
+The first dual-environment attempt was killed by signal 9; its receipt is retained.
+The first sequential attempt correctly rejected unmatched module-local private
+names; its receipt and diagnostic snapshots were retained before adding the
+reviewed explicit mapping.
+
+The manifest's unused `Cli` dependency has no local build directory and is the
+only explicitly allowed omission. Its exact pinned manifest entry is recorded.
+All other missing dependency builds cause failure. Successful isolated
+elaboration establishes that no Cli artifact was required.
 
 ## Exact package
 
-- Construction: 5,877 lines; Proof1: 7,996; Proof2: 4,236; Solution: 229; Challenge: 265
+- Challenge: 5,913 lines; Construction: 5,877; Proof1: 7,996; Proof2: 4,236; Solution: 229
+- Challenge SHA-256: `2690aaf4e12651244f880bf4e5ed6c57d3cf8dd089a97afdad079e88e476a270`
 - Lean: `4.35.0-rc2`, compiler commit `11acb17ec6b07a8f9e9173e6845197929540936b`
 - Mathlib: `065356127b1dc0016f66b7283ce0ce2c4055aa55`
-- Original reproduction files: 84; generated dependency modules: 3; entrypoints: 2; audit harness: 1
-- Eleven previously private helpers are exposed only where required by public signatures or direct exposed terms; 31 remain private. Bodies and generated helper names are unchanged
-- The 10,000-line cap is conservatively enforced from the user-provided constraint; current official policy has not been re-read
+- The line cap follows the user-provided constraint; current official policy was not re-read
 
-All three maintainers and original source/license notices are retained. Challenge physically shares only the construction module with Solution and never imports either proof chunk. The selected theorem types still require arbitrary independent-universe presentations, genuine indexed cells, Hausdorffness, connectedness, and ordinary fundamental-group equivalence. No target or hypothesis is weakened.
-
-See [local stage results](local-verification-results.json), [normal build evidence](normal-lake-result.json), [line/header/dependency audit](static-source-audit.json), [body preservation](intake-packaging-preservation.json), [visibility inventory](module-visibility-inventory.json), [exact sandbox diagnostic](comparator-blocker.txt), and [review manifest](review-package-manifest.json).
-Historical passes under `history/pre-bounded-a4e65503` describe previous bytes only. Local proofs and ordinary CI do not establish official readiness or registry acceptance.
+Both selected theorem statements, all three maintainers, source notices, and
+licenses are preserved. No target or hypothesis is weakened. Ordinary CI now
+runs the renamed dependency-only regression and supplemental comparison after
+its normal build. It performs no registry submission.

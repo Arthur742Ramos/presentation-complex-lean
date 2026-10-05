@@ -79,3 +79,20 @@ match the files under review; unchanged filenames do not carry old passes forwar
 First-party authors and responsible maintainers are Arthur Freitas Ramos,
 David Barros Hulak, and Ruy Jose Guerra Barretto de Queiroz. See
 [PROVENANCE.md](PROVENANCE.md) for retained upstream credits and licenses.
+
+## Canonical Challenge isolation regression
+
+After the ordinary build, run:
+
+```sh
+python3 scripts/check_canonical_challenge.py --compare-solution-dir .lake/build/lib/lean
+```
+
+The compilation uses a freshly renamed Challenge in an empty temporary directory,
+with only pinned dependency build paths. Repository and generated package outputs
+are excluded. Only after successful compilation does the optional supplemental
+comparison load Solution and compare canonical declaration types and definition
+bodies as serialized Lean expressions. Exactly nine compiler-private auxiliaries
+are mapped bijectively between module prefixes; no public type or definition
+body may reference a private name. This is not the official sandboxed Comparator or
+registry acceptance. The script accepts `--lean-bin` for a pinned local compiler.

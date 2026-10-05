@@ -1,11 +1,11 @@
 # Verification reports
 
-**Bounded module repair: exact local proof/build checks passed; Comparator is sandbox-blocked.**
-See [the current verification matrix](CURRENT_VERIFICATION.md). Previous merged-source passes are historical and do not certify these new module boundaries.
+**Canonical Challenge repair: dependency-only compilation and supplemental type/body comparison passed; official Comparator remains unverified.**
+See [the current verification matrix](CURRENT_VERIFICATION.md). Historical proof checks apply to the byte-identical Solution package; the repaired Challenge has separate hash-bound evidence.
 
 ## Active script-managed paths
 
-These ten paths remain in place because scripts or CI produce or consume them:
+These paths remain in place because scripts or CI produce or consume them:
 
 - `standalone-manifest.json` and `standalone-manifest.txt`: module lists and hashes
 - `comparator-local.json`, `export-targets.json`, `solution-export-targets.json`,
@@ -14,6 +14,9 @@ These ten paths remain in place because scripts or CI produce or consume them:
 - `static-source-audit.json`: source-only audit output
 - `local-verification-results.json`: hash-bound, stage-by-stage local results
 - `nanoda-config.json`: local checker configuration
+- `canonical-challenge.json`: isolated renamed compilation and supplemental type/body comparison
+- `canonical-challenge-negative-control.json`: exact historical missing-import failure
+- `canonical-source-preservation.json`: unchanged proof-package source hashes
 
 A generated manifest/configuration is not a passing verdict. Active files may
 retain pre-repair data until their owning scripts regenerate them. Even `pass`
