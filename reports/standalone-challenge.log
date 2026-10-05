@@ -1,0 +1,237 @@
+/workspace/shared/presentation-complex-lean/Challenge.lean:926:8: warning: Unused tactic linter: `change IsOpen {t : I | t < graphHalf ∨ graphHalf < t}` does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/workspace/shared/presentation-complex-lean/Challenge.lean:929:8: warning: Unused tactic linter: `change IsOpen {t : I | t < graphHalf}` does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/workspace/shared/presentation-complex-lean/Challenge.lean:933:8: warning: Unused tactic linter: `change IsOpen {t : I | graphHalf < t}` does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/workspace/shared/presentation-complex-lean/Challenge.lean:1011:6: warning: `simp` already closes the goal
+
+Hint: Use `simp` instead of `simpa`:
+  [apply] simp [graphEdgeInteriorPre, h]
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+/workspace/shared/presentation-complex-lean/Challenge.lean:1205:8: warning: `simp` already closes the goal
+
+Hint: Use `simp` instead of `simpa`:
+  [apply] simp [graphRealizationPreMap, graphVertexStarPre, graphCoverProjection, graphVertexUnderlying,
+    graphDiscreteVertex, hx', x.2]
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+/workspace/shared/presentation-complex-lean/Challenge.lean:1530:12: warning: `simp` already closes the goal
+
+Hint: Use `simp` instead of `simpa`:
+  [apply] simp [e, graphDiscreteEdge, graphEdgeUnderlying]
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+/workspace/shared/presentation-complex-lean/Challenge.lean:1601:12: warning: `simp` already closes the goal
+
+Hint: Use `simp` instead of `simpa`:
+  [apply] simp [e, graphDiscreteEdge, graphEdgeUnderlying]
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+/workspace/shared/presentation-complex-lean/Challenge.lean:1692:12: warning: `simp` already closes the goal
+
+Hint: Use `simp` instead of `simpa`:
+  [apply] simp [e, graphDiscreteEdge, graphEdgeUnderlying]
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+/workspace/shared/presentation-complex-lean/Challenge.lean:1695:12: warning: `simp` already closes the goal
+
+Hint: Use `simp` instead of `simpa`:
+  [apply] simp [f, graphDiscreteEdge, graphEdgeUnderlying]
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+/workspace/shared/presentation-complex-lean/Challenge.lean:1845:16: warning: `simp` already closes the goal
+
+Hint: Use `simp` instead of `simpa`:
+  [apply] simp [hedge, hteq]
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+/workspace/shared/presentation-complex-lean/Challenge.lean:1867:16: warning: `simp` already closes the goal
+
+Hint: Use `simp` instead of `simpa`:
+  [apply] simp [hedge, hteq]
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+/workspace/shared/presentation-complex-lean/Challenge.lean:1894:8: warning: `simp` already closes the goal
+
+Hint: Use `simp` instead of `simpa`:
+  [apply] simp [e, graphDiscreteEdge, graphEdgeUnderlying]
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+/workspace/shared/presentation-complex-lean/Challenge.lean:2045:37: warning: `simp` already closes the goal
+
+Hint: Use `simp` instead of `simpa`:
+  [apply] simp at ht
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+/workspace/shared/presentation-complex-lean/Challenge.lean:2115:37: warning: `simp` already closes the goal
+
+Hint: Use `simp` instead of `simpa`:
+  [apply] simp at ht
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+/workspace/shared/presentation-complex-lean/Challenge.lean:2221:10: warning: `simp` already closes the goal
+
+Hint: Use `simp` instead of `simpa`:
+  [apply] simp [hteq.2]
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+/workspace/shared/presentation-complex-lean/Challenge.lean:2281:33: warning: `simp` already closes the goal
+
+Hint: Use `simp` instead of `simpa`:
+  [apply] simp at hz
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+/workspace/shared/presentation-complex-lean/Challenge.lean:2360:35: warning: `simp` already closes the goal
+
+Hint: Use `simp` instead of `simpa`:
+  [apply] simp at ht
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+/workspace/shared/presentation-complex-lean/Challenge.lean:2385:10: warning: `simp` already closes the goal
+
+Hint: Use `simp` instead of `simpa`:
+  [apply] simp [graphRealizationPreMap, graphCoverProjection, graphEdgeInteriorPre] at hpre
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+/workspace/shared/presentation-complex-lean/Challenge.lean:2445:4: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+/workspace/shared/presentation-complex-lean/Challenge.lean:2447:4: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+/workspace/shared/presentation-complex-lean/Challenge.lean:2473:4: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+/workspace/shared/presentation-complex-lean/Challenge.lean:2475:4: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+/workspace/shared/presentation-complex-lean/Challenge.lean:2503:10: warning: `simp` already closes the goal
+
+Hint: Use `simp` instead of `simpa`:
+  [apply] simp [graphDiscreteVertex, graphVertexUnderlying]
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+/workspace/shared/presentation-complex-lean/Challenge.lean:2520:8: warning: `simp` already closes the goal
+
+Hint: Use `simp` instead of `simpa`:
+  [apply] simp [e, graphDiscreteEdge, graphEdgeUnderlying]
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+/workspace/shared/presentation-complex-lean/Challenge.lean:2721:8: warning: `dif_neg` has been deprecated: Use `dite_eq_right` instead
+
+Hint: Replace the deprecated name:
+  d̵i̵f̵_̵n̵e̵g̵d̲i̲t̲e̲_̲e̲q̲_̲r̲i̲g̲h̲t̲
+/workspace/shared/presentation-complex-lean/Challenge.lean:2739:13: warning: `dif_pos` has been deprecated: Use `dite_eq_left` instead
+
+Hint: Replace the deprecated name:
+  d̵i̵f̵_̵p̵o̵s̵d̲i̲t̲e̲_̲e̲q̲_̲l̲e̲f̲t̲
+/workspace/shared/presentation-complex-lean/Challenge.lean:3534:2: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+/workspace/shared/presentation-complex-lean/Challenge.lean:4136:2: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+/workspace/shared/presentation-complex-lean/Challenge.lean:4139:2: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+/workspace/shared/presentation-complex-lean/Challenge.lean:4292:2: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+/workspace/shared/presentation-complex-lean/Challenge.lean:4295:2: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+/workspace/shared/presentation-complex-lean/Challenge.lean:4370:8: warning: `simp` already closes the goal
+
+Hint: Use `simp` instead of `simpa`:
+  [apply] simp [e, graphDiscreteEdge, graphEdgeUnderlying]
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+/workspace/shared/presentation-complex-lean/Challenge.lean:4345:0: warning: automatically included section variable(s) unused in theorem `FiniteGraphFreeGroup.graphCoverRealization_fiber_vertex`:
+  [WeaklyConnected V]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [WeaklyConnected V] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+/workspace/shared/presentation-complex-lean/Challenge.lean:4404:0: warning: automatically included section variable(s) unused in theorem `FiniteGraphFreeGroup.graphCoverRealizationQuiverPath_map`:
+  [WeaklyConnected V]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [WeaklyConnected V] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+/workspace/shared/presentation-complex-lean/Challenge.lean:4480:2: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+/workspace/shared/presentation-complex-lean/Challenge.lean:4809:12: warning: Variable name `S` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _S
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+/workspace/shared/presentation-complex-lean/Challenge.lean:5522:48: warning: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+
+Hint: Replace the deprecated name:
+  m̵e̵m̵_̵s̵e̵t̵O̵f̵_̵e̵q̵m̲e̲m̲_̲o̲f̲P̲r̲e̲d̲_̲e̲q̲
+/workspace/shared/presentation-complex-lean/Challenge.lean:5530:2: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+/workspace/shared/presentation-complex-lean/Challenge.lean:5854:8: warning: declaration uses `sorry`

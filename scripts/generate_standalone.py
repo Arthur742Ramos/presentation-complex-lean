@@ -113,6 +113,10 @@ def body(source: str) -> str:
         if line.strip() == '@[expose] public section': continue
         output.append(original)
     result = ''.join(output)
+    # Private names contain the generated module name. Stable helper names are
+    # essential to exact Challenge/Solution body comparison. Visibility alone
+    # is changed; all declaration bodies and references remain intact.
+    result = re.sub(r'^(\s*)private\s+(?=(?:def|theorem|lemma|abbrev|instance|opaque)\b)', r'\1', result, flags=re.M)
     return result if result.endswith('\n') else result + '\n'
 
 
@@ -195,7 +199,8 @@ def render(order: list[tuple[str, Path]], external: list[str]) -> tuple[str, lis
         wrapped, closures = wrap(name, source)
         output += wrapped
         manifest.append({'module': name, 'path': str(path.relative_to(ROOT)),
-                         'source_sha256': sha256(source), 'eof_scopes_closed': closures})
+                         'source_sha256': sha256(source), 'eof_scopes_closed': closures,
+                         'private_modifiers_removed': len(re.findall(r'^\s*private\s+(?:def|theorem|lemma|abbrev|instance|opaque)\b', code_only(source), re.M))})
     return output, manifest
 
 
@@ -206,8 +211,14 @@ def generate() -> dict[str, str]:
               'PresentationComplex.CW', 'PresentationComplex.Hausdorff', 'CellAttachment.Main'}
     overlap = banned.intersection(name for name, _ in challenge_order)
     if overlap: raise ValueError(f'Challenge imports proven target machinery: {sorted(overlap)}')
+    minimal_challenge_external = list(challenge_external)
     cw_import = 'Mathlib.Topology.CWComplex.Classical.Basic'
-    if cw_import not in challenge_external: challenge_external.append(cw_import)
+    if cw_import not in solution_external: solution_external.append(cw_import)
+    # Identical imported environments and a common construction prefix prevent
+    # later proof imports, simp lemmas, or instances from changing common terms.
+    challenge_external = list(solution_external)
+    construction_names = {name for name, _ in challenge_order}
+    solution_order = challenge_order + [(name, path) for name, path in solution_order if name not in construction_names]
     solution, solution_manifest = render(solution_order, solution_external)
     challenge, challenge_manifest = render(challenge_order, challenge_external)
     statement = statement_source()
@@ -237,8 +248,11 @@ end PresentationComplex
         'solution_sha256': sha256(solution), 'challenge_sha256': sha256(challenge),
         'solution_local_modules': solution_manifest, 'challenge_local_modules': challenge_manifest,
         'solution_external_imports': solution_external, 'challenge_external_imports': challenge_external,
+        'challenge_minimal_construction_imports': minimal_challenge_external,
+        'shared_construction_prefix': [name for name, _ in challenge_order],
+        'shared_environment_note': 'Both standalones import the same external Mathlib environment and elaborate the identical local construction prefix first, preserving exact shared declaration bodies.',
         'challenge_intentional_holes': ['PresentationComplex.presentation_complex'],
-        'source_transform': 'Remove import/module/expose-section commands; isolate module scopes in sections and close EOF scopes. All other source text and notices are retained.',
+        'source_transform': 'Remove import/module/expose-section commands; isolate module scopes in sections and close EOF scopes; remove private visibility modifiers for stable helper names across Challenge/Solution. All declaration bodies and source notices are retained.',
     }
     return {'Solution.lean': solution, 'Challenge.lean': challenge,
             'reports/standalone-manifest.json': json.dumps(metadata, indent=2) + '\n',

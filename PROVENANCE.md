@@ -4,8 +4,11 @@ First-party authors: Arthur Freitas Ramos, David Barros Hulak,
 Ruy Jose Guerra Barretto de Queiroz. Arthur is sole responsible maintainer.
 No invented roles or mathematical novelty are claimed.
 
-The project is IN PROGRESS. Individual compiled modules are reported separately;
-no complete arbitrary presentation-complex theorem is certified yet.
+All 83 modular sources, both standalones, the standard-only transitive axiom
+audit, and four direct independent kernels pass on the exact toolchain. Normal
+serial and aggregate Lake builds also pass.
+The sandboxed Comparator is blocked at
+kernel launch; no official hosted or registry verdict is claimed.
 
 The genuine arbitrary graph realization, covering, contraction, and comparison
 are adapted from Arthur742Ramos/finite-graph-fundamental-group exact commit
@@ -36,11 +39,11 @@ is Mathlib.Topology.CWComplex.Classical.Basic, credited in its upstream source.
 The one-vertex combinatorial/free-group equivalence is constructed via universal
 properties, with actual generator-path equations; no free-group or CW oracle.
 
-Mathematical source: Allen Hatcher, Algebraic Topology, Corollary1.28,
-printed page52, Cornell edition:
+Mathematical source: Allen Hatcher, Algebraic Topology, Corollary 1.28,
+printed page 52, Cornell edition:
 https://pi.math.cornell.edu/~hatcher/AT/AT..pdf#page=61 .
 The target explicitly permits arbitrary independent-universe presentations.
 No worldwide-priority claim is made.
 
-Exact toolchain: Lean4.35.0-rc2 and Mathlib
+Exact toolchain: Lean 4.35.0-rc2 and Mathlib
 `065356127b1dc0016f66b7283ce0ce2c4055aa55`.

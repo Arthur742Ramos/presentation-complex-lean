@@ -1,0 +1,880 @@
+/workspace/shared/presentation-complex-lean/Solution.lean:926:8: warning: Unused tactic linter: `change IsOpen {t : I | t < graphHalf ∨ graphHalf < t}` does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/workspace/shared/presentation-complex-lean/Solution.lean:929:8: warning: Unused tactic linter: `change IsOpen {t : I | t < graphHalf}` does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/workspace/shared/presentation-complex-lean/Solution.lean:933:8: warning: Unused tactic linter: `change IsOpen {t : I | graphHalf < t}` does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/workspace/shared/presentation-complex-lean/Solution.lean:1011:6: warning: `simp` already closes the goal
+
+Hint: Use `simp` instead of `simpa`:
+  [apply] simp [graphEdgeInteriorPre, h]
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+/workspace/shared/presentation-complex-lean/Solution.lean:1205:8: warning: `simp` already closes the goal
+
+Hint: Use `simp` instead of `simpa`:
+  [apply] simp [graphRealizationPreMap, graphVertexStarPre, graphCoverProjection, graphVertexUnderlying,
+    graphDiscreteVertex, hx', x.2]
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+/workspace/shared/presentation-complex-lean/Solution.lean:1530:12: warning: `simp` already closes the goal
+
+Hint: Use `simp` instead of `simpa`:
+  [apply] simp [e, graphDiscreteEdge, graphEdgeUnderlying]
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+/workspace/shared/presentation-complex-lean/Solution.lean:1601:12: warning: `simp` already closes the goal
+
+Hint: Use `simp` instead of `simpa`:
+  [apply] simp [e, graphDiscreteEdge, graphEdgeUnderlying]
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+/workspace/shared/presentation-complex-lean/Solution.lean:1692:12: warning: `simp` already closes the goal
+
+Hint: Use `simp` instead of `simpa`:
+  [apply] simp [e, graphDiscreteEdge, graphEdgeUnderlying]
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+/workspace/shared/presentation-complex-lean/Solution.lean:1695:12: warning: `simp` already closes the goal
+
+Hint: Use `simp` instead of `simpa`:
+  [apply] simp [f, graphDiscreteEdge, graphEdgeUnderlying]
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+/workspace/shared/presentation-complex-lean/Solution.lean:1845:16: warning: `simp` already closes the goal
+
+Hint: Use `simp` instead of `simpa`:
+  [apply] simp [hedge, hteq]
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+/workspace/shared/presentation-complex-lean/Solution.lean:1867:16: warning: `simp` already closes the goal
+
+Hint: Use `simp` instead of `simpa`:
+  [apply] simp [hedge, hteq]
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+/workspace/shared/presentation-complex-lean/Solution.lean:1894:8: warning: `simp` already closes the goal
+
+Hint: Use `simp` instead of `simpa`:
+  [apply] simp [e, graphDiscreteEdge, graphEdgeUnderlying]
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+/workspace/shared/presentation-complex-lean/Solution.lean:2045:37: warning: `simp` already closes the goal
+
+Hint: Use `simp` instead of `simpa`:
+  [apply] simp at ht
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+/workspace/shared/presentation-complex-lean/Solution.lean:2115:37: warning: `simp` already closes the goal
+
+Hint: Use `simp` instead of `simpa`:
+  [apply] simp at ht
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+/workspace/shared/presentation-complex-lean/Solution.lean:2221:10: warning: `simp` already closes the goal
+
+Hint: Use `simp` instead of `simpa`:
+  [apply] simp [hteq.2]
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+/workspace/shared/presentation-complex-lean/Solution.lean:2281:33: warning: `simp` already closes the goal
+
+Hint: Use `simp` instead of `simpa`:
+  [apply] simp at hz
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+/workspace/shared/presentation-complex-lean/Solution.lean:2360:35: warning: `simp` already closes the goal
+
+Hint: Use `simp` instead of `simpa`:
+  [apply] simp at ht
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+/workspace/shared/presentation-complex-lean/Solution.lean:2385:10: warning: `simp` already closes the goal
+
+Hint: Use `simp` instead of `simpa`:
+  [apply] simp [graphRealizationPreMap, graphCoverProjection, graphEdgeInteriorPre] at hpre
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+/workspace/shared/presentation-complex-lean/Solution.lean:2445:4: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+/workspace/shared/presentation-complex-lean/Solution.lean:2447:4: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+/workspace/shared/presentation-complex-lean/Solution.lean:2473:4: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+/workspace/shared/presentation-complex-lean/Solution.lean:2475:4: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+/workspace/shared/presentation-complex-lean/Solution.lean:2503:10: warning: `simp` already closes the goal
+
+Hint: Use `simp` instead of `simpa`:
+  [apply] simp [graphDiscreteVertex, graphVertexUnderlying]
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+/workspace/shared/presentation-complex-lean/Solution.lean:2520:8: warning: `simp` already closes the goal
+
+Hint: Use `simp` instead of `simpa`:
+  [apply] simp [e, graphDiscreteEdge, graphEdgeUnderlying]
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+/workspace/shared/presentation-complex-lean/Solution.lean:2721:8: warning: `dif_neg` has been deprecated: Use `dite_eq_right` instead
+
+Hint: Replace the deprecated name:
+  d̵i̵f̵_̵n̵e̵g̵d̲i̲t̲e̲_̲e̲q̲_̲r̲i̲g̲h̲t̲
+/workspace/shared/presentation-complex-lean/Solution.lean:2739:13: warning: `dif_pos` has been deprecated: Use `dite_eq_left` instead
+
+Hint: Replace the deprecated name:
+  d̵i̵f̵_̵p̵o̵s̵d̲i̲t̲e̲_̲e̲q̲_̲l̲e̲f̲t̲
+/workspace/shared/presentation-complex-lean/Solution.lean:3534:2: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+/workspace/shared/presentation-complex-lean/Solution.lean:4136:2: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+/workspace/shared/presentation-complex-lean/Solution.lean:4139:2: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+/workspace/shared/presentation-complex-lean/Solution.lean:4292:2: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+/workspace/shared/presentation-complex-lean/Solution.lean:4295:2: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+/workspace/shared/presentation-complex-lean/Solution.lean:4370:8: warning: `simp` already closes the goal
+
+Hint: Use `simp` instead of `simpa`:
+  [apply] simp [e, graphDiscreteEdge, graphEdgeUnderlying]
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+/workspace/shared/presentation-complex-lean/Solution.lean:4345:0: warning: automatically included section variable(s) unused in theorem `FiniteGraphFreeGroup.graphCoverRealization_fiber_vertex`:
+  [WeaklyConnected V]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [WeaklyConnected V] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+/workspace/shared/presentation-complex-lean/Solution.lean:4404:0: warning: automatically included section variable(s) unused in theorem `FiniteGraphFreeGroup.graphCoverRealizationQuiverPath_map`:
+  [WeaklyConnected V]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [WeaklyConnected V] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+/workspace/shared/presentation-complex-lean/Solution.lean:4480:2: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+/workspace/shared/presentation-complex-lean/Solution.lean:4809:12: warning: Variable name `S` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _S
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+/workspace/shared/presentation-complex-lean/Solution.lean:5522:48: warning: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+
+Hint: Replace the deprecated name:
+  m̵e̵m̵_̵s̵e̵t̵O̵f̵_̵e̵q̵m̲e̲m̲_̲o̲f̲P̲r̲e̲d̲_̲e̲q̲
+/workspace/shared/presentation-complex-lean/Solution.lean:5530:2: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+/workspace/shared/presentation-complex-lean/Solution.lean:5866:54: warning: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+
+Hint: Replace the deprecated name:
+  m̵e̵m̵_̵s̵e̵t̵O̵f̵_̵e̵q̵m̲e̲m̲_̲o̲f̲P̲r̲e̲d̲_̲e̲q̲
+/workspace/shared/presentation-complex-lean/Solution.lean:5943:28: warning: `dif_pos` has been deprecated: Use `dite_eq_left` instead
+
+Hint: Replace the deprecated name:
+  d̵i̵f̵_̵p̵o̵s̵d̲i̲t̲e̲_̲e̲q̲_̲l̲e̲f̲t̲
+/workspace/shared/presentation-complex-lean/Solution.lean:5959:15: warning: `dif_pos` has been deprecated: Use `dite_eq_left` instead
+
+Hint: Replace the deprecated name:
+  d̵i̵f̵_̵p̵o̵s̵d̲i̲t̲e̲_̲e̲q̲_̲l̲e̲f̲t̲
+/workspace/shared/presentation-complex-lean/Solution.lean:5967:20: warning: `dif_pos` has been deprecated: Use `dite_eq_left` instead
+
+Hint: Replace the deprecated name:
+  d̵i̵f̵_̵p̵o̵s̵d̲i̲t̲e̲_̲e̲q̲_̲l̲e̲f̲t̲
+/workspace/shared/presentation-complex-lean/Solution.lean:5971:15: warning: `dif_pos` has been deprecated: Use `dite_eq_left` instead
+
+Hint: Replace the deprecated name:
+  d̵i̵f̵_̵p̵o̵s̵d̲i̲t̲e̲_̲e̲q̲_̲l̲e̲f̲t̲
+/workspace/shared/presentation-complex-lean/Solution.lean:5986:6: warning: `continuousOn_iff_continuous_restrict` has been deprecated: Use `continuousOn_iff_continuous_domRestrict` instead
+
+Hint: Replace the deprecated name:
+  continuousOn_iff_continuous_r̵d̲o̲m̲R̲estrict
+/workspace/shared/presentation-complex-lean/Solution.lean:5993:6: warning: `continuousOn_iff_continuous_restrict` has been deprecated: Use `continuousOn_iff_continuous_domRestrict` instead
+
+Hint: Replace the deprecated name:
+  continuousOn_iff_continuous_r̵d̲o̲m̲R̲estrict
+/workspace/shared/presentation-complex-lean/Solution.lean:6002:13: warning: `dif_pos` has been deprecated: Use `dite_eq_left` instead
+
+Hint: Replace the deprecated name:
+  d̵i̵f̵_̵p̵o̵s̵d̲i̲t̲e̲_̲e̲q̲_̲l̲e̲f̲t̲
+/workspace/shared/presentation-complex-lean/Solution.lean:6040:0: warning: Definition `PresentationComplex.CWGeometry.toCWComplex` of class type is semireducible. Most type class instances should be instance-reducible, so consider marking this
+definition with `@[instance_reducible]`. If it is intentionally semireducible, this warning can be disabled with `set_option warn.classDefReducibility false`.
+/workspace/shared/presentation-complex-lean/Solution.lean:6510:2: warning: `simp` already closes the goal
+
+Hint: Use `simp` instead of `simpa`:
+  [apply] simp at h'
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+/workspace/shared/presentation-complex-lean/Solution.lean:6585:4: warning: `simp` already closes the goal
+
+Hint: Use `simp` instead of `simpa`:
+  [apply] simp [hz] at h
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+/workspace/shared/presentation-complex-lean/Solution.lean:8331:36: warning: Variable name `h` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _h
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+/workspace/shared/presentation-complex-lean/Solution.lean:8378:89: warning: `setOf` has been deprecated: Use `Set.ofPred` instead
+
+Hint: Replace the deprecated name:
+  s̵e̵t̵O̵f̵S̲e̲t̲.̲o̲f̲P̲r̲e̲d̲
+/workspace/shared/presentation-complex-lean/Solution.lean:8503:0: warning: Definition `isDipath_constant` is a proposition; use `theorem` instead of `def`
+
+Note: This linter can be disabled with `set_option linter.defProp false`
+/workspace/shared/presentation-complex-lean/Solution.lean:8506:0: warning: Definition `isDipath_concat` is a proposition; use `theorem` instead of `def`
+
+Note: This linter can be disabled with `set_option linter.defProp false`
+/workspace/shared/presentation-complex-lean/Solution.lean:8509:0: warning: Definition `isDipath_reparam` is a proposition; use `theorem` instead of `def`
+
+Note: This linter can be disabled with `set_option linter.defProp false`
+/workspace/shared/presentation-complex-lean/Solution.lean:8555:51: warning: The syntax is now `structure S : Type extends P` rather than `structure S extends P : Type`
+
+Note: The purpose of this change is to accommodate `structure S extends toP : P` syntax for naming parent projections.
+/workspace/shared/presentation-complex-lean/Solution.lean:8688:0: warning: Definition `DirectedSpace.Preorder` of class type is semireducible. Most type class instances should be instance-reducible, so consider marking this
+definition with `@[instance_reducible]`. If it is intentionally semireducible, this warning can be disabled with `set_option warn.classDefReducibility false`.
+/workspace/shared/presentation-complex-lean/Solution.lean:8715:0: warning: Definition `DirectedSpace.Induced` of class type is semireducible. Most type class instances should be instance-reducible, so consider marking this
+definition with `@[instance_reducible]`. If it is intentionally semireducible, this warning can be disabled with `set_option warn.classDefReducibility false`.
+/workspace/shared/presentation-complex-lean/Solution.lean:9004:44: warning: `structure ... :=` has been deprecated in favor of `structure ... where`.
+
+Note: This linter can be disabled with `set_option linter.deprecated false`
+/workspace/shared/presentation-complex-lean/Solution.lean:9018:9: warning: The namespace `Dipath` is duplicated in the declaration `Dipath.Dipath.instFunLike`.
+
+Note: This linter can be disabled with `set_option linter.dupNamespace false`
+/workspace/shared/presentation-complex-lean/Solution.lean:9025:9: warning: The namespace `Dipath` is duplicated in the declaration `Dipath.Dipath.directedMapClass`.
+
+Note: This linter can be disabled with `set_option linter.dupNamespace false`
+/workspace/shared/presentation-complex-lean/Solution.lean:9268:24: warning: This simp argument is unused:
+  γ₁.source'
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [γ₂.source']
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/shared/presentation-complex-lean/Solution.lean:9268:36: warning: This simp argument is unused:
+  γ₂.source'
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [γ₁.source']
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/shared/presentation-complex-lean/Solution.lean:9269:24: warning: This simp argument is unused:
+  γ₁.target'
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [γ₂.target']
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/shared/presentation-complex-lean/Solution.lean:9269:36: warning: This simp argument is unused:
+  γ₂.target'
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [γ₁.target']
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/shared/presentation-complex-lean/Solution.lean:9273:41: warning: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+/workspace/shared/presentation-complex-lean/Solution.lean:9273:51: warning: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+/workspace/shared/presentation-complex-lean/Solution.lean:9274:41: warning: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+/workspace/shared/presentation-complex-lean/Solution.lean:9274:51: warning: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+/workspace/shared/presentation-complex-lean/Solution.lean:9493:22: warning: This simp argument is unused:
+  γ.source'
+
+Hint: Omit it from the simp argument list.
+  [apply] simp
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/shared/presentation-complex-lean/Solution.lean:9500:22: warning: This simp argument is unused:
+  γ.target'
+
+Hint: Omit it from the simp argument list.
+  [apply] simp
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/shared/presentation-complex-lean/Solution.lean:9769:24: warning: This simp argument is unused:
+  γ.source'
+
+Hint: Omit it from the simp argument list.
+  [apply] simp
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/shared/presentation-complex-lean/Solution.lean:9770:24: warning: This simp argument is unused:
+  γ.target'
+
+Hint: Omit it from the simp argument list.
+  [apply] simp
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/shared/presentation-complex-lean/Solution.lean:9797:24: warning: This simp argument is unused:
+  γ.source'
+
+Hint: Omit it from the simp argument list.
+  [apply] simp
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/shared/presentation-complex-lean/Solution.lean:9798:24: warning: This simp argument is unused:
+  γ.target'
+
+Hint: Omit it from the simp argument list.
+  [apply] simp
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/shared/presentation-complex-lean/Solution.lean:9847:69: warning: `structure ... :=` has been deprecated in favor of `structure ... where`.
+
+Note: This linter can be disabled with `set_option linter.deprecated false`
+/workspace/shared/presentation-complex-lean/Solution.lean:9856:41: warning: The syntax is now `structure S : Type extends P` rather than `structure S extends P : Type`
+
+Note: The purpose of this change is to accommodate `structure S extends toP : P` syntax for naming parent projections.
+/workspace/shared/presentation-complex-lean/Solution.lean:10027:8: warning: This simp argument is unused:
+  ht
+
+Hint: Omit it from the simp argument list.
+  [apply] simp
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/shared/presentation-complex-lean/Solution.lean:10127:4: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+/workspace/shared/presentation-complex-lean/Solution.lean:10271:89: warning: `structure ... :=` has been deprecated in favor of `structure ... where`.
+
+Note: This linter can be disabled with `set_option linter.deprecated false`
+/workspace/shared/presentation-complex-lean/Solution.lean:10636:26: warning: This simp argument is unused:
+  not_le
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [Path.trans_apply, coe_to_fun, Function.comp_apply]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/shared/presentation-complex-lean/Solution.lean:10636:34: warning: This simp argument is unused:
+  coe_to_fun
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [Path.trans_apply, not_le, Function.comp_apply]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/shared/presentation-complex-lean/Solution.lean:10822:8: warning: This simp argument is unused:
+  this
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [ht_coe]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/shared/presentation-complex-lean/Solution.lean:10839:8: warning: This simp argument is unused:
+  ht
+
+Hint: Omit it from the simp argument list.
+  [apply] simp
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/shared/presentation-complex-lean/Solution.lean:10929:4: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+/workspace/shared/presentation-complex-lean/Solution.lean:10969:41: warning: `dif_pos` has been deprecated: Use `dite_eq_left` instead
+
+Hint: Replace the deprecated name:
+  d̵i̵f̵_̵p̵o̵s̵d̲i̲t̲e̲_̲e̲q̲_̲l̲e̲f̲t̲
+/workspace/shared/presentation-complex-lean/Solution.lean:11340:17: warning: Definition `Dipath.Dihomotopic.setoid` of class type is semireducible. Most type class instances should be instance-reducible, so consider marking this
+definition with `@[instance_reducible]`. If it is intentionally semireducible, this warning can be disabled with `set_option warn.classDefReducibility false`.
+/workspace/shared/presentation-complex-lean/Solution.lean:11427:4: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+/workspace/shared/presentation-complex-lean/Solution.lean:11436:4: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+/workspace/shared/presentation-complex-lean/Solution.lean:11462:0: warning: Definition `trans_assoc` is a proposition; use `theorem` instead of `def`
+
+Note: This linter can be disabled with `set_option linter.defProp false`
+/workspace/shared/presentation-complex-lean/Solution.lean:11527:17: warning: Definition `Dipath.Dihomotopic.setoid` of class type is semireducible. Most type class instances should be instance-reducible, so consider marking this
+definition with `@[instance_reducible]`. If it is intentionally semireducible, this warning can be disabled with `set_option warn.classDefReducibility false`.
+/workspace/shared/presentation-complex-lean/Solution.lean:11589:19: warning: This simp argument is unused:
+  Quotient.map_mk
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Dipath.map_map, Quotient.eq']
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/shared/presentation-complex-lean/Solution.lean:11589:36: warning: This simp argument is unused:
+  Dipath.map_map
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Quotient.map_mk, Quotient.eq']
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/shared/presentation-complex-lean/Solution.lean:11589:52: warning: This simp argument is unused:
+  Quotient.eq'
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Quotient.map_mk, Dipath.map_map]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/shared/presentation-complex-lean/Solution.lean:11640:17: warning: Definition `Dipath.Dihomotopic.setoid` of class type is semireducible. Most type class instances should be instance-reducible, so consider marking this
+definition with `@[instance_reducible]`. If it is intentionally semireducible, this warning can be disabled with `set_option warn.classDefReducibility false`.
+/workspace/shared/presentation-complex-lean/Solution.lean:11783:13: warning: This simp argument is unused:
+  Fraction.ofPos_coe
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Fraction.Fraction_coe]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/shared/presentation-complex-lean/Solution.lean:11783:33: warning: This simp argument is unused:
+  Fraction.Fraction_coe
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Fraction.ofPos_coe]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/shared/presentation-complex-lean/Solution.lean:12002:15: warning: This simp argument is unused:
+  Fraction.Fraction_coe
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [unitInterval.coe_symm_eq, Nat.cast_succ, Nat.cast_zero, Nat.cast_one]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/shared/presentation-complex-lean/Solution.lean:12003:21: warning: This simp argument is unused:
+  Nat.cast_one
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Fraction.Fraction_coe, unitInterval.coe_symm_eq, Nat.cast_succ, Nat.cast_zero]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/shared/presentation-complex-lean/Solution.lean:12009:15: warning: This simp argument is unused:
+  Fraction.Fraction_coe
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [unitInterval.coe_symm_eq, Nat.cast_succ, Nat.cast_zero, Nat.cast_one]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/shared/presentation-complex-lean/Solution.lean:12010:21: warning: This simp argument is unused:
+  Nat.cast_one
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Fraction.Fraction_coe, unitInterval.coe_symm_eq, Nat.cast_succ, Nat.cast_zero]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/shared/presentation-complex-lean/Solution.lean:12059:15: warning: This simp argument is unused:
+  Fraction.Fraction_coe
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Fraction.ofPos_coe, unitInterval.coe_symm_eq, Nat.cast_add, Nat.cast_succ]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/shared/presentation-complex-lean/Solution.lean:12059:38: warning: This simp argument is unused:
+  Fraction.ofPos_coe
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Fraction.Fraction_coe, unitInterval.coe_symm_eq, Nat.cast_add, Nat.cast_succ]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/shared/presentation-complex-lean/Solution.lean:12070:15: warning: This simp argument is unused:
+  Fraction.Fraction_coe
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Fraction.ofPos_coe, unitInterval.coe_symm_eq, Nat.cast_add, Nat.cast_succ]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/shared/presentation-complex-lean/Solution.lean:12070:38: warning: This simp argument is unused:
+  Fraction.ofPos_coe
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Fraction.Fraction_coe, unitInterval.coe_symm_eq, Nat.cast_add, Nat.cast_succ]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/shared/presentation-complex-lean/Solution.lean:12134:17: warning: This simp argument is unused:
+  Fraction.Fraction_coe
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Fraction.ofPos_coe, unitInterval.coe_symm_eq, Nat.cast_succ]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/shared/presentation-complex-lean/Solution.lean:12134:40: warning: This simp argument is unused:
+  Fraction.ofPos_coe
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Fraction.Fraction_coe, unitInterval.coe_symm_eq, Nat.cast_succ]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/shared/presentation-complex-lean/Solution.lean:12173:17: warning: This simp argument is unused:
+  Fraction.Fraction_coe
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Fraction.ofPos_coe, unitInterval.coe_symm_eq, Nat.cast_succ, Nat.cast_zero, Nat.cast_one]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/shared/presentation-complex-lean/Solution.lean:12173:40: warning: This simp argument is unused:
+  Fraction.ofPos_coe
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Fraction.Fraction_coe, unitInterval.coe_symm_eq, Nat.cast_succ, Nat.cast_zero, Nat.cast_one]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/shared/presentation-complex-lean/Solution.lean:12174:38: warning: This simp argument is unused:
+  Nat.cast_one
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Fraction.Fraction_coe, Fraction.ofPos_coe, unitInterval.coe_symm_eq, Nat.cast_succ, Nat.cast_zero]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/shared/presentation-complex-lean/Solution.lean:12238:10: warning: This simp argument is unused:
+  h
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [this]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/shared/presentation-complex-lean/Solution.lean:12262:6: warning: `dif_pos` has been deprecated: Use `dite_eq_left` instead
+
+Hint: Replace the deprecated name:
+  d̵i̵f̵_̵p̵o̵s̵d̲i̲t̲e̲_̲e̲q̲_̲l̲e̲f̲t̲
+/workspace/shared/presentation-complex-lean/Solution.lean:12377:4: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+/workspace/shared/presentation-complex-lean/Solution.lean:12465:33: warning: This simp argument is unused:
+  Fraction.ofPos_coe
+
+Hint: Omit it from the simp argument list.
+  [apply] simp
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/shared/presentation-complex-lean/Solution.lean:12465:57: warning: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+/workspace/shared/presentation-complex-lean/Solution.lean:12465:23: warning: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+/workspace/shared/presentation-complex-lean/Solution.lean:12465:57: warning: Unused tactic linter: `ring` does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/workspace/shared/presentation-complex-lean/Solution.lean:12478:6: warning: `dif_neg` has been deprecated: Use `dite_eq_right` instead
+
+Hint: Replace the deprecated name:
+  d̵i̵f̵_̵n̵e̵g̵d̲i̲t̲e̲_̲e̲q̲_̲r̲i̲g̲h̲t̲
+/workspace/shared/presentation-complex-lean/Solution.lean:12482:15: warning: This simp argument is unused:
+  unitInterval.coe_symm_eq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/shared/presentation-complex-lean/Solution.lean:12659:50: warning: Variable name `h` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _h
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+/workspace/shared/presentation-complex-lean/Solution.lean:12696:76: warning: Variable name `h` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _h
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+/workspace/shared/presentation-complex-lean/Solution.lean:12834:4: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+/workspace/shared/presentation-complex-lean/Solution.lean:12818:8: warning: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+/workspace/shared/presentation-complex-lean/Solution.lean:12818:8: warning: Unused tactic linter: `ring` does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/workspace/shared/presentation-complex-lean/Solution.lean:12892:4: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+/workspace/shared/presentation-complex-lean/Solution.lean:12883:4: warning: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+/workspace/shared/presentation-complex-lean/Solution.lean:13385:56: warning: Variable name `ht₀` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _ht₀
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+/workspace/shared/presentation-complex-lean/Solution.lean:13851:24: warning: Variable name `t₀` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _t₀
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+/workspace/shared/presentation-complex-lean/Solution.lean:13851:27: warning: Variable name `t₁` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _t₁
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+/workspace/shared/presentation-complex-lean/Solution.lean:13851:30: warning: Variable name `γ` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _γ
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+/workspace/shared/presentation-complex-lean/Solution.lean:13851:41: warning: Variable name `a` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _a
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+/workspace/shared/presentation-complex-lean/Solution.lean:13851:43: warning: Variable name `b` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _b
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+/workspace/shared/presentation-complex-lean/Solution.lean:13861:24: warning: Variable name `t₀` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _t₀
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+/workspace/shared/presentation-complex-lean/Solution.lean:13861:27: warning: Variable name `t₁` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _t₁
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+/workspace/shared/presentation-complex-lean/Solution.lean:13861:30: warning: Variable name `γ` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _γ
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+/workspace/shared/presentation-complex-lean/Solution.lean:13861:41: warning: Variable name `a` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _a
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+/workspace/shared/presentation-complex-lean/Solution.lean:13861:43: warning: Variable name `b` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _b
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+/workspace/shared/presentation-complex-lean/Solution.lean:14088:17: warning: Definition `Dipath.Dihomotopic.setoid` of class type is semireducible. Most type class instances should be instance-reducible, so consider marking this
+definition with `@[instance_reducible]`. If it is intentionally semireducible, this warning can be disabled with `set_option warn.classDefReducibility false`.
+/workspace/shared/presentation-complex-lean/Solution.lean:14179:6: warning: `dif_pos` has been deprecated: Use `dite_eq_left` instead
+
+Hint: Replace the deprecated name:
+  d̵i̵f̵_̵p̵o̵s̵d̲i̲t̲e̲_̲e̲q̲_̲l̲e̲f̲t̲
+/workspace/shared/presentation-complex-lean/Solution.lean:14197:8: warning: `dif_pos` has been deprecated: Use `dite_eq_left` instead
+
+Hint: Replace the deprecated name:
+  d̵i̵f̵_̵p̵o̵s̵d̲i̲t̲e̲_̲e̲q̲_̲l̲e̲f̲t̲
+/workspace/shared/presentation-complex-lean/Solution.lean:14204:8: warning: `dif_neg` has been deprecated: Use `dite_eq_right` instead
+
+Hint: Replace the deprecated name:
+  d̵i̵f̵_̵n̵e̵g̵d̲i̲t̲e̲_̲e̲q̲_̲r̲i̲g̲h̲t̲
+/workspace/shared/presentation-complex-lean/Solution.lean:14302:63: warning: `dif_pos` has been deprecated: Use `dite_eq_left` instead
+
+Hint: Replace the deprecated name:
+  d̵i̵f̵_̵p̵o̵s̵d̲i̲t̲e̲_̲e̲q̲_̲l̲e̲f̲t̲
+/workspace/shared/presentation-complex-lean/Solution.lean:14313:10: warning: `dif_neg` has been deprecated: Use `dite_eq_right` instead
+
+Hint: Replace the deprecated name:
+  d̵i̵f̵_̵n̵e̵g̵d̲i̲t̲e̲_̲e̲q̲_̲r̲i̲g̲h̲t̲
+Try this:
+  [apply] rwa [← functorOnHomOfCovered_apply_left hX h_comm this]
+
+Note: This linter can be disabled with `set_option linter.tacticAnalysis.rwaSuggestion false`
+Try this:
+  [apply] rwa [← functorOnHomOfCovered_apply_right hX h_comm this]
+
+Note: This linter can be disabled with `set_option linter.tacticAnalysis.rwaSuggestion false`
+/workspace/shared/presentation-complex-lean/Solution.lean:14784:17: warning: This simp argument is unused:
+  Fraction.Fraction_coe
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [T, Fraction.ofPos_coe]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/shared/presentation-complex-lean/Solution.lean:14784:40: warning: This simp argument is unused:
+  Fraction.ofPos_coe
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [T, Fraction.Fraction_coe]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/shared/presentation-complex-lean/Solution.lean:14806:17: warning: This simp argument is unused:
+  Fraction.Fraction_coe
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [T, Fraction.ofPos_coe]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/shared/presentation-complex-lean/Solution.lean:14806:40: warning: This simp argument is unused:
+  Fraction.ofPos_coe
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [T, Fraction.Fraction_coe]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/shared/presentation-complex-lean/Solution.lean:14918:2: warning: Unused tactic linter: `repeat { rw [functorOnHom_apply]
+}` does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/workspace/shared/presentation-complex-lean/Solution.lean:15083:15: warning: This simp argument is unused:
+  Fraction.Fraction_coe
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [T, Fraction.ofPos_coe]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/shared/presentation-complex-lean/Solution.lean:15083:38: warning: This simp argument is unused:
+  Fraction.ofPos_coe
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [T, Fraction.Fraction_coe]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/workspace/shared/presentation-complex-lean/Solution.lean:15133:17: warning: Definition `Dipath.Dihomotopic.setoid` of class type is semireducible. Most type class instances should be instance-reducible, so consider marking this
+definition with `@[instance_reducible]`. If it is intentionally semireducible, this warning can be disabled with `set_option warn.classDefReducibility false`.
+/workspace/shared/presentation-complex-lean/Solution.lean:15165:9: warning: Variable name `p` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _p
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+/workspace/shared/presentation-complex-lean/Solution.lean:15165:11: warning: Variable name `q` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _q
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+/workspace/shared/presentation-complex-lean/Solution.lean:15170:9: warning: Variable name `p` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _p
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+/workspace/shared/presentation-complex-lean/Solution.lean:15170:11: warning: Variable name `q` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _q
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+/workspace/shared/presentation-complex-lean/Solution.lean:15251:17: warning: Definition `Dipath.Dihomotopic.setoid` of class type is semireducible. Most type class instances should be instance-reducible, so consider marking this
+definition with `@[instance_reducible]`. If it is intentionally semireducible, this warning can be disabled with `set_option warn.classDefReducibility false`.
+/workspace/shared/presentation-complex-lean/Solution.lean:15291:17: warning: Definition `Dipath.Dihomotopic.setoid` of class type is semireducible. Most type class instances should be instance-reducible, so consider marking this
+definition with `@[instance_reducible]`. If it is intentionally semireducible, this warning can be disabled with `set_option warn.classDefReducibility false`.
+/workspace/shared/presentation-complex-lean/Solution.lean:15338:17: warning: Definition `Dipath.Dihomotopic.setoid` of class type is semireducible. Most type class instances should be instance-reducible, so consider marking this
+definition with `@[instance_reducible]`. If it is intentionally semireducible, this warning can be disabled with `set_option warn.classDefReducibility false`.
+/workspace/shared/presentation-complex-lean/Solution.lean:15391:2: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+/workspace/shared/presentation-complex-lean/Solution.lean:15392:2: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`

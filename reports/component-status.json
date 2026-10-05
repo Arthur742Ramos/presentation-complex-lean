@@ -1,6 +1,6 @@
 {
-  "recorded_at_utc": "2026-10-05T03:27:34.038764+00:00",
-  "complete_presentation_theorem": "exact_toolchain_headline_compile_pass",
+  "recorded_at_utc": "2026-10-05T03:54:30.250976+00:00",
+  "complete_presentation_theorem": "source_replay_standalone_axioms_direct_kernels_pass",
   "exact_toolchain": "leanprover/lean4:v4.35.0-rc2",
   "mathlib": "065356127b1dc0016f66b7283ce0ce2c4055aa55",
   "verified_modules": [
@@ -22,11 +22,15 @@
   ],
   "graph_port": "arbitrary comparison and literal generator equations compiled",
   "pending_new_modules": [],
-  "remaining_principal_obligation": "full source replay, standalone export, direct kernel checks, publication and separately authorized hosted verification",
-  "whole_build": "pending_source_replay",
+  "remaining_principal_obligation": "final_artifact_review and publication; sandbox_Comparator_and_official_hosted_protocol_blocked",
+  "whole_build": "all83_modular_sources_replayed; normal85_serial_and_aggregate_lake_pass",
   "independent_full_source_review": "geometry_review_pass; full artifact review_pending",
   "hosted_full_verification": "not_run",
   "public_source": "not_published",
   "write_invitation": "not_sent",
-  "registry_intake": "not_submitted"
+  "registry_intake": "not_submitted",
+  "standalone_build": "both_pass",
+  "complete_axiom_closures": "21_targets_standard_only_pass",
+  "direct_kernels": "leanchecker_leanchecker_paranoid_nanoda_conron_verified_pass",
+  "comparator": "blocked_NETLINK_ROUTE_at_kernel_sandbox_launch"
 }

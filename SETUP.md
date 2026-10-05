@@ -1,7 +1,12 @@
 # Reproduction and E2E gates
 
-Current status: implementation in progress, with individual components checked.
-The complete theorem and whole-project verification are not yet available.
+Current status: all 83 modular sources, both generated standalones, the full
+standard-only axiom audit, and four direct kernel checks pass on the exact pin.
+Normal serial and aggregate Lake builds also pass.
+The sandboxed Comparator reaches
+its kernel stage but is blocked by NETLINK_ROUTE namespace creation. No
+security workaround was used. Official hosted verification and registry
+intake have not run.
 
 ## Exact toolchain
 
@@ -11,15 +16,17 @@ lakefile.toml, and lake-manifest.json. Local env.sh only selects an existing
 verified toolchain/cache on the current host and is deliberately not published.
 A normal installation should use the pinned Lean toolchain through Lake.
 
-When the complete modules are implemented:
+Separate mandatory gates:
 1. Run `lake exe cache get` for official pinned Mathlib compiled dependencies
-2. Run `lake build` on the complete package
-3. Run `python3 scripts/build_sources.py` to replay every shipped Lean source
+2. Run `python3 scripts/generate_standalone.py`
+3. Run `lake build` on the complete package (on constrained hosts, first run
+   `python3 scripts/build_lake_serial.py`, which uses normal Lake builds only)
+4. Run `python3 scripts/build_sources.py` to replay every shipped Lean source
    serially, not just the headline theorem's dependency closure
-4. Generate Challenge/Solution standalone files reproducibly from frozen source
-5. Check exact Challenge/Solution types and standard-only transitive axioms
-6. Perform the independent source review and direct exported kernel checks
-7. Complete the separately authorized official full hosted verification and
+5. Check reproducible Challenge/Solution bytes against frozen modular source
+6. Check exact Challenge/Solution types and standard-only transitive axioms
+7. Perform the independent source review and direct exported kernel checks
+8. Complete the separately authorized official full hosted verification and
    trusted statement rendering, on the exact frozen public commit
 
 Do not treat one module, a local whole build, a direct kernel pass, or an official
@@ -27,6 +34,13 @@ hosted verdict as equivalent to the other stages. Registry intake and acceptance
 are separate outcomes, requiring their own exact-source authorization and review.
 No registry intake or official hosted verification has been performed for this
 project at this checkpoint.
+
+## Ordinary CI
+
+The pinned `.github/workflows/ci.yml` performs normal serial and aggregate
+Lake builds, every-source replay, reproducible standalone/source checks, and
+prints the complete transitive axiom audit. This is ordinary repository CI;
+it is not the official hosted Comparator or registry protocol.
 
 ## Publication
 

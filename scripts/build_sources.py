@@ -10,4 +10,6 @@ for folder in ['Lean4','ClassicalSVK','FiniteGraphFreeGroup','CellAttachment','P
 for name in ['Lean4','ClassicalSVK','FiniteGraphFreeGroup','CellAttachment','PresentationComplex','Challenge','Solution']:
     if (root/(name+'.lean')).exists():modules.append(name)
 subprocess.run([sys.executable,str(root/'scripts/build_module_closure.py'),*modules],cwd=root,check=True)
-print('PASS: every submitted Lean source compiled',flush=True)
+if (root/'reports/AuditSolution.lean').exists():
+    subprocess.run(['bash','scripts/lean-file.sh','reports/AuditSolution.lean'],cwd=root,check=True)
+print('PASS: every submitted proof module and audit source compiled',flush=True)

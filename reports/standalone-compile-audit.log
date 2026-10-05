@@ -1,0 +1,5 @@
+RUN /workspace/shared/higher-cell-tools/lean-4.35.0-rc2-linux/bin/lean -j1 -M6144 -o /workspace/shared/presentation-complex-lean/.toolchain/standalone/lean/Solution.olean -i /workspace/shared/presentation-complex-lean/.toolchain/standalone/lean/Solution.ilean /workspace/shared/presentation-complex-lean/Solution.lean
+RUN /workspace/shared/higher-cell-tools/lean-4.35.0-rc2-linux/bin/lean -j1 -M6144 -o /workspace/shared/presentation-complex-lean/.toolchain/standalone/lean/Challenge.olean -i /workspace/shared/presentation-complex-lean/.toolchain/standalone/lean/Challenge.ilean /workspace/shared/presentation-complex-lean/Challenge.lean
+compile: pass
+RUN /workspace/shared/higher-cell-tools/lean-4.35.0-rc2-linux/bin/lean -j1 -M6144 reports/AuditSolution.lean
+axioms: pass

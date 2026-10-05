@@ -1,5 +1,8 @@
 # Arbitrary presentation complex implementation plan
 
+Historical scope plan from the initial checkpoint. For current verification
+status, see README.md and reports/local-verification-results.json.
+
 Target: independent-universe `S`, `R`, relators `r : R → FreeGroup S`.
 The bouquet is the quotient of a single discrete vertex and discrete-indexed intervals,
 identifying each interval's endpoints with the vertex. The topology is the coinduced
@@ -28,4 +31,5 @@ Pinned dependencies: graph dd57e3ab8bc5a7042fcc5498e778b008d87ac032;
 Cell 8883b95e8ace951e27c2bc86f95d02397787dd59;
 Lean 4.35.0-rc2, mathlib 065356127b1dc0016f66b7283ce0ce2c4055aa55.
 
-Current status: implementation in progress, NOT a proved complete theorem.
+Initial checkpoint status: implementation in progress. The complete theorem
+has since been implemented and compiled; current gates are recorded separately.

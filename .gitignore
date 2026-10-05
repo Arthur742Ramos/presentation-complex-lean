@@ -4,3 +4,5 @@ env.sh
 reports/*.log
 reports/*.olean
 reports/*.ilean
+
+__pycache__/

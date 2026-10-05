@@ -1,0 +1,44 @@
+def PresentationComplex.completeStatement.{u, v} : Prop :=
+∀ {S : Type u} {R : Type v} (r : R → FreeGroup S),
+  ∃ cw b e,
+    T2Space (PresentationComplex.Space r) ∧
+      PathConnectedSpace (PresentationComplex.Space r) ∧
+        (∀ (n : ℕ), 2 < n → IsEmpty (Topology.CWComplex.cell Set.univ n)) ∧
+          (∀ (s : S), b (Path.Homotopic.Quotient.mk (PresentationComplex.edgeLoop s)) = FreeGroup.of s) ∧
+            e.toMonoidHom.comp
+                  (CellAttachment.inclusionPi1 (PresentationComplex.relatorMap r) (PresentationComplex.base S)) =
+                (QuotientGroup.mk' (PresentationComplex.relatorNormalClosure r)).comp b.toMonoidHom ∧
+              ∀ (s : S),
+                e (Path.Homotopic.Quotient.mk ((PresentationComplex.edgeLoop s).map ⋯)) =
+                  (QuotientGroup.mk' (PresentationComplex.relatorNormalClosure r)) (FreeGroup.of s)
+PresentationComplex.every_group_fundamental_group.{u} (G : Type u) [Group G] :
+  ∃ cw,
+    T2Space (PresentationComplex.EveryGroupSpace G) ∧
+      PathConnectedSpace (PresentationComplex.EveryGroupSpace G) ∧
+        (∀ (n : ℕ), 2 < n → IsEmpty (Topology.CWComplex.cell Set.univ n)) ∧
+          Nonempty (Topology.CWComplex.cell Set.univ 2) ∧
+            Nonempty
+              (FundamentalGroup (PresentationComplex.EveryGroupSpace G) (PresentationComplex.everyGroupPoint G) ≃* G)
+PresentationComplex.everyGroupPi1Equiv_generator.{u} (G : Type u) [Group G] (g : G) :
+  (PresentationComplex.everyGroupPi1Equiv G) (Path.Homotopic.Quotient.mk ((PresentationComplex.edgeLoop g).map ⋯)) = g
+'PresentationComplex.presentation_complex' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PresentationComplex.every_group_fundamental_group' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PresentationComplex.presentationPi1Equiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PresentationComplex.presentationPi1Equiv_inclusion' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PresentationComplex.presentationPi1Equiv_generator' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PresentationComplex.presentationMap_exact' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PresentationComplex.bouquetEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PresentationComplex.bouquetEquiv_edgeLoop' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PresentationComplex.attachingLoopClass_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PresentationComplex.presentationCW' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PresentationComplex.presentationCW_generatorCells' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PresentationComplex.presentationCW_relatorCells' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PresentationComplex.presentationCW_noHigherCells' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PresentationComplex.presentation_t2Space' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PresentationComplex.everyGroupPi1Equiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PresentationComplex.everyGroupPi1Equiv_generator' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PresentationComplex.everyGroupCW_hasTwoCell' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PresentationComplex.groupPresentationEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PresentationComplex.groupPresentationEquiv_generator' depends on axioms: [propext, Classical.choice, Quot.sound]
+'CellAttachment.cell_attachment_exact' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FiniteGraphFreeGroup.graphCombinatorialToTopologicalEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
