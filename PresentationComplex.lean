@@ -1,1 +1,5 @@
-import PresentationComplex.Main
+module
+
+public import PresentationComplex.Main
+
+@[expose] public section

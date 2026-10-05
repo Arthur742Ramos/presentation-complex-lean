@@ -8,7 +8,7 @@ from pathlib import Path
 import re
 import sys
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from generate_standalone import ROOT, LOCAL_PREFIXES, code_only, closure, generate
+from generate_standalone import ROOT, LOCAL_PREFIXES, code_only, closure, generate, imports
 
 
 def declaration_names(source: str) -> list[tuple[str, bool]]:
@@ -69,18 +69,38 @@ def audit() -> dict:
         if re.search(r'\b(?:sorry|admit|axiom)\b', code_only(source)):
             violations.append(str(path.relative_to(ROOT)))
     challenge = code_only(generated['Challenge.lean'])
-    solution = code_only(generated['Solution.lean'])
+    solution = code_only(generated['Solution.lean'] + ''.join(content for name, content in generated.items() if name.startswith('PresentationPackage/')))
     comparator = json.loads((ROOT/'comparator.json').read_text())
     local_comparator = json.loads((ROOT/'reports/comparator-local.json').read_text())
     targets = ['PresentationComplex.presentation_complex', 'PresentationComplex.every_group_fundamental_group']
     comparator_valid = (comparator == local_comparator and comparator.get('theorem_names') == targets
                         and comparator.get('definition_names') == [])
+    active = shipped + [ROOT/'Challenge.lean', ROOT/'Solution.lean', ROOT/'reports/AuditSolution.lean']
+    headers = [str(p.relative_to(ROOT)) for p in active if not code_only(p.read_text()).lstrip().startswith('module\n')]
+    oversized = [str(p.relative_to(ROOT)) for p in active if len(p.read_text().splitlines()) > 10000]
+    challenge_closure, _ = closure(['Challenge'])
+    forbidden = {'Solution', 'PresentationComplex.Main', 'PresentationComplex.FundamentalGroup',
+                 'PresentationComplex.CW', 'PresentationComplex.Hausdorff',
+                 'PresentationComplex.EveryGroupPresentation', 'CellAttachment.Main'}
+    bad_imports = [n for n, _ in challenge_closure if n in forbidden or n.startswith('PresentationPackage.Proof')]
+    construction = code_only(generated['PresentationPackage/Construction.lean'])
+    leaked_targets = [n for n in ['presentation_complex', 'every_group_fundamental_group']
+                      if re.search(r'\b(?:theorem|def|axiom)\s+' + n + r'\b', construction)]
+    extra_generated = sorted(str(p.relative_to(ROOT)) for p in (ROOT/'PresentationPackage').glob('*.lean') if str(p.relative_to(ROOT)) not in generated)
+    packaging_ok = not (extra_generated or headers or oversized or bad_imports or leaked_targets)
     result = {
-        'status': 'pass' if not (stale or collisions or violations) and comparator_valid else 'fail',
+        'unexpected_generated_modules': extra_generated,
+        'packaging_module_header_failures': headers,
+        'packaging_line_cap_failures': oversized,
+        'packaging_line_cap_basis': 'Conservative user-provided 10,000 lines/file; current official policy not re-read',
+        'active_lean_file_line_counts': {str(p.relative_to(ROOT)): len(p.read_text().splitlines()) for p in active},
+        'challenge_proof_dependency_failures': bad_imports,
+        'construction_headline_leaks': leaked_targets,
+        'status': 'pass' if not (stale or collisions or violations) and comparator_valid and packaging_ok else 'fail',
         'comparator_targets_and_configs_match': comparator_valid,
         'scope': 'static audit only; does not assert elaboration, kernel checking, hosted verification, or registry acceptance',
         'stale_generated_files': stale,
-        'private_visibility_transform': 'Remove private modifiers only in generated standalones to eliminate module-dependent helper names; no modular source changed.',
+        'private_visibility_transform': 'Remove private modifiers only in generated standalones to eliminate module-dependent helper names; generated proof helpers remain stable; original modules use explicit public exports.',
         'stable_publicized_helpers': privacy,
         'publicized_name_collisions': collisions,
         'modular_source_admissions_or_axioms': violations,

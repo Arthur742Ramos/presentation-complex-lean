@@ -1,4 +1,8 @@
-import PresentationComplex.Relators
+module
+
+public import PresentationComplex.Relators
+
+@[expose] public section
 
 /-! Construction-only data for the every-group realization challenge.
 No CW structure, Hausdorffness, or fundamental-group realization proof is imported. -/

@@ -70,11 +70,10 @@ status:
     independent generator and relator-index universes, ordinary CW structure,
     Hausdorffness, path connectedness, and compatible fundamental-group
     equivalence with the presented group. Every-group realization as a
-    two-dimensional CW complex included. Fresh exact-toolchain normal builds,
-    all 84 modular sources and both standalone compilations, transitive
-    standard-only axiom audits, four direct kernels, and independent automated
-    source review passed for the repaired bytes. Local type/body Comparator and
-    official hosted/rendering gates remain unperformed; intake is incomplete.
+    two-dimensional CW complex included. Bounded module packaging repair preserves
+    proof bodies and passes static checks; fresh exact-toolchain verification is
+    pending. Previous merged-source passes do not certify new module boundaries.
+    Official hosted/rendering gates remain unperformed; intake is incomplete.
     See reports/CURRENT_VERIFICATION.md for stage-specific status.
   sorry_count: 0
   sorry_in_definitions: 0
@@ -103,7 +102,7 @@ fidelity:
     There are no added mathematical hypotheses. The square-to-complex-disk
     bridge uses Mathlib's proved convex-body homeomorphism.
 review:
-  status: "Independent automated source review and fresh exact-source local proof/build/kernel gates passed. Local type/body Comparator and official hosted/rendering gates remain unperformed. Consult reports/CURRENT_VERIFICATION.md; no registry intake or acceptance is asserted."
+  status: "Bounded module repair: static preservation checks pass; fresh verification pending. No registry intake or acceptance asserted."
   notes: >-
     Completed source review covers actual quotient topology, circle attaching maps from
     finite word loops, Mathlib CW structure with explicit zero/one/two cell-index

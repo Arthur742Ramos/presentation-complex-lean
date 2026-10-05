@@ -1,5 +1,9 @@
-import Mathlib.Combinatorics.Quiver.Covering
-import FiniteGraphFreeGroup.Proof
+module
+
+public import Mathlib.Combinatorics.Quiver.Covering
+public import FiniteGraphFreeGroup.Proof
+
+@[expose] public section
 
 open CategoryTheory Quiver
 

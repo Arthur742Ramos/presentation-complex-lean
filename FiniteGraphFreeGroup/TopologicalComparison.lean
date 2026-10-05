@@ -1,10 +1,14 @@
-import Mathlib.Topology.Covering.Basic
-import Mathlib.Topology.Homotopy.Lifting
-import Mathlib.GroupTheory.FreeGroup.Reduce
-import FiniteGraphFreeGroup.Cover
-import FiniteGraphFreeGroup.Realization
-import FiniteGraphFreeGroup.TopologicalCover
-import FiniteGraphFreeGroup.TreeContraction
+module
+
+public import Mathlib.Topology.Covering.Basic
+public import Mathlib.Topology.Homotopy.Lifting
+public import Mathlib.GroupTheory.FreeGroup.Reduce
+public import FiniteGraphFreeGroup.Cover
+public import FiniteGraphFreeGroup.Realization
+public import FiniteGraphFreeGroup.TopologicalCover
+public import FiniteGraphFreeGroup.TreeContraction
+
+@[expose] public section
 
 open Set Function
 open CategoryTheory CategoryTheory.SingleObj Quiver

@@ -1,7 +1,11 @@
-import PresentationComplex.WordLoops
-import PresentationComplex.LoopCircle
-import PresentationComplex.Connected
-import CellAttachment.Statement
+module
+
+public import PresentationComplex.WordLoops
+public import PresentationComplex.LoopCircle
+public import PresentationComplex.Connected
+public import CellAttachment.Statement
+
+@[expose] public section
 
 /-! Genuine circle maps and disk adjunction for arbitrary presentations. -/
 noncomputable section

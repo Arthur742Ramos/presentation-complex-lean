@@ -1,12 +1,16 @@
+module
+
 /-
 Adapted minimal arbitrary-graph interface from Arthur742Ramos/finite-graph-fundamental-group
 commit dd57e3ab8bc5a7042fcc5498e778b008d87ac032, Apache-2.0.
 Finite-rank spanning-tree/counting wrappers are intentionally excluded.
 -/
-import Mathlib.CategoryTheory.Groupoid.FreeGroupoid
-import Mathlib.CategoryTheory.Endomorphism
-import Mathlib.Combinatorics.Quiver.Arborescence
-import Mathlib.GroupTheory.FreeGroup.NielsenSchreier
+public import Mathlib.CategoryTheory.Groupoid.FreeGroupoid
+public import Mathlib.CategoryTheory.Endomorphism
+public import Mathlib.Combinatorics.Quiver.Arborescence
+public import Mathlib.GroupTheory.FreeGroup.NielsenSchreier
+
+@[expose] public section
 open CategoryTheory Quiver
 noncomputable section
 universe u

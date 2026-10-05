@@ -1,7 +1,11 @@
-import PresentationComplex.BouquetCells
-import PresentationComplex.CellCharts
-import PresentationComplex.Relators
-import CellAttachment.Embeddings
+module
+
+public import PresentationComplex.BouquetCells
+public import PresentationComplex.CellCharts
+public import PresentationComplex.Relators
+public import CellAttachment.Embeddings
+
+@[expose] public section
 
 /-!
 # Ordinary CW structure on the actual presentation adjunction

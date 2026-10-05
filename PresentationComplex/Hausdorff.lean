@@ -1,8 +1,12 @@
-import PresentationComplex.Bouquet
-import PresentationComplex.GraphCells
-import CellAttachment.Retraction
-import CellAttachment.Embeddings
-import Mathlib.Topology.Separation.Hausdorff
+module
+
+public import PresentationComplex.Bouquet
+public import PresentationComplex.GraphCells
+public import CellAttachment.Retraction
+public import CellAttachment.Embeddings
+public import Mathlib.Topology.Separation.Hausdorff
+
+@[expose] public section
 
 /-! Actual Hausdorffness of the weak bouquet and genuine disk adjunction.
 Mathlib's CW class omits a Hausdorff assumption; these are independent quotient

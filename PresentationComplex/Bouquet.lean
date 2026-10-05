@@ -1,5 +1,9 @@
-import FiniteGraphFreeGroup.TopologicalComparison
-import Mathlib.CategoryTheory.SingleObj
+module
+
+public import FiniteGraphFreeGroup.TopologicalComparison
+public import Mathlib.CategoryTheory.SingleObj
+
+@[expose] public section
 
 /-!
 # The arbitrary bouquet and its canonical free-group generators

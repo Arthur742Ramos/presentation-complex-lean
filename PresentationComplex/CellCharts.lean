@@ -1,7 +1,11 @@
-import Mathlib.Analysis.Convex.GaugeRescale
-import Mathlib.Analysis.Complex.Basic
-import Mathlib.Topology.Homeomorph.Lemmas
-import Mathlib.Topology.CWComplex.Classical.Basic
+module
+
+public import Mathlib.Analysis.Convex.GaugeRescale
+public import Mathlib.Analysis.Complex.Basic
+public import Mathlib.Topology.Homeomorph.Lemmas
+public import Mathlib.Topology.CWComplex.Classical.Basic
+
+@[expose] public section
 
 /-!
 # The genuine square-to-disk bridge

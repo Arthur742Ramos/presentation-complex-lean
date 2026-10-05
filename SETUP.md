@@ -1,11 +1,7 @@
 # Reproduction and verification gates
 
-**Local proof checks passed; handoff verification is incomplete.** Fresh results
-cover the strengthened cell-index statement, both standalone targets, all 84
-modular sources, normal builds, the axiom audit, and four direct kernels.
-The [exact-source matrix](reports/CURRENT_VERIFICATION.md) separates these passes
-from the unperformed type/body Comparator and official hosted/rendering gates.
-The historical 83-module checkpoint is not used to certify changed source.
+**Bounded module repair: source/static checks passed; fresh proof verification pending.**
+See [the current verification matrix](reports/CURRENT_VERIFICATION.md). Previous merged-source passes are historical and do not certify these new module boundaries.
 
 ## Exact toolchain
 

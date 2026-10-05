@@ -1,6 +1,10 @@
-import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
-import Mathlib.Combinatorics.Quiver.Arborescence
-import FiniteGraphFreeGroup.Realization
+module
+
+public import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
+public import Mathlib.Combinatorics.Quiver.Arborescence
+public import FiniteGraphFreeGroup.Realization
+
+@[expose] public section
 
 open Set Function
 open CategoryTheory CategoryTheory.SingleObj Quiver

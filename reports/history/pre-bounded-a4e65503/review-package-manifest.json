@@ -1,16 +1,16 @@
 {
   "scope": "Minimal review interface; not a registry submission or acceptance verdict.",
-  "proof_source_commit": "pending bounded-module repair commit; base 8d28fa01d660ce8ade2d49c9bc4306b20b1df83d",
+  "proof_source_commit": "0d3c2d1fd36aa0aa94e56b5d309de25308267c1f",
   "primary_review_files": [
     {
       "path": "Challenge.lean",
-      "sha256": "29f92f55295b947be8562d805a0793441f18c7c6aadab87a08d247e5473a6068",
-      "bytes": 14765
+      "sha256": "1620d6f2a345f461657ad3be3dc512dcc2b6c5b2530a38325b649043afb68e96",
+      "bytes": 257012
     },
     {
       "path": "Solution.lean",
-      "sha256": "da98d4236ce51347bfcf0ef21592c4de1010ab3639a1eb993ffcbe26d70b25a0",
-      "bytes": 13042
+      "sha256": "c767e45dbf54df02239aec8e17adf709c43c8ba9c97508d8b7527dcbda83ef86",
+      "bytes": 755871
     },
     {
       "path": "comparator.json",
@@ -19,8 +19,8 @@
     },
     {
       "path": "formalization.yaml",
-      "sha256": "83c651e9ef6eeb629ab277dfc6b7bc4272563f6fa8505f0571feacbe842e5ff3",
-      "bytes": 7790
+      "sha256": "675176926530fa1e4d1fc26b2064fde05b1a978e3788d8a94234a6a2869ca6f5",
+      "bytes": 7995
     },
     {
       "path": "LICENSE",
@@ -36,21 +36,6 @@
       "path": "PROVENANCE.md",
       "sha256": "7505418cadb75a3d8d35980e528504d077a18f80848ac4433f17d0c33e90f938",
       "bytes": 3383
-    },
-    {
-      "path": "PresentationPackage/Construction.lean",
-      "sha256": "5cb3f7a01e2e273639ad073688ee58439c8a2762385c188b63f170dd8d870b60",
-      "bytes": 255319
-    },
-    {
-      "path": "PresentationPackage/Proof1.lean",
-      "sha256": "b23564f5231a5dc8754271e5d92799132b691ed7210a8427ca94e93c680df04f",
-      "bytes": 330541
-    },
-    {
-      "path": "PresentationPackage/Proof2.lean",
-      "sha256": "9d98b83606e7b405f525e7e8c8057abbeec3154493c16b6ddd987ac06444c366",
-      "bytes": 196145
     }
   ],
   "reproduction_modular_source_count": 84,
@@ -61,13 +46,9 @@
     "reports/static-source-audit.json"
   ],
   "verification_matrix": "reports/CURRENT_VERIFICATION.md",
-  "historical_reports": [
-    "reports/history/pre-packaging-4eb147d",
-    "reports/history/pre-bounded-a4e65503"
-  ],
+  "historical_reports": "reports/history/pre-packaging-4eb147d",
   "challenge_intentional_theorem_holes": [
     "PresentationComplex.presentation_complex",
     "PresentationComplex.every_group_fundamental_group"
-  ],
-  "generated_package_module_count": 3
+  ]
 }

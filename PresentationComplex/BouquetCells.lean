@@ -1,6 +1,10 @@
-import PresentationComplex.Bouquet
-import PresentationComplex.GraphCells
-import PresentationComplex.IntervalCharts
+module
+
+public import PresentationComplex.Bouquet
+public import PresentationComplex.GraphCells
+public import PresentationComplex.IntervalCharts
+
+@[expose] public section
 
 /-! Explicit characteristic cells and quotient weak topology of the arbitrary bouquet. -/
 noncomputable section

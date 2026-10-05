@@ -1,7 +1,11 @@
-import CellAttachment.Adjunction
-import Mathlib.Analysis.Normed.Module.Convex
-import Mathlib.Analysis.Convex.Topology
-import Mathlib.Topology.Connected.PathConnected
+module
+
+public import CellAttachment.Adjunction
+public import Mathlib.Analysis.Normed.Module.Convex
+public import Mathlib.Analysis.Convex.Topology
+public import Mathlib.Topology.Connected.PathConnected
+
+@[expose] public section
 
 /-! Genuine path connectedness of arbitrary disk adjunctions. -/
 noncomputable section

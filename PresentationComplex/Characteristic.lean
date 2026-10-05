@@ -1,5 +1,9 @@
-import Mathlib.Topology.CWComplex.Classical.Basic
-import Mathlib.Topology.Homeomorph.Lemmas
+module
+
+public import Mathlib.Topology.CWComplex.Classical.Basic
+public import Mathlib.Topology.Homeomorph.Lemmas
+
+@[expose] public section
 
 /-! A characteristic closed-cell map with a genuinely embedded open cell induces
 Mathlib's required partial equivalence. This helper does not assert CW axioms. -/

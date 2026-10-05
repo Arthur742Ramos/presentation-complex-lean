@@ -1,8 +1,7 @@
 # Minimal review manifest
 
-**Status: local proof checks passed; handoff verification incomplete.** See the
-[current verification matrix](reports/CURRENT_VERIFICATION.md). This guide
-organizes review; it does not replace unperformed Comparator/hosted gates or authorize registry intake.
+**Bounded module repair: source/static checks passed; fresh proof verification pending.**
+See [the current verification matrix](reports/CURRENT_VERIFICATION.md). Previous merged-source passes are historical and do not certify these new module boundaries.
 
 ## Primary review package
 
@@ -10,7 +9,7 @@ The byte-bound file list is [review-package-manifest.json](reports/review-packag
 Read these files first:
 
 1. `Challenge.lean`: shared construction and two explicit theorem holes
-2. `Solution.lean`: standalone implementation of both targets, without intended
+2. `Solution.lean`: public-import entrypoint for both targets, without intended
    proof admissions
 3. `comparator.json`: exactly both headline theorem names, an empty definition-hole
    list, and the permitted standard logical axioms
@@ -31,8 +30,8 @@ Edit modular sources and regenerate rather than hand-editing the standalones.
   Challenge targets and Comparator theorem targets
 - `PresentationComplex/EveryGroupConstruction.lean` supplies shared construction
   definitions without bringing the every-group proof into Challenge
-- Both standalones use the same external imports and elaborate the same shared
-  construction prefix before their respective targets/proofs
+- Both entrypoints publicly import `PresentationPackage.Construction`;
+  `Proof1` and `Proof2` preserve proof-source order and never enter Challenge
 
 Challenge has exactly two intended theorem holes and no definition holes.
 Solution must solve both against the same construction. The supplemental
@@ -56,8 +55,8 @@ The small review interface does not replace its auditable reproduction source:
 - Active files in [reports/README.md](reports/README.md): generated module/hash
   manifests, comparison/export targets, stage results, and the audit harness
 
-The repaired tree contains 84 modular Lean sources, including five library root
-modules, plus two generated standalones and an audit harness. Solution's local
+The repaired tree contains 84 reproduction Lean sources plus three generated package modules, including five library root
+modules, plus two generated entrypoints and an audit harness. Solution's local
 proof closure contains 77 modules; Challenge's shared construction closure contains
 16. These are packaging counts, not compilation verdicts. Every-source replay
 covers the complete retained modular tree, beyond the headline dependency closure.
@@ -76,3 +75,7 @@ remain available and any logs already changed by a new run are left untouched.
 An archived pass, generated metadata, or old active-path result does not verify
 new source. Full source and history remain available for independent reproduction;
 ignored local caches and build outputs are outside the review interface.
+
+## Bounded module package
+
+Include `PresentationPackage/Construction.lean`, `Proof1.lean`, and `Proof2.lean` with both entrypoints. Construction contains no selected headline proof and imports no proof chunk. Every active Lean source, including the audit harness, has a module header and at most 10,000 lines. This cap is conservatively enforced from the user-provided intake constraint; current official policy has not been independently re-read. Generation partitions only at original module boundaries, retaining scope closure, helper names, notices, and declaration order.

@@ -1,7 +1,11 @@
-import Mathlib.Topology.Covering.Basic
-import Mathlib.Topology.Homotopy.Lifting
-import FiniteGraphFreeGroup.Cover
-import FiniteGraphFreeGroup.Realization
+module
+
+public import Mathlib.Topology.Covering.Basic
+public import Mathlib.Topology.Homotopy.Lifting
+public import FiniteGraphFreeGroup.Cover
+public import FiniteGraphFreeGroup.Realization
+
+@[expose] public section
 
 open Set Function
 open CategoryTheory CategoryTheory.SingleObj Quiver

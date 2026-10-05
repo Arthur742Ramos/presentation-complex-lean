@@ -1,4 +1,8 @@
-import CellAttachment.CircleGenerator
+module
+
+public import CellAttachment.CircleGenerator
+
+@[expose] public section
 
 /-! Descending an actual based loop to the actual complex circle. -/
 noncomputable section
